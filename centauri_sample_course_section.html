@@ -1,0 +1,1898 @@
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #00b87a; --accent-dark: #008f5e; --accent-light: #e6f9f2;
+    --off: #f5f5f7; --border: rgba(0,0,0,0.09); --text: #0a0a0f; --muted: #6b6b7a;
+    --font-d: 'Bebas Neue', sans-serif; --font-b: 'DM Sans', sans-serif;
+  }
+  body { background:#fff; color:var(--text); font-family:var(--font-b); font-size:15px; line-height:1.6; overflow-x:hidden; }
+  a { text-decoration:none; }
+
+  /* NAV */
+  nav {
+    display:flex; align-items:center;
+    padding:0.55rem 3rem;
+    background:#fff; border-bottom:1px solid var(--border);
+    position:sticky; top:0; z-index:100;
+    gap:0;
+  }
+  .logo { display:flex; align-items:center; cursor:pointer; flex-shrink:0; margin-right:3rem; gap:0.75rem; }
+  .logo-img { height:58px; width:auto; }
+  .logo-tagline { font-family:var(--font-b); font-size:0.65rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); line-height:1.2; }
+  .nav-links { display:flex; gap:2rem; flex:1; justify-content:center; }
+  .nav-links a { color:var(--muted); font-size:0.82rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; transition:color 0.2s; cursor:pointer; white-space:nowrap; }
+  .nav-links a:hover, .nav-links a.active { color:var(--accent); }
+  .nav-links a.mentor-link { color:#000; font-weight:700; }
+  .nav-links a.mentor-link:hover, .nav-links a.mentor-link.active { color:var(--accent); }
+  .nav-links a.academy-link { color:#000; font-weight:700; }
+  .nav-links a.academy-link:hover, .nav-links a.academy-link.active { color:var(--accent); }
+  .nav-right { flex-shrink:0; margin-left:3rem; }
+  .nav-cta { background:var(--accent); color:#fff; border:none; padding:0.5rem 1.3rem; border-radius:6px; font-family:var(--font-b); font-weight:600; font-size:0.85rem; cursor:pointer; transition:background 0.2s; white-space:nowrap; }
+  .nav-cta:hover { background:var(--accent-dark); }
+
+  /* PAGE SYSTEM */
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* SHARED */
+  .sec { padding:3rem 3rem; }
+  .sec.alt { background:var(--off); }
+  .sec-tag { font-size:0.72rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; display:block; }
+  .sec-title { font-family:var(--font-d); font-size:clamp(2rem,4vw,3rem); letter-spacing:0.03em; text-transform:uppercase; line-height:1; margin-bottom:0.75rem; color:#000; }
+  .sec-sub { font-size:0.9rem; color:var(--muted); max-width:500px; line-height:1.65; margin-bottom:2rem; }
+  .btn-p { background:var(--accent); color:#fff; border:none; padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-p:hover { background:var(--accent-dark); transform:translateY(-1px); }
+  .btn-o { background:transparent; color:#000; border:1.5px solid rgba(0,0,0,0.18); padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:500; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+  .btn-o:hover { border-color:var(--accent); color:var(--accent); }
+  .form-box { background:#fff; border:1px solid var(--border); border-radius:12px; padding:2rem; box-shadow:0 2px 16px rgba(0,0,0,0.05); }
+  .fg { margin-bottom:1.1rem; }
+  .fg label { display:block; font-size:0.75rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
+  .fg input, .fg select, .fg textarea { width:100%; background:var(--off); border:1px solid var(--border); border-radius:7px; padding:0.7rem 0.9rem; color:#000; font-family:var(--font-b); font-size:0.9rem; outline:none; transition:border-color 0.2s; -webkit-appearance:none; }
+  .fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--accent); background:#fff; }
+  .chips { display:flex; flex-wrap:wrap; gap:0.5rem; }
+  .chip { background:var(--off); border:1px solid var(--border); border-radius:100px; padding:0.35rem 0.9rem; font-size:0.78rem; color:var(--muted); cursor:pointer; transition:all 0.2s; user-select:none; }
+  .chip.on { background:var(--accent-light); border-color:var(--accent); color:var(--accent-dark); }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+
+  /* HOME */
+  .hero { padding:3.5rem 3rem 3rem; background:#fff; position:relative; overflow:hidden; border-bottom:1px solid var(--border); }
+  .hero-grid { position:absolute; inset:0; z-index:0; background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px); background-size:50px 50px; mask-image:radial-gradient(ellipse 80% 80% at 60% 50%,black 20%,transparent 80%); }
+  .hero-blob { position:absolute; top:-60px; right:-80px; width:400px; height:400px; background:radial-gradient(circle,rgba(0,184,122,0.08) 0%,transparent 70%); z-index:0; }
+  .hero-tag { display:inline-flex; align-items:center; gap:7px; background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); border-radius:100px; padding:0.3rem 0.9rem; font-size:0.72rem; font-weight:600; color:var(--accent-dark); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1rem; position:relative; z-index:1; }
+  .hero-tag::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+  .hero h1 { font-family:var(--font-d); font-size:clamp(3.2rem,8vw,6rem); line-height:0.92; letter-spacing:0.02em; text-transform:uppercase; position:relative; z-index:1; margin-bottom:1rem; color:#000; }
+  .hero h1 em { font-style:normal; color:var(--accent); }
+  .hero h1 .outline { -webkit-text-stroke:2px #000; color:transparent; }
+  .hero-sub { font-size:0.95rem; color:var(--muted); max-width:460px; position:relative; z-index:1; margin-bottom:1.5rem; line-height:1.65; }
+  .hero-actions { display:flex; gap:0.8rem; flex-wrap:wrap; position:relative; z-index:1; margin-bottom:2rem; }
+  .stats { display:flex; gap:2.5rem; padding-top:1.5rem; border-top:1px solid var(--border); position:relative; z-index:1; }
+  .stat-n { font-family:var(--font-d); font-size:2.2rem; line-height:1; color:var(--accent); }
+  .stat-l { font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-top:2px; }
+  .home-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+  .home-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.75rem; cursor:pointer; transition:border-color 0.2s,transform 0.2s; }
+  .home-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .home-card-icon { font-size:1.6rem; margin-bottom:0.8rem; }
+  .home-card h3 { font-family:var(--font-d); font-size:1.4rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.4rem; }
+  .home-card p { font-size:0.82rem; color:var(--muted); line-height:1.55; margin-bottom:1rem; }
+  .home-card-link { font-size:0.82rem; font-weight:600; color:var(--accent); display:flex; align-items:center; gap:4px; }
+  .home-card.mentor-card { border-color:rgba(0,184,122,0.4); background:linear-gradient(135deg,#f0fdf8 0%,#fff 60%); position:relative; }
+  .home-card.mentor-card::before { content:'FEATURED'; font-size:0.6rem; font-weight:700; letter-spacing:0.1em; color:var(--accent-dark); background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); padding:0.2rem 0.6rem; border-radius:100px; position:absolute; top:1rem; right:1rem; }
+
+  /* MENTORSHIP BANNER ON HOME */
+  .mentor-banner { margin:0 3rem 2rem; background:#000; border-radius:14px; padding:2.5rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; position:relative; overflow:hidden; }
+  .mentor-banner::before { content:''; position:absolute; top:-40px; right:-40px; width:220px; height:220px; background:radial-gradient(circle,rgba(0,184,122,0.18) 0%,transparent 70%); }
+  .mentor-banner-left { position:relative; z-index:1; }
+  .mentor-banner-tag { font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; display:flex; align-items:center; gap:6px; }
+  .mentor-banner-tag::before { content:''; width:5px; height:5px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+  .mentor-banner h3 { font-family:var(--font-d); font-size:clamp(1.6rem,3vw,2.4rem); color:#fff; letter-spacing:0.03em; text-transform:uppercase; line-height:1; margin-bottom:0.5rem; }
+  .mentor-banner h3 span { color:var(--accent); }
+  .mentor-banner p { font-size:0.85rem; color:rgba(255,255,255,0.55); max-width:380px; line-height:1.6; }
+  .mentor-banner-right { display:flex; flex-direction:column; gap:0.8rem; position:relative; z-index:1; }
+  .mentor-stat-row { display:flex; gap:1.5rem; }
+  .mstat { text-align:center; }
+  .mstat-n { font-family:var(--font-d); font-size:1.8rem; color:var(--accent); line-height:1; }
+  .mstat-l { font-size:0.68rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.07em; }
+
+  /* HOW IT WORKS */
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:2rem; }
+  .step { background:#fff; padding:1.75rem 1.5rem; position:relative; transition:background 0.2s; }
+  .step:hover { background:#fafafa; }
+  .step-n { font-family:var(--font-d); font-size:3rem; line-height:1; color:rgba(0,184,122,0.15); margin-bottom:0.8rem; }
+  .step h3 { font-size:0.95rem; font-weight:600; margin-bottom:0.4rem; color:#000; }
+  .step p { font-size:0.83rem; color:var(--muted); line-height:1.6; }
+  .step-bar { position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; border-radius:0; }
+  .step:hover .step-bar { transform:scaleX(1); }
+  .faq-list { display:flex; flex-direction:column; gap:0.8rem; }
+  .faq-item { background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .faq-q { padding:1rem 1.25rem; font-weight:600; font-size:0.9rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:#000; }
+  .faq-q:hover { background:var(--off); }
+  .faq-arrow { color:var(--muted); transition:transform 0.2s; font-size:1rem; }
+  .faq-a { padding:0 1.25rem 1rem; font-size:0.83rem; color:var(--muted); line-height:1.6; display:none; }
+  .faq-item.open .faq-a { display:block; }
+  .faq-item.open .faq-arrow { transform:rotate(180deg); color:var(--accent); }
+
+  /* FIND */
+  .res-panel { display:flex; flex-direction:column; gap:0.8rem; }
+  .rcard { background:#fff; border:1px solid var(--border); border-radius:10px; padding:1.2rem; opacity:0; transform:translateY(10px); transition:opacity 0.4s,transform 0.4s,border-color 0.2s; }
+  .rcard.show { opacity:1; transform:translateY(0); }
+  .rcard:hover { border-color:rgba(0,184,122,0.35); }
+  .rh { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; }
+  .rn { font-weight:600; font-size:0.95rem; color:#000; }
+  .rbadge { font-size:0.68rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; background:var(--accent-light); color:var(--accent-dark); border:1px solid rgba(0,184,122,0.2); padding:0.2rem 0.6rem; border-radius:100px; }
+  .rmeta { font-size:0.78rem; color:var(--muted); margin-bottom:0.4rem; }
+  .rdesc { font-size:0.83rem; color:#444; line-height:1.5; }
+  .ai-box { display:flex; gap:8px; background:var(--accent-light); border:1px solid rgba(0,184,122,0.18); border-radius:7px; padding:0.75rem; margin-top:0.6rem; }
+  .ai-icon { color:var(--accent); font-size:0.9rem; flex-shrink:0; margin-top:1px; }
+  .ai-txt { font-size:0.78rem; color:#3a6b55; line-height:1.5; }
+  .ai-txt strong { color:var(--accent-dark); }
+  .placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2.5rem 1.5rem; text-align:center; background:var(--off); border:1.5px dashed rgba(0,0,0,0.1); border-radius:10px; color:var(--muted); font-size:0.85rem; gap:0.5rem; }
+
+  /* DONATE */
+  .donate-banner { background:#000; border-radius:12px; padding:2rem; margin-bottom:2rem; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; }
+  .donate-banner h3 { font-family:var(--font-d); font-size:1.8rem; color:#fff; letter-spacing:0.03em; text-transform:uppercase; line-height:1; margin-bottom:0.4rem; }
+  .donate-banner h3 span { color:var(--accent); }
+  .donate-banner p { font-size:0.85rem; color:rgba(255,255,255,0.5); max-width:380px; }
+  .donate-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+  .d-step { background:var(--off); border:1px solid var(--border); border-radius:10px; padding:1.2rem; display:flex; gap:0.9rem; align-items:flex-start; }
+  .d-step-icon { width:36px; height:36px; background:var(--accent-light); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--accent-dark); font-size:1rem; flex-shrink:0; font-weight:700; font-family:var(--font-d); }
+  .d-step h4 { font-size:0.88rem; font-weight:600; color:#000; margin-bottom:0.25rem; }
+  .d-step p { font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .info-card { background:var(--accent-light); border:1px solid rgba(0,184,122,0.2); border-radius:10px; padding:1.2rem; margin-bottom:1rem; }
+  .info-card h4 { font-size:0.88rem; font-weight:600; color:var(--accent-dark); margin-bottom:0.5rem; }
+  .info-card ul { list-style:disc; padding-left:1.2rem; display:flex; flex-direction:column; gap:0.35rem; }
+  .info-card ul li { font-size:0.82rem; color:#3a6b55; }
+  .note-card { background:var(--off); border:1px solid var(--border); border-radius:10px; padding:1.2rem; margin-bottom:1rem; }
+  .note-card h4 { font-size:0.88rem; font-weight:600; color:#000; margin-bottom:0.4rem; }
+  .note-card p { font-size:0.82rem; color:var(--muted); line-height:1.55; }
+  .success-msg { display:none; background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); border-radius:10px; padding:2rem; text-align:center; }
+  .success-msg .tick { font-size:2rem; margin-bottom:0.5rem; }
+  .success-msg h3 { font-family:var(--font-d); font-size:1.5rem; color:var(--accent-dark); letter-spacing:0.03em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .success-msg p { font-size:0.85rem; color:#3a6b55; }
+
+  /* INVOLVE TABS */
+  .involve-tabs { display:flex; gap:0.5rem; margin-bottom:2rem; border-bottom:2px solid var(--border); padding-bottom:0; }
+  .involve-tab { background:transparent; border:none; padding:0.75rem 1.5rem; font-family:var(--font-b); font-weight:600; font-size:0.88rem; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+  .involve-tab:hover { color:#000; }
+  .involve-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .involve-panel { display:none; }
+  .involve-panel.active { display:block; }
+
+  /* SKILLS ACADEMY PAGE */
+  .academy-hero { background:linear-gradient(135deg,#0d0221 0%,#1a0a3d 40%,#0d1a3d 100%); padding:5rem 3rem 4rem; position:relative; overflow:hidden; min-height:70vh; display:flex; align-items:center; justify-content:center; }
+  .academy-hero::before { content:''; position:absolute; inset:0; background-image:radial-gradient(ellipse 60% 60% at 80% 30%,rgba(124,58,237,0.25) 0%,transparent 70%), radial-gradient(ellipse 40% 40% at 20% 80%,rgba(0,184,122,0.12) 0%,transparent 70%); }
+  .academy-grid-bg { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px); background-size:60px 60px; }
+  .academy-hero-inner { position:relative; z-index:1; max-width:680px; text-align:center; display:flex; flex-direction:column; align-items:center; }
+  .academy-cs-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.4); border-radius:100px; padding:0.4rem 1rem; font-size:0.72rem; font-weight:700; color:#a78bfa; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:1.5rem; }
+  .academy-cs-dot { width:7px; height:7px; background:#7c3aed; border-radius:50%; animation:pulse 2s infinite; }
+  .academy-hero h1 { font-family:var(--font-d); font-size:clamp(3rem,8vw,6rem); line-height:0.9; letter-spacing:0.02em; text-transform:uppercase; color:#fff; margin-bottom:1.2rem; }
+  .academy-hero h1 em { font-style:normal; background:linear-gradient(90deg,#7c3aed,#00b87a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .academy-hero-sub { font-size:1rem; color:rgba(255,255,255,0.5); line-height:1.7; margin-bottom:2.5rem; max-width:520px; text-align:center; }
+  .academy-signup-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:2rem; backdrop-filter:blur(10px); max-width:500px; }
+  .academy-signup-box h3 { font-family:var(--font-d); font-size:1.4rem; letter-spacing:0.04em; text-transform:uppercase; color:#fff; margin-bottom:0.4rem; }
+  .academy-signup-box p { font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:1.2rem; line-height:1.55; }
+  .academy-input-row { display:flex; gap:0.6rem; margin-bottom:0.8rem; }
+  .academy-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:0.75rem 1rem; color:#fff; font-family:var(--font-b); font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+  .academy-input-row input::placeholder { color:rgba(255,255,255,0.3); }
+  .academy-input-row input:focus { border-color:rgba(124,58,237,0.6); background:rgba(255,255,255,0.1); }
+  .btn-academy { background:linear-gradient(135deg,#7c3aed,#5b21b6); color:#fff; border:none; padding:0.75rem 1.4rem; border-radius:8px; font-family:var(--font-b); font-weight:700; font-size:0.88rem; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .btn-academy:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(124,58,237,0.4); }
+  .academy-privacy { font-size:0.72rem; color:rgba(255,255,255,0.3); display:flex; align-items:center; gap:5px; }
+  .academy-signup-success { display:none; text-align:center; padding:1rem 0; }
+  .academy-signup-success .tick { font-size:2rem; margin-bottom:0.5rem; }
+  .academy-signup-success p { color:rgba(255,255,255,0.7); font-size:0.88rem; line-height:1.55; }
+  .academy-signup-success strong { color:#a78bfa; }
+
+  /* TRACK CARDS */
+  .academy-tracks { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; }
+  .track-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:1.75rem; position:relative; overflow:hidden; transition:border-color 0.2s,transform 0.2s; }
+  .track-card:hover { transform:translateY(-3px); }
+  .track-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+  .track-card.code::before { background:linear-gradient(90deg,#7c3aed,#a855f7); }
+  .track-card.design::before { background:linear-gradient(90deg,#ec4899,#f97316); }
+  .track-card.marketing::before { background:linear-gradient(90deg,#0ea5e9,#06b6d4); }
+  .track-card.video::before { background:linear-gradient(90deg,#ef4444,#f97316); }
+  .track-card.ai::before { background:linear-gradient(90deg,#00b87a,#0ea5e9); }
+  .track-card.web::before { background:linear-gradient(90deg,#f59e0b,#84cc16); }
+  .track-card:hover.code { border-color:rgba(124,58,237,0.4); }
+  .track-card:hover.design { border-color:rgba(236,72,153,0.4); }
+  .track-card:hover.marketing { border-color:rgba(14,165,233,0.4); }
+  .track-card:hover.video { border-color:rgba(239,68,68,0.4); }
+  .track-card:hover.ai { border-color:rgba(0,184,122,0.4); }
+  .track-card:hover.web { border-color:rgba(245,158,11,0.4); }
+  .track-icon { font-size:2rem; margin-bottom:0.8rem; }
+  .track-label { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .track-card.code .track-label { color:#7c3aed; }
+  .track-card.design .track-label { color:#ec4899; }
+  .track-card.marketing .track-label { color:#0ea5e9; }
+  .track-card.video .track-label { color:#ef4444; }
+  .track-card.ai .track-label { color:#00b87a; }
+  .track-card.web .track-label { color:#f59e0b; }
+  .track-card h4 { font-family:var(--font-d); font-size:1.25rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.4rem; }
+  .track-card p { font-size:0.8rem; color:var(--muted); line-height:1.55; margin-bottom:0.9rem; }
+  .track-levels { display:flex; gap:0.3rem; }
+  .level-pill { font-size:0.65rem; font-weight:600; background:var(--off); color:var(--muted); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.5rem; }
+  .track-coming { position:absolute; top:1rem; right:1rem; font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; background:#f3f4f6; color:var(--muted); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.55rem; }
+
+  /* WAITLIST COUNTER */
+  .waitlist-bar { background:linear-gradient(135deg,#0d0221,#1a0a3d); padding:2rem 3rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .wl-stat { text-align:center; }
+  .wl-n { font-family:var(--font-d); font-size:2.2rem; color:#a78bfa; line-height:1; }
+  .wl-l { font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.07em; margin-top:2px; }
+  .wl-msg { font-size:0.9rem; color:rgba(255,255,255,0.6); max-width:380px; line-height:1.6; }
+  .wl-msg strong { color:#a78bfa; }
+
+  .impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .icard { background:#fff; border:1px solid var(--border); border-radius:10px; padding:1.5rem 1.2rem; text-align:center; transition:border-color 0.2s,transform 0.2s; }
+  .icard:hover { border-color:rgba(0,184,122,0.35); transform:translateY(-2px); }
+  .inum { font-family:var(--font-d); font-size:2.6rem; line-height:1; color:var(--accent); }
+  .ilabel { font-size:0.8rem; color:var(--muted); margin-top:0.3rem; line-height:1.35; }
+  .story-stars { color:#f59e0b; font-size:0.85rem; letter-spacing:0.05em; margin-bottom:0.6rem; }
+  .story-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+  .story-card { background:#fff; border:1px solid var(--border); border-radius:10px; padding:1.4rem; }
+  .story-card .quote { font-size:0.88rem; color:#333; line-height:1.6; font-style:italic; margin-bottom:0.9rem; }
+  .story-card .author { font-size:0.78rem; font-weight:600; color:var(--accent-dark); }
+  .story-card .role { font-size:0.75rem; color:var(--muted); }
+
+  footer { background:#0a0a0f; padding:1.75rem 3rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+  .flogo { display:flex; align-items:center; gap:0.6rem; cursor:pointer; }
+  .flogo img { display:block; height:44px; width:auto; }
+  .flogo-tag { font-family:var(--font-b); font-size:0.6rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.45); line-height:1.2; }
+  .fcopy { font-size:0.78rem; color:rgba(255,255,255,0.35); }
+  .ftag { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); background:rgba(0,184,122,0.1); border:1px solid rgba(0,184,122,0.2); padding:0.3rem 0.9rem; border-radius:100px; }
+  .fsocial { display:flex; align-items:center; gap:0.75rem; }
+  .fsocial a { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:7px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.5); transition:all 0.2s; }
+  .fsocial a:hover { background:rgba(0,184,122,0.15); border-color:rgba(0,184,122,0.4); color:var(--accent); }
+  .fsocial svg { width:15px; height:15px; fill:currentColor; }
+
+  .lbar { height:3px; background:var(--accent); border-radius:2px; width:0%; transition:width 1.2s ease; margin-bottom:0.6rem; }
+  .ltxt { font-size:0.78rem; color:var(--muted); display:flex; align-items:center; gap:5px; }
+  .dots span { display:inline-block; animation:db 1.2s infinite; color:var(--accent); }
+  .dots span:nth-child(2){animation-delay:0.2s} .dots span:nth-child(3){animation-delay:0.4s}
+  @keyframes db { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-4px)} }
+
+  /* ===== MENTORSHIP PAGE ===== */
+  .mentor-hero { background:#000; padding:3.5rem 3rem; position:relative; overflow:hidden; }
+  .mentor-hero::before { content:''; position:absolute; top:-80px; right:-80px; width:500px; height:500px; background:radial-gradient(circle,rgba(0,184,122,0.12) 0%,transparent 70%); }
+  .mentor-hero::after { content:''; position:absolute; bottom:-60px; left:-60px; width:350px; height:350px; background:radial-gradient(circle,rgba(0,184,122,0.06) 0%,transparent 70%); }
+  .mentor-hero-inner { position:relative; z-index:1; }
+  .mentor-hero-tag { display:inline-flex; align-items:center; gap:7px; border:1px solid rgba(0,184,122,0.4); border-radius:100px; padding:0.3rem 0.9rem; font-size:0.72rem; font-weight:600; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1.2rem; }
+  .mentor-hero h1 { font-family:var(--font-d); font-size:clamp(2.8rem,7vw,5.5rem); line-height:0.92; letter-spacing:0.02em; text-transform:uppercase; color:#fff; margin-bottom:1rem; }
+  .mentor-hero h1 em { font-style:normal; color:var(--accent); }
+  .mentor-hero-sub { font-size:0.95rem; color:rgba(255,255,255,0.55); max-width:520px; line-height:1.7; margin-bottom:2rem; }
+  .mentor-hero-actions { display:flex; gap:0.8rem; flex-wrap:wrap; }
+  .btn-p-inv { background:var(--accent); color:#fff; border:none; padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-p-inv:hover { background:var(--accent-dark); transform:translateY(-1px); }
+  .btn-o-inv { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.25); padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:500; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+  .btn-o-inv:hover { border-color:var(--accent); color:var(--accent); }
+  .mentor-stats { display:flex; gap:2.5rem; margin-top:2.5rem; padding-top:2rem; border-top:1px solid rgba(255,255,255,0.08); }
+  .mentor-stat-item .msi-n { font-family:var(--font-d); font-size:2.2rem; line-height:1; color:var(--accent); }
+  .mentor-stat-item .msi-l { font-size:0.75rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.07em; margin-top:2px; }
+
+  /* WHY MENTORSHIP MATTERS */
+  .problem-strip { background:var(--off); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:2rem 3rem; }
+  .problem-strip-inner { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.5rem; }
+  .prob-item { display:flex; gap:1rem; align-items:flex-start; }
+  .prob-icon { width:40px; height:40px; background:var(--accent-light); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+  .prob-text h4 { font-size:0.9rem; font-weight:600; color:#000; margin-bottom:0.2rem; }
+  .prob-text p { font-size:0.8rem; color:var(--muted); line-height:1.5; }
+
+  /* HOW MENTORSHIP WORKS */
+  .mentor-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; margin-bottom:2rem; }
+  .mentor-step { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; position:relative; transition:border-color 0.2s,transform 0.2s; }
+  .mentor-step:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .ms-num { font-family:var(--font-d); font-size:2.5rem; color:rgba(0,184,122,0.12); line-height:1; margin-bottom:0.8rem; }
+  .ms-icon { font-size:1.4rem; margin-bottom:0.6rem; }
+  .mentor-step h4 { font-size:0.95rem; font-weight:600; color:#000; margin-bottom:0.35rem; }
+  .mentor-step p { font-size:0.82rem; color:var(--muted); line-height:1.55; }
+
+  /* MENTOR TYPES */
+  .mentor-types { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.2rem; }
+  .mtype-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; transition:border-color 0.2s,transform 0.2s; }
+  .mtype-card:hover { border-color:rgba(0,184,122,0.4); transform:translateY(-2px); }
+  .mtype-badge { display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.65rem; border-radius:100px; margin-bottom:0.8rem; }
+  .mtype-badge.pro { background:#e8f0fe; color:#1a73e8; border:1px solid rgba(26,115,232,0.2); }
+  .mtype-badge.biz { background:#fce8ff; color:#8b00d4; border:1px solid rgba(139,0,212,0.2); }
+  .mtype-badge.centauri { background:var(--accent-light); color:var(--accent-dark); border:1px solid rgba(0,184,122,0.25); }
+  .mtype-card h4 { font-family:var(--font-d); font-size:1.3rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.4rem; }
+  .mtype-card p { font-size:0.82rem; color:var(--muted); line-height:1.55; margin-bottom:1rem; }
+  .mtype-perks { display:flex; flex-direction:column; gap:0.35rem; }
+  .mtype-perk { font-size:0.8rem; color:#333; display:flex; gap:0.5rem; align-items:flex-start; }
+  .mtype-perk::before { content:''; color:var(--accent); font-weight:700; flex-shrink:0; }
+
+  /* FEATURED MENTORS */
+  .mentor-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; }
+  .mentor-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; text-align:center; transition:border-color 0.2s,transform 0.2s; }
+  .mentor-card:hover { border-color:rgba(0,184,122,0.4); transform:translateY(-2px); }
+  .mentor-avatar { width:60px; height:60px; border-radius:50%; background:var(--off); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin:0 auto 0.8rem; }
+  .mentor-name { font-weight:700; font-size:0.95rem; color:#000; margin-bottom:0.15rem; }
+  .mentor-role { font-size:0.78rem; color:var(--muted); margin-bottom:0.4rem; }
+  .mentor-company { font-size:0.75rem; font-weight:600; color:var(--accent-dark); background:var(--accent-light); border:1px solid rgba(0,184,122,0.2); border-radius:100px; padding:0.15rem 0.6rem; display:inline-block; margin-bottom:0.8rem; }
+  .mentor-tags { display:flex; flex-wrap:wrap; gap:0.3rem; justify-content:center; }
+  .mentor-tag-pill { font-size:0.7rem; color:var(--muted); background:var(--off); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.55rem; }
+  .centauri-badge { font-size:0.65rem; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:var(--accent-dark); background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); padding:0.15rem 0.55rem; border-radius:100px; display:inline-block; margin-bottom:0.5rem; }
+
+  /* REQUEST FORM */
+  .mentor-form-wrap { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+  .mentor-aside { display:flex; flex-direction:column; gap:1rem; }
+  .aside-box { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
+  .aside-box h4 { font-size:0.9rem; font-weight:700; color:#000; margin-bottom:0.6rem; display:flex; align-items:center; gap:0.5rem; }
+  .aside-box p { font-size:0.82rem; color:var(--muted); line-height:1.55; }
+  .aside-box ul { list-style:none; display:flex; flex-direction:column; gap:0.4rem; margin-top:0.5rem; }
+  .aside-box ul li { font-size:0.82rem; color:#333; display:flex; gap:0.5rem; align-items:flex-start; }
+  .aside-box ul li::before { content:'→'; color:var(--accent); font-weight:700; flex-shrink:0; }
+  .mentor-success { display:none; background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); border-radius:12px; padding:2.5rem; text-align:center; }
+  .mentor-success .tick { font-size:2.5rem; margin-bottom:0.6rem; color:var(--accent); }
+  .mentor-success h3 { font-family:var(--font-d); font-size:1.8rem; color:var(--accent-dark); letter-spacing:0.03em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .mentor-success p { font-size:0.85rem; color:#3a6b55; line-height:1.6; }
+
+  /* IMPACT LINK CALLOUT */
+  .criteria-strip { background:var(--off); border:1px solid var(--border); border-radius:12px; padding:2rem; margin-bottom:2rem; }
+  .criteria-strip h4 { font-family:var(--font-d); font-size:1.3rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.8rem; }
+  .criteria-pills { display:flex; flex-wrap:wrap; gap:0.6rem; }
+  .cpill { font-size:0.78rem; font-weight:600; padding:0.35rem 0.9rem; border-radius:100px; border:1px solid; }
+  .cpill.green { background:var(--accent-light); color:var(--accent-dark); border-color:rgba(0,184,122,0.3); }
+  .cpill.blue { background:#e8f0fe; color:#1a73e8; border-color:rgba(26,115,232,0.2); }
+  .cpill.purple { background:#fce8ff; color:#8b00d4; border-color:rgba(139,0,212,0.2); }
+  .cpill.orange { background:#fff3e0; color:#e65100; border-color:rgba(230,81,0,0.2); }
+  .cpill.red { background:#fdecea; color:#c62828; border-color:rgba(198,40,40,0.2); }
+  /* ===== FIND A DEVICE ENHANCEMENTS ===== */
+  .find-live-bar { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.75rem; padding:0.85rem 1.2rem; background:var(--off); border:1px solid var(--border); border-radius:10px; }
+  .live-dot { width:7px; height:7px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
+  .live-stat { font-size:0.78rem; color:var(--muted); display:flex; align-items:center; gap:6px; }
+  .live-stat strong { color:#000; font-weight:600; }
+  .live-divider { width:1px; height:14px; background:var(--border); }
+  .find-map-wrap { margin-bottom:2rem; }
+  .find-map-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem; }
+  .find-map-title { font-size:0.8rem; font-weight:700; color:#000; letter-spacing:0.04em; text-transform:uppercase; }
+  .find-map-toggle { font-size:0.75rem; color:var(--accent); font-weight:600; cursor:pointer; background:none; border:none; padding:0; }
+  #find-map { position:relative; height:280px; border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#ecf0eb; }
+  .map-bg { position:absolute; inset:0; background:linear-gradient(135deg,#e4ede6 0%,#eef3ed 50%,#e8f0e6 100%); }
+  .map-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(0,0,0,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.035) 1px,transparent 1px); background-size:44px 44px; }
+  .map-road-h { position:absolute; left:0; right:0; background:rgba(255,255,255,0.75); }
+  .map-road-v { position:absolute; top:0; bottom:0; background:rgba(255,255,255,0.75); }
+  .map-label { position:absolute; font-size:0.6rem; font-weight:600; color:rgba(0,0,0,0.3); letter-spacing:0.07em; text-transform:uppercase; pointer-events:none; }
+  .map-pin { position:absolute; transform:translate(-50%,-100%); cursor:pointer; z-index:10; transition:transform 0.15s; }
+  .map-pin:hover { transform:translate(-50%,-100%) scale(1.15); }
+  .map-popup { position:absolute; z-index:20; background:#fff; border:1px solid var(--border); border-radius:10px; padding:1rem; box-shadow:0 8px 28px rgba(0,0,0,0.12); width:200px; opacity:0; transform:translateY(6px) translateX(-50%); transition:opacity 0.2s,transform 0.2s; pointer-events:none; }
+  .map-popup.visible { opacity:1; transform:translateY(0) translateX(-50%); pointer-events:auto; }
+  .map-popup-arrow { position:absolute; bottom:-7px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:7px solid #fff; }
+  .map-popup-arrow-border { position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-top:8px solid var(--border); }
+  .map-popup-close { position:absolute; top:0.4rem; right:0.5rem; background:none; border:none; font-size:0.9rem; color:var(--muted); cursor:pointer; line-height:1; }
+  .map-popup-name { font-size:0.8rem; font-weight:700; color:#000; margin-bottom:0.25rem; padding-right:1rem; }
+  .map-popup-dist { font-size:0.7rem; color:var(--muted); margin-bottom:0.3rem; }
+  .map-popup-devices { font-size:0.72rem; color:var(--accent-dark); font-weight:600; margin-bottom:0.5rem; }
+  .map-popup-desc { font-size:0.7rem; color:#555; line-height:1.45; margin-bottom:0.65rem; }
+  .map-popup-btn { display:block; width:100%; background:var(--accent); color:#fff; border:none; border-radius:6px; padding:0.38rem; font-size:0.73rem; font-weight:600; cursor:pointer; text-align:center; font-family:var(--font-b); }
+  .map-popup-btn:hover { background:var(--accent-dark); }
+  .map-center-badge { position:absolute; bottom:0.7rem; right:0.7rem; font-size:0.62rem; color:rgba(0,0,0,0.35); font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+  .find-filters { display:flex; flex-wrap:wrap; align-items:center; gap:0.55rem; margin-bottom:1.5rem; padding:0.85rem 1rem; background:#fff; border:1px solid var(--border); border-radius:10px; }
+  .filter-label { font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-right:0.1rem; white-space:nowrap; }
+  .filter-select { background:var(--off); border:1px solid var(--border); border-radius:6px; padding:0.35rem 0.7rem; font-family:var(--font-b); font-size:0.78rem; color:#000; outline:none; cursor:pointer; -webkit-appearance:none; transition:border-color 0.2s; }
+  .filter-select:focus { border-color:var(--accent); }
+  .filter-toggle { display:flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:500; color:var(--muted); cursor:pointer; padding:0.35rem 0.7rem; background:var(--off); border:1px solid var(--border); border-radius:6px; transition:all 0.2s; white-space:nowrap; user-select:none; }
+  .filter-toggle.on { background:var(--accent-light); border-color:var(--accent); color:var(--accent-dark); }
+  .filter-sep { width:1px; height:18px; background:var(--border); }
+  .results-count { margin-left:auto; font-size:0.73rem; color:var(--muted); white-space:nowrap; }
+  .results-count strong { color:#000; }
+  .device-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.1rem; margin-bottom:2rem; }
+  .device-card { background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s; cursor:pointer; }
+  .device-card:hover { border-color:rgba(0,184,122,0.4); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.06); }
+  .device-card-img { height:126px; background:var(--off); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--border); }
+  .device-card-img svg { width:66px; height:66px; opacity:0.55; }
+  .device-status-pill { position:absolute; top:0.55rem; right:0.55rem; font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.18rem 0.5rem; border-radius:100px; }
+  .pill-available { background:#dcfce7; color:#15803d; }
+  .pill-pending { background:#fff7ed; color:#c2410c; }
+  .pill-reserved { background:#eff6ff; color:#1d4ed8; }
+  .pill-out { background:#f1f5f9; color:#94a3b8; }
+  .device-org-badge { position:absolute; bottom:0.5rem; left:0.6rem; font-size:0.58rem; font-weight:600; background:rgba(0,0,0,0.055); color:#666; padding:0.18rem 0.45rem; border-radius:100px; max-width:calc(100% - 1.2rem); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .device-card-body { padding:0.9rem; }
+  .device-card-name { font-family:var(--font-d); font-size:1.05rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.2rem; line-height:1.1; }
+  .device-card-location { font-size:0.7rem; color:var(--muted); margin-bottom:0.65rem; }
+  .device-specs { display:grid; grid-template-columns:1fr 1fr; gap:0.25rem 0.4rem; margin-bottom:0.7rem; }
+  .device-spec { font-size:0.7rem; color:var(--muted); }
+  .device-spec strong { color:#000; font-weight:600; }
+  .ai-match-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem; }
+  .ai-match-pct { font-size:0.7rem; font-weight:700; color:var(--accent-dark); white-space:nowrap; }
+  .ai-match-bar-bg { flex:1; height:3px; background:rgba(0,184,122,0.12); border-radius:2px; overflow:hidden; }
+  .ai-match-bar-fill { height:100%; background:var(--accent); border-radius:2px; width:0; transition:width 0.9s ease; }
+  .ai-match-text { font-size:0.67rem; color:var(--muted); line-height:1.4; margin-bottom:0.75rem; }
+  .device-card-actions { display:flex; gap:0.45rem; }
+  .btn-device-req { flex:1; background:var(--accent); color:#fff; border:none; border-radius:6px; padding:0.48rem; font-family:var(--font-b); font-size:0.76rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
+  .btn-device-req:hover { background:var(--accent-dark); }
+  .btn-device-req:disabled { background:#ccc; cursor:not-allowed; color:#fff; }
+  .btn-device-det { background:var(--off); color:#000; border:1px solid var(--border); border-radius:6px; padding:0.48rem 0.65rem; font-family:var(--font-b); font-size:0.76rem; font-weight:500; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .btn-device-det:hover { border-color:var(--accent); color:var(--accent); }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.42); z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.25s; display:flex; align-items:center; justify-content:center; padding:1rem; }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-box { background:#fff; border-radius:16px; width:100%; max-width:570px; max-height:90vh; overflow-y:auto; transform:translateY(18px) scale(0.98); transition:transform 0.25s; box-shadow:0 20px 60px rgba(0,0,0,0.18); }
+  .modal-overlay.open .modal-box { transform:translateY(0) scale(1); }
+  .modal-img { height:170px; background:var(--off); display:flex; align-items:center; justify-content:center; border-bottom:1px solid var(--border); position:relative; }
+  .modal-img svg { width:85px; height:85px; opacity:0.45; }
+  .modal-close { position:absolute; top:0.9rem; right:0.9rem; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,0.07); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#555; transition:background 0.2s; }
+  .modal-close:hover { background:rgba(0,0,0,0.13); }
+  .modal-status-pill { position:absolute; top:0.9rem; left:0.9rem; font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.6rem; border-radius:100px; }
+  .modal-body { padding:1.4rem; }
+  .modal-name { font-family:var(--font-d); font-size:1.55rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.2rem; line-height:1; }
+  .modal-org { font-size:0.76rem; color:var(--muted); margin-bottom:1.1rem; }
+  .modal-section-title { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.55rem; margin-top:1.1rem; }
+  .modal-specs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.55rem; }
+  .modal-spec-item { background:var(--off); border-radius:8px; padding:0.65rem 0.75rem; }
+  .modal-spec-label { font-size:0.6rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-bottom:0.15rem; }
+  .modal-spec-val { font-size:0.85rem; font-weight:600; color:#000; }
+  .modal-location-box { background:var(--off); border:1px solid var(--border); border-radius:8px; padding:0.8rem; margin-top:0.4rem; }
+  .modal-location-name { font-size:0.82rem; font-weight:600; color:#000; margin-bottom:0.2rem; }
+  .modal-location-meta { font-size:0.72rem; color:var(--muted); }
+  .modal-eligibility { background:var(--accent-light); border:1px solid rgba(0,184,122,0.2); border-radius:8px; padding:0.8rem; margin-top:0.4rem; }
+  .modal-eligibility ul { list-style:disc; padding-left:1.1rem; display:flex; flex-direction:column; gap:0.28rem; }
+  .modal-eligibility ul li { font-size:0.76rem; color:#3a6b55; line-height:1.45; }
+  .modal-ai-box { background:var(--off); border-radius:8px; padding:0.8rem; margin-top:0.4rem; }
+  .modal-ai-head { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem; }
+  .modal-ai-pct { font-size:0.95rem; font-weight:700; color:var(--accent-dark); }
+  .modal-ai-bar-bg { flex:1; height:4px; background:rgba(0,184,122,0.12); border-radius:2px; overflow:hidden; }
+  .modal-ai-bar-fill { height:100%; background:var(--accent); border-radius:2px; }
+  .modal-ai-reason { font-size:0.76rem; color:#555; line-height:1.55; }
+  .modal-footer { padding:0.9rem 1.4rem 1.4rem; display:flex; gap:0.65rem; }
+  .modal-req-btn { flex:1; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:0.72rem; font-family:var(--font-b); font-weight:600; font-size:0.88rem; cursor:pointer; transition:background 0.2s; }
+  .modal-req-btn:hover { background:var(--accent-dark); }
+  .modal-req-btn:disabled { background:#ccc; cursor:not-allowed; }
+  .modal-cancel-btn { background:var(--off); color:#000; border:1px solid var(--border); border-radius:8px; padding:0.72rem 1.1rem; font-family:var(--font-b); font-weight:500; font-size:0.88rem; cursor:pointer; transition:all 0.2s; }
+  .modal-cancel-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .no-results { text-align:center; padding:2.5rem 1.5rem; color:var(--muted); font-size:0.85rem; background:var(--off); border-radius:10px; border:1.5px dashed rgba(0,0,0,0.1); }
+  @media(max-width:600px) { .modal-specs-grid { grid-template-columns:1fr 1fr; } .device-grid { grid-template-columns:1fr; } .find-filters { gap:0.4rem; } }
+
+  /* ACCESSIBILITY PANEL */
+  #a11y-btn { position:fixed; bottom:1.5rem; right:1.5rem; z-index:9999; width:46px; height:46px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; font-size:1.2rem; box-shadow:0 4px 18px rgba(0,184,122,0.4); display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+  #a11y-btn:hover { background:var(--accent-dark); transform:scale(1.08); }
+  #a11y-panel { position:fixed; bottom:5rem; right:1.5rem; z-index:9998; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 8px 32px rgba(0,0,0,0.12); width:230px; padding:1rem; display:none; flex-direction:column; gap:0.5rem; }
+  #a11y-panel.open { display:flex; }
+  .a11y-title { font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.25rem; }
+  .a11y-row { display:flex; gap:0.4rem; }
+  .a11y-btn2 { flex:1; background:var(--off); border:1px solid var(--border); border-radius:7px; padding:0.45rem 0.5rem; font-family:var(--font-b); font-size:0.78rem; font-weight:500; color:#000; cursor:pointer; transition:all 0.2s; text-align:center; line-height:1.2; }
+  .a11y-btn2:hover { border-color:var(--accent); color:var(--accent); }
+  .a11y-btn2.on { background:var(--accent-light); border-color:var(--accent); color:var(--accent-dark); }
+  .a11y-divider { height:1px; background:var(--border); margin:0.25rem 0; }
+  /* High contrast mode */
+  body.hc-mode { background:#000 !important; color:#fff !important; }
+  body.hc-mode nav, body.hc-mode .hero, body.hc-mode .sec, body.hc-mode .home-card, body.hc-mode .story-card, body.hc-mode .step, body.hc-mode .rcard, body.hc-mode .form-box, body.hc-mode .faq-item, body.hc-mode .track-card, body.hc-mode .mentor-card-item, body.hc-mode #a11y-panel { background:#111 !important; color:#fff !important; border-color:#555 !important; }
+  body.hc-mode .sec-title, body.hc-mode h1, body.hc-mode h2, body.hc-mode h3, body.hc-mode h4, body.hc-mode .step h3, body.hc-mode .rn { color:#fff !important; }
+  body.hc-mode .sec-sub, body.hc-mode .hero-sub, body.hc-mode .step p, body.hc-mode .muted, body.hc-mode [class*="muted"] { color:#ccc !important; }
+  body.hc-mode a, body.hc-mode .nav-links a { color:#0ff !important; }
+  /* Dyslexia font */
+  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap');
+  body.dyslexia-mode, body.dyslexia-mode * { font-family:'Lexend', sans-serif !important; letter-spacing:0.04em !important; line-height:1.9 !important; word-spacing:0.12em !important; }
+  /* Focus outlines */
+  body.focus-mode *:focus { outline:3px solid var(--accent) !important; outline-offset:3px !important; }
+  /* Icon styling for SVG replacements */
+  .home-card-icon svg, .track-icon svg, .ms-icon svg, .prob-icon svg { color:var(--accent); }
+  .mentor-avatar svg { color:var(--muted); }
+  .tick svg { display:block; margin:0 auto; }
+
+
+
+  /* ===== COMPLETED PROTOTYPE ADDITIONS ===== */
+  .nav-auth { display:flex; gap:0.5rem; align-items:center; }
+  .nav-auth button { border:1px solid var(--border); background:#fff; color:#000; border-radius:6px; padding:0.42rem 0.75rem; font-family:var(--font-b); font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .nav-auth button:hover { border-color:var(--accent); color:var(--accent); }
+  .nav-auth .signup-mini { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .nav-auth .signup-mini:hover { background:var(--accent-dark); color:#fff; }
+  .learning-shell { display:grid; grid-template-columns:300px 1fr; gap:1.5rem; align-items:start; }
+  .path-panel, .dashboard-card, .lesson-card, .mentor-book-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:1.25rem; box-shadow:0 2px 14px rgba(0,0,0,0.04); }
+  .path-list { display:flex; flex-direction:column; gap:0.55rem; }
+  .path-tab { width:100%; text-align:left; border:1px solid var(--border); background:var(--off); border-radius:10px; padding:0.85rem; cursor:pointer; font-family:var(--font-b); transition:all 0.2s; }
+  .path-tab strong { display:block; font-size:0.86rem; color:#000; margin-bottom:0.12rem; }
+  .path-tab span { font-size:0.72rem; color:var(--muted); }
+  .path-tab.active, .path-tab:hover { border-color:var(--accent); background:var(--accent-light); }
+  .path-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:0.8rem; margin-bottom:1rem; }
+  .mini-stat { background:var(--off); border:1px solid var(--border); border-radius:12px; padding:0.9rem; }
+  .mini-stat .num { font-family:var(--font-d); font-size:1.8rem; color:var(--accent); line-height:1; }
+  .mini-stat .label { font-size:0.68rem; color:var(--muted); letter-spacing:0.07em; text-transform:uppercase; }
+  .level-row { display:grid; grid-template-columns:repeat(3,1fr); gap:0.9rem; margin-bottom:1.2rem; }
+  .level-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1rem; }
+  .level-card h4 { font-size:0.9rem; color:#000; margin-bottom:0.5rem; }
+  .progress-bg { height:7px; background:rgba(0,184,122,0.12); border-radius:99px; overflow:hidden; margin:0.45rem 0; }
+  .progress-fill { height:100%; background:var(--accent); border-radius:99px; width:0%; transition:width 0.8s ease; }
+  .level-meta { font-size:0.72rem; color:var(--muted); display:flex; justify-content:space-between; gap:0.6rem; }
+  .lesson-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.9rem; }
+  .lesson-card { padding:1rem; position:relative; overflow:hidden; }
+  .lesson-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); }
+  .lesson-label { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; color:var(--accent-dark); text-transform:uppercase; margin-bottom:0.35rem; }
+  .lesson-card h4 { font-size:0.92rem; color:#000; margin-bottom:0.35rem; }
+  .lesson-card p { font-size:0.78rem; color:var(--muted); line-height:1.5; margin-bottom:0.7rem; }
+  .badge-row { display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:0.75rem; }
+  .badge-pill { font-size:0.65rem; font-weight:600; border:1px solid var(--border); background:var(--off); color:#555; border-radius:99px; padding:0.18rem 0.55rem; }
+  .project-pill { background:#000; color:#fff; border-color:#000; }
+  .btn-small { border:none; background:var(--accent); color:#fff; border-radius:7px; padding:0.55rem 0.85rem; font-family:var(--font-b); font-weight:600; font-size:0.78rem; cursor:pointer; transition:all 0.2s; }
+  .btn-small:hover { background:var(--accent-dark); transform:translateY(-1px); }
+  .dashboard-grid { display:grid; grid-template-columns:1.2fr 0.8fr; gap:1rem; }
+  .dashboard-card h3 { font-family:var(--font-d); font-size:1.35rem; letter-spacing:0.03em; text-transform:uppercase; margin-bottom:0.65rem; }
+  .dash-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:0.7rem; margin-bottom:1rem; }
+  .dash-list { display:flex; flex-direction:column; gap:0.65rem; }
+  .dash-item { display:flex; justify-content:space-between; gap:1rem; border:1px solid var(--border); background:var(--off); border-radius:10px; padding:0.8rem; font-size:0.82rem; }
+  .dash-item strong { color:#000; }
+  .dash-item span { color:var(--muted); }
+  .mentor-card { cursor:pointer; }
+  .mentor-card .book-hint { margin-top:0.8rem; font-size:0.72rem; font-weight:700; color:var(--accent-dark); }
+  .modal-overlay2 { position:fixed; inset:0; background:rgba(0,0,0,0.46); z-index:10000; display:none; align-items:center; justify-content:center; padding:1rem; }
+  .modal-overlay2.open { display:flex; }
+  .modal-panel2 { background:#fff; border-radius:16px; border:1px solid var(--border); max-width:620px; width:100%; max-height:90vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,0.18); }
+  .modal-head2 { padding:1.2rem 1.4rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; }
+  .modal-head2 h3 { font-family:var(--font-d); font-size:1.6rem; text-transform:uppercase; letter-spacing:0.03em; line-height:1; }
+  .modal-close2 { background:var(--off); border:1px solid var(--border); border-radius:50%; width:32px; height:32px; cursor:pointer; }
+  .modal-body2 { padding:1.4rem; }
+  .form-row2 { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+  .toast { position:fixed; left:50%; bottom:1.5rem; transform:translateX(-50%) translateY(20px); background:#000; color:#fff; border-radius:10px; padding:0.85rem 1.1rem; font-size:0.85rem; opacity:0; pointer-events:none; z-index:12000; transition:all 0.25s; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .chatbot-btn { position:fixed; bottom:1.5rem; left:1.5rem; z-index:9999; background:#000; color:#fff; border:none; border-radius:999px; padding:0.85rem 1rem; font-weight:700; font-family:var(--font-b); cursor:pointer; box-shadow:0 8px 30px rgba(0,0,0,0.18); }
+  .chatbot { position:fixed; bottom:5rem; left:1.5rem; width:350px; max-width:calc(100vw - 2rem); background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 18px 55px rgba(0,0,0,0.18); z-index:9998; display:none; overflow:hidden; }
+  .chatbot.open { display:block; }
+  .chat-head { background:#000; color:#fff; padding:1rem; display:flex; justify-content:space-between; align-items:center; }
+  .chat-head strong { font-size:0.9rem; }
+  .chat-head button { background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.18); border-radius:50%; width:28px; height:28px; cursor:pointer; }
+  .chat-body { height:300px; overflow:auto; padding:1rem; background:var(--off); display:flex; flex-direction:column; gap:0.7rem; }
+  .msg { max-width:82%; padding:0.75rem 0.85rem; border-radius:12px; font-size:0.82rem; line-height:1.5; }
+  .msg.bot { background:#fff; border:1px solid var(--border); color:#333; align-self:flex-start; }
+  .msg.user { background:var(--accent); color:#fff; align-self:flex-end; }
+  .chat-suggestions { display:flex; flex-wrap:wrap; gap:0.4rem; padding:0 1rem 0.8rem; background:var(--off); }
+  .chat-suggestions button { border:1px solid var(--border); background:#fff; border-radius:999px; font-size:0.72rem; padding:0.35rem 0.6rem; cursor:pointer; }
+  .chat-form { display:flex; gap:0.5rem; padding:0.8rem; border-top:1px solid var(--border); }
+  .chat-form input { flex:1; border:1px solid var(--border); border-radius:8px; padding:0.65rem; font-family:var(--font-b); }
+  .chat-form button { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:0.65rem 0.8rem; font-weight:700; cursor:pointer; }
+  .impact-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+  .impact-point { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.2rem; }
+  .impact-point h4 { font-size:0.92rem; color:#000; margin-bottom:0.35rem; }
+  .impact-point p { font-size:0.8rem; color:var(--muted); line-height:1.55; }
+  @media(max-width:1000px){ .learning-shell,.dashboard-grid{grid-template-columns:1fr;} .lesson-grid,.level-row,.impact-strip{grid-template-columns:1fr 1fr;} .nav-auth{display:none;} }
+  @media(max-width:700px){ .lesson-grid,.level-row,.path-summary,.dash-kpis,.impact-strip,.form-row2{grid-template-columns:1fr;} .chatbot{left:1rem;bottom:4.5rem;} .chatbot-btn{left:1rem;} .dashboard-grid{grid-template-columns:1fr;} }
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<nav>
+<div class="logo" onclick="goTo('home')"><img class="logo-img" src="centauri-black-logo.png"/><span class="logo-tagline">Access. Skills.<br/>Opportunity.</span></div>
+<div class="nav-links">
+<a id="nav-how" onclick="goTo('how')">How it works</a>
+<a id="nav-find" onclick="goTo('find')">Find a Device</a>
+<a class="mentor-link" id="nav-mentor" onclick="goTo('mentor')">Mentorship</a>
+<a class="academy-link" id="nav-academy" onclick="goTo('academy')">Digital Skills Pathway</a>
+<a id="nav-donate" onclick="goTo('donate')">Donate Tech</a>
+<a id="nav-impact" onclick="goTo('impact')">Impact</a>
+</div>
+<div class="nav-right"><div class="nav-auth"><button onclick="openAuth('signin')">Sign in</button><button class="signup-mini" onclick="openAuth('signup')">Sign up</button></div></div>
+</nav>
+<!-- ACCESSIBILITY PANEL -->
+<button aria-label="Accessibility options" id="a11y-btn" onclick="toggleA11yPanel()" title="Accessibility options"><svg aria-hidden="true" fill="currentColor" height="22" viewbox="0 0 24 24" width="22"><circle cx="12" cy="4" r="2"></circle><path d="M12 10c-1.1 0-2 .9-2 2v5h2v-3h4l-2-4h-2zm4 2h-2.5l1 2H16v-2z"></path></svg></button>
+<div aria-label="Accessibility options" id="a11y-panel" role="dialog">
+<div class="a11y-title">Accessibility</div>
+<div class="a11y-row">
+<button aria-label="Increase text size" class="a11y-btn2" onclick="changeFontSize(1)">A+ Larger</button>
+<button aria-label="Decrease text size" class="a11y-btn2" onclick="changeFontSize(-1)">A− Smaller</button>
+</div>
+<div class="a11y-divider"></div>
+<button aria-pressed="false" class="a11y-btn2" id="a11y-hc" onclick="toggleHighContrast()">High Contrast</button>
+<button aria-pressed="false" class="a11y-btn2" id="a11y-dyslexia" onclick="toggleDyslexia()">Dyslexia Font</button>
+<button aria-pressed="false" class="a11y-btn2" id="a11y-focus" onclick="toggleFocusMode()">Focus Outlines</button>
+<div class="a11y-divider"></div>
+<div class="a11y-row">
+<button aria-label="Read page aloud" class="a11y-btn2" onclick="startSpeech()">Read Aloud</button>
+<button aria-label="Stop reading" class="a11y-btn2" onclick="stopSpeech()">Stop</button>
+</div>
+</div>
+<!-- ===================== HOME ===================== -->
+<div class="page active" id="page-home">
+<div class="hero">
+<div class="hero-grid"></div>
+<div class="hero-blob"></div>
+<div class="hero-tag">Tech Access Hub · Powered by AI</div>
+<h1><span class="outline">Close</span> The <em>Digital</em> Divide.</h1>
+<p class="hero-sub">No laptop. No connection. No network. Centauri matches young people across the UK with refurbished devices, broadband schemes, expert mentors, and learning resources — instantly and for free.</p>
+<div class="hero-actions">
+<button class="btn-p" onclick="goTo('find')">Find a Device →</button>
+<button class="btn-o" onclick="goTo('mentor')">Find a Mentor</button>
+</div>
+<div class="stats">
+<div><div class="stat-n">1.7M</div><div class="stat-l">UK young people with no home laptop</div></div>
+<div><div class="stat-n">82%</div><div class="stat-l">Jobs require digital skills</div></div>
+<div><div class="stat-n">£0</div><div class="stat-l">Cost to any young person</div></div>
+</div>
+</div>
+<!-- MENTORSHIP BANNER -->
+<div class="mentor-banner">
+<div class="mentor-banner-left">
+<div class="mentor-banner-tag">New · Now Live</div>
+<h3>Your network is<br/><span>your net worth.</span></h3>
+<p>Most young people in tech got their break through who they knew. Centauri's Mentorship Hub connects you with real tech professionals, businesses, and Centauri mentors — so your background is never a barrier.</p>
+<div style="margin-top:1.2rem;display:flex;gap:0.8rem;flex-wrap:wrap">
+<button class="btn-p-inv" onclick="goTo('mentor')">Find a Mentor →</button>
+<button class="btn-o-inv" onclick="goTo('mentor')">Become a Mentor</button>
+</div>
+</div>
+<div class="mentor-banner-right">
+<div class="mentor-stat-row">
+<div class="mstat"><div class="mstat-n">120+</div><div class="mstat-l">Active mentors</div></div>
+<div class="mstat"><div class="mstat-n">40+</div><div class="mstat-l">Partner companies</div></div>
+<div class="mstat"><div class="mstat-n">Free</div><div class="mstat-l">Always &amp; forever</div></div>
+</div>
+<div style="background:rgba(0,184,122,0.08);border:1px solid rgba(0,184,122,0.2);border-radius:10px;padding:1rem;max-width:260px">
+<div style="font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem">Centauri Mentors</div>
+<div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.5">Vetted industry professionals from BCU's Centauri network, assigned to guide you through your first steps in tech.</div>
+</div>
+</div>
+</div>
+<!-- THREE PILLARS -->
+<div class="sec alt">
+<span class="sec-tag">What we offer</span>
+<div class="sec-title">Everything you need<br/>to break in.</div>
+<p class="sec-sub">Centauri tackles every barrier young people face entering tech — not just the hardware.</p>
+<div class="home-cards">
+<div class="home-card" onclick="goTo('find')">
+<div class="home-card-icon"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><rect height="14" rx="2" width="20" x="2" y="3"></rect><path d="M8 21h8M12 17v4"></path></svg></div>
+<h3>Find a Device</h3>
+<p>AI-matched refurbished laptops, tablets, and broadband schemes near you. Free for anyone aged 16–30.</p>
+<div class="home-card-link">Find resources →</div>
+</div>
+<div class="home-card mentor-card" onclick="goTo('mentor')">
+<div class="home-card-icon"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><path d="M17 11H7a4 4 0 000 8h3m7-8a4 4 0 000-8H7m10 8v4m0 0l-2-2m2 2l2-2"></path></svg></div>
+<h3>Get a Mentor</h3>
+<p>One-to-one guidance from tech professionals, businesses, and Centauri mentors. Build the network you never had.</p>
+<div class="home-card-link">Find a mentor →</div>
+</div>
+<div class="home-card" onclick="goTo('impact')">
+<div class="home-card-icon"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<h3>See the Impact</h3>
+<p>312 devices matched. 94% back in education or work. Real stories from young people whose paths changed.</p>
+<div class="home-card-link">View impact →</div>
+</div>
+</div>
+</div>
+<!-- STORIES TEASER -->
+<div class="sec">
+<span class="sec-tag">Real Stories</span>
+<div class="sec-title">It started with<br/>one connection.</div>
+<p class="sec-sub">The digital divide isn't just about hardware. It's about who you know. Centauri changes both.</p>
+<div class="story-grid">
+<div class="story-card"><div class="story-stars"></div><p class="quote">"I'd been trying to complete my college assignments on my phone for months. Centauri matched me with a laptop within a week. I finished my course and got a job offer two months later."</p><div class="author">Amara, 19</div><div class="role">Birmingham · IT Support Apprentice</div></div>
+<div class="story-card"><div class="story-stars"></div><p class="quote">"My Centauri mentor helped me build my first portfolio and introduced me to their team. Three months later I was doing paid work experience. I didn't have a single contact in tech before Centauri."</p><div class="author">Marcus, 21</div><div class="role">Handsworth · Junior Web Developer</div></div>
+<div class="story-card"><div class="story-stars"></div><p class="quote">"I didn't even know resources like this existed. Within 48 hours I had a tablet, free coding courses, and a mentor helping me prep for my first tech interview. It completely changed my path."</p><div class="author">Priya, 17</div><div class="role">Sparkbrook · A-Level Student</div></div>
+</div>
+</div>
+</div>
+<!-- ===================== HOW IT WORKS ===================== -->
+<div class="page" id="page-how">
+<div class="sec">
+<span class="sec-tag">How it works</span>
+<div class="sec-title">Simple steps,<br/>real results.</div>
+<p class="sec-sub">Centauri is built to be fast, free, and frictionless for young people with limited time and resources.</p>
+<div class="steps">
+<div class="step"><div class="step-bar"></div><div class="step-n">01</div><h3>Tell us what you need</h3><p>Enter your postcode, age, and what you're looking for — a device, broadband, a mentor, or all three.</p></div>
+<div class="step"><div class="step-bar"></div><div class="step-n">02</div><h3>AI finds your matches</h3><p>Our AI analyses your needs and searches nearby organisations, charities, and Centauri mentors.</p></div>
+<div class="step"><div class="step-bar"></div><div class="step-n">03</div><h3>Get a recommendation</h3><p>You receive tailored results with an AI explanation of why each resource or mentor fits your goals.</p></div>
+<div class="step"><div class="step-bar"></div><div class="step-n">04</div><h3>Connect and start</h3><p>Contact the organisation, book a mentor session, or get guided next steps — all from one place.</p></div>
+</div>
+<div style="margin-bottom:2rem">
+<span class="sec-tag">FAQs</span>
+<div class="sec-title" style="font-size:2rem">Common questions</div>
+</div>
+<div class="faq-list">
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Who is Centauri for? <span class="faq-arrow">▾</span></div><div class="faq-a">Centauri is for young people aged 16–30 in the UK who lack access to the devices, connectivity, networks, or mentorship they need to progress in education or employment in tech.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is it free to use? <span class="faq-arrow">▾</span></div><div class="faq-a">Yes — completely free. Centauri is a community platform supported by partner organisations and donations. There is no cost to find a device, access learning resources, or connect with a mentor.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the AI matching work? <span class="faq-arrow">▾</span></div><div class="faq-a">You fill in a short form with your location, age, and needs. Our AI analyses that information alongside a database of partner organisations, available devices, and available mentors near you, then generates a personalised list of matches with an explanation for each.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is a Centauri mentor? <span class="faq-arrow">▾</span></div><div class="faq-a">Centauri mentors are vetted tech professionals from Birmingham City University's Centauri network. They offer dedicated one-to-one guidance to young people who have no existing connections in the industry — from career planning to project reviews and introductions.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I donate on behalf of my company? <span class="faq-arrow">▾</span></div><div class="faq-a">Absolutely. Business donations are welcome and may qualify for tax relief. Head to the Donate Tech page to register devices and request a donation certificate.</div></div>
+</div>
+</div>
+</div>
+<!-- ===================== FIND A DEVICE ===================== -->
+<div class="page" id="page-find">
+<div class="sec">
+<span class="sec-tag">Find a Device</span>
+<div class="sec-title">What do you need?</div>
+<p class="sec-sub">Fill in your details and our AI will match you to the best resources near you — free, fast, and accurate.</p>
+<!-- Live platform stats -->
+<div class="find-live-bar">
+<div class="live-dot"></div>
+<div class="live-stat"><strong>3</strong> new devices added today</div>
+<div class="live-divider"></div>
+<div class="live-stat"><strong>12</strong> people helped this week</div>
+<div class="live-divider"></div>
+<div class="live-stat">Last updated <strong>5 minutes ago</strong></div>
+<div class="live-divider"></div>
+<div class="live-stat"><strong>47</strong> devices available now</div>
+</div>
+<!-- Search form -->
+<div class="two-col" style="margin-bottom:2rem;">
+<div class="form-box">
+<div class="fg"><label>Your Postcode</label><input id="postcode" placeholder="e.g. B1 1BB" type="text"/></div>
+<div class="fg"><label>Your Age</label><select id="age"><option value="">Select age range</option><option>Under 16</option><option>16 – 18</option><option>19 – 24</option><option>25 – 30</option></select></div>
+<div class="fg"><label>What do you need?</label><div class="chips"><div class="chip on" data-val="Laptop">Laptop</div><div class="chip" data-val="Tablet">Tablet</div><div class="chip" data-val="Broadband">Broadband</div><div class="chip" data-val="Learning Resources">Learning Resources</div><div class="chip" data-val="Smartphone">Smartphone</div></div></div>
+<div class="fg"><label>Your goal (optional)</label><textarea id="goal" placeholder="e.g. I want to get into cybersecurity and need a laptop for my course" style="height:80px;resize:none;"></textarea></div>
+<button class="btn-p" onclick="findMatches()">Find my matches →</button>
+</div>
+<div class="res-panel" id="results">
+<div class="placeholder"><span>Fill in your details and we'll find the best resources near you.</span></div>
+</div>
+</div>
+<!-- Interactive Map -->
+<div class="find-map-wrap">
+<div class="find-map-header">
+<span class="find-map-title">Device Locations — Birmingham</span>
+<button class="find-map-toggle" onclick="toggleMapView()">Hide map</button>
+</div>
+<div id="find-map">
+<div class="map-bg"></div>
+<div class="map-grid"></div>
+<!-- Roads -->
+<div class="map-road-h" style="top:38%;height:10px;opacity:0.9;"></div>
+<div class="map-road-h" style="top:62%;height:7px;opacity:0.7;"></div>
+<div class="map-road-h" style="top:22%;height:6px;opacity:0.6;"></div>
+<div class="map-road-v" style="left:30%;width:8px;opacity:0.8;"></div>
+<div class="map-road-v" style="left:55%;width:6px;opacity:0.65;"></div>
+<div class="map-road-v" style="left:72%;width:5px;opacity:0.55;"></div>
+<!-- Labels -->
+<div class="map-label" style="top:36%;left:32%;">Corporation St</div>
+<div class="map-label" style="top:60%;left:56%;">Bristol Rd</div>
+<div class="map-label" style="top:20%;left:42%;">New St</div>
+<div class="map-label" style="top:50%;left:4%;">Broad St</div>
+<div class="map-label" style="top:15%;left:60%;">Aston</div>
+<div class="map-label" style="top:70%;left:15%;">Ladywood</div>
+<div class="map-label" style="top:72%;left:55%;">Moseley</div>
+<!-- Map Pins -->
+<div class="map-pin" id="pin-0" onclick="showMapPopup(0,this)" style="left:31%;top:44%;">
+<svg fill="none" height="36" viewbox="0 0 28 36" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#00b87a"></path><circle class="pin-inner" cx="14" cy="14" fill="white" r="6"></circle></svg>
+</div>
+<div class="map-pin" id="pin-1" onclick="showMapPopup(1,this)" style="left:55%;top:70%;">
+<svg fill="none" height="36" viewbox="0 0 28 36" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#00b87a"></path><circle class="pin-inner" cx="14" cy="14" fill="white" r="6"></circle></svg>
+</div>
+<div class="map-pin" id="pin-2" onclick="showMapPopup(2,this)" style="left:20%;top:58%;">
+<svg fill="none" height="36" viewbox="0 0 28 36" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#00b87a"></path><circle class="pin-inner" cx="14" cy="14" fill="white" r="6"></circle></svg>
+</div>
+<div class="map-pin" id="pin-3" onclick="showMapPopup(3,this)" style="left:68%;top:26%;">
+<svg fill="none" height="36" viewbox="0 0 28 36" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#008f5e"></path><circle class="pin-inner" cx="14" cy="14" fill="white" r="6"></circle></svg>
+</div>
+<!-- Popup (single, repositioned by JS) -->
+<div class="map-popup" id="map-popup">
+<div class="map-popup-arrow-border"></div>
+<div class="map-popup-arrow"></div>
+<button class="map-popup-close" onclick="closeMapPopup()">×</button>
+<div class="map-popup-name" id="pp-name"></div>
+<div class="map-popup-dist" id="pp-dist"></div>
+<div class="map-popup-devices" id="pp-devices"></div>
+<div class="map-popup-desc" id="pp-desc"></div>
+<button class="map-popup-btn" onclick="scrollToDevices()">View Devices ↓</button>
+</div>
+<div class="map-center-badge">Birmingham City Centre</div>
+</div>
+</div>
+<!-- Device Cards Section -->
+<div id="device-section">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+<div>
+<span class="sec-tag" style="margin-bottom:0.2rem;">Available Devices</span>
+<div style="font-family:var(--font-d);font-size:1.4rem;letter-spacing:0.03em;text-transform:uppercase;color:#000;line-height:1;">Browse &amp; Request</div>
+</div>
+</div>
+<!-- Filter bar -->
+<div class="find-filters">
+<span class="filter-label">Filter</span>
+<select class="filter-select" id="f-type" onchange="applyFilters()">
+<option value="">All Types</option>
+<option value="laptop">Laptop</option>
+<option value="tablet">Tablet</option>
+<option value="smartphone">Smartphone</option>
+</select>
+<select class="filter-select" id="f-ram" onchange="applyFilters()">
+<option value="">Any RAM</option>
+<option value="4">4GB+</option>
+<option value="8">8GB+</option>
+<option value="16">16GB+</option>
+</select>
+<select class="filter-select" id="f-storage" onchange="applyFilters()">
+<option value="">Any Storage</option>
+<option value="64">64GB+</option>
+<option value="128">128GB+</option>
+<option value="256">256GB+</option>
+</select>
+<label class="filter-toggle" id="f-avail-label" onclick="toggleAvailFilter()">
+<span id="f-avail-icon"></span> Available only
+        </label>
+<div class="filter-sep"></div>
+<span class="filter-label">Sort</span>
+<select class="filter-select" id="f-sort" onchange="applyFilters()">
+<option value="match">Best Match</option>
+<option value="distance">Closest</option>
+<option value="specs">Best Specs</option>
+<option value="new">Newly Added</option>
+</select>
+<span class="results-count" id="f-count"><strong>9</strong> devices shown</span>
+</div>
+<!-- Device grid -->
+<div class="device-grid" id="device-grid"></div>
+</div>
+</div>
+</div>
+<!-- Device Details Modal -->
+<div class="modal-overlay" id="device-modal" onclick="handleModalClick(event)">
+<div aria-label="Device details" aria-modal="true" class="modal-box" role="dialog">
+<div class="modal-img" id="modal-img">
+<div class="modal-status-pill" id="modal-status-pill"></div>
+<button aria-label="Close" class="modal-close" onclick="closeModal()">×</button>
+</div>
+<div class="modal-body">
+<div class="modal-name" id="modal-name"></div>
+<div class="modal-org" id="modal-org"></div>
+<div class="modal-section-title">Specifications</div>
+<div class="modal-specs-grid" id="modal-specs"></div>
+<div class="modal-section-title">Collection Location</div>
+<div class="modal-location-box">
+<div class="modal-location-name" id="modal-loc-name"></div>
+<div class="modal-location-meta" id="modal-loc-meta"></div>
+</div>
+<div class="modal-section-title">Eligibility</div>
+<div class="modal-eligibility">
+<ul id="modal-eligibility"></ul>
+</div>
+<div class="modal-section-title">AI Recommendation</div>
+<div class="modal-ai-box">
+<div class="modal-ai-head">
+<span class="modal-ai-pct" id="modal-ai-pct"></span>
+<div class="modal-ai-bar-bg"><div class="modal-ai-bar-fill" id="modal-ai-bar"></div></div>
+</div>
+<div class="modal-ai-reason" id="modal-ai-reason"></div>
+</div>
+</div>
+<div class="modal-footer">
+<button class="modal-req-btn" id="modal-req-btn" onclick="requestDevice()">Request This Device →</button>
+<button class="modal-cancel-btn" onclick="closeModal()">Close</button>
+</div>
+</div>
+</div>
+<!-- ===================== MENTORSHIP ===================== -->
+<div class="page" id="page-mentor">
+<!-- HERO -->
+<div class="mentor-hero">
+<div class="mentor-hero-inner">
+<div class="mentor-hero-tag">● Mentorship Hub · Powered by Centauri</div>
+<h1>Your network<br/>starts <em>here.</em></h1>
+<p class="mentor-hero-sub">In tech, who you know matters as much as what you know. For young people with no connections and no network, that's an invisible wall. Centauri tears it down — connecting you with real professionals, businesses, and Centauri mentors ready to invest in your future.</p>
+<div class="mentor-hero-actions">
+<button class="btn-p-inv" onclick="document.getElementById('mentor-form-section').scrollIntoView({behavior:'smooth'})">Request a Mentor →</button>
+<button class="btn-o-inv" onclick="document.getElementById('become-mentor').scrollIntoView({behavior:'smooth'})">Become a Mentor</button>
+</div>
+<div class="mentor-stats">
+<div class="mentor-stat-item"><div class="msi-n">120+</div><div class="msi-l">Active mentors</div></div>
+<div class="mentor-stat-item"><div class="msi-n">40+</div><div class="msi-l">Partner companies</div></div>
+<div class="mentor-stat-item"><div class="msi-n">89%</div><div class="msi-l">Got job or placement</div></div>
+<div class="mentor-stat-item"><div class="msi-n">£0</div><div class="msi-l">Cost to young people</div></div>
+</div>
+</div>
+</div>
+<!-- WHY IT MATTERS -->
+<div class="problem-strip">
+<div class="problem-strip-inner">
+<div class="prob-item">
+<div class="prob-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><circle cx="12" cy="12" r="10"></circle><line x1="4.9" x2="19.1" y1="4.9" y2="19.1"></line></svg></div>
+<div class="prob-text">
+<h4>No network, no foot in the door</h4>
+<p>70% of jobs are never publicly advertised. Without industry contacts, young people from underserved backgrounds are locked out from the start.</p>
+</div>
+</div>
+<div class="prob-item">
+<div class="prob-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path></svg></div>
+<div class="prob-text">
+<h4>No one to ask for advice</h4>
+<p>Career guidance at school rarely covers tech careers in depth. Without a mentor, young people navigate an unfamiliar industry entirely alone.</p>
+</div>
+</div>
+<div class="prob-item">
+<div class="prob-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg></div>
+<div class="prob-text">
+<h4>Portfolios built in a vacuum</h4>
+<p>Self-taught developers, designers, and analysts often build projects with no professional feedback — making it harder to stand out to employers.</p>
+</div>
+</div>
+<div class="prob-item">
+<div class="prob-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"></path></svg></div>
+<div class="prob-text">
+<h4>Geography is a barrier</h4>
+<p>Tech hubs are concentrated in London. Young people in Birmingham and other cities are less likely to encounter working professionals in tech day to day.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- HOW MENTORSHIP WORKS -->
+<div class="sec">
+<span class="sec-tag">How it works</span>
+<div class="sec-title">From zero network<br/>to connected.</div>
+<p class="sec-sub">Our matching process is free, fast, and built for young people who've never had access to professional guidance before.</p>
+<div class="mentor-steps">
+<div class="mentor-step">
+<div class="ms-num">01</div>
+<div class="ms-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+<h4>Tell us about you</h4>
+<p>Share your interests, goals, and what kind of support you're looking for — career advice, project feedback, job referrals, or ongoing guidance.</p>
+</div>
+<div class="mentor-step">
+<div class="ms-num">02</div>
+<div class="ms-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><rect height="10" rx="2" width="18" x="3" y="11"></rect><path d="M12 11V7M8 7h8"></path><circle cx="12" cy="5" r="2"></circle></svg></div>
+<h4>AI matches you</h4>
+<p>Our AI reviews your profile against available mentors — tech professionals, businesses, and Centauri mentors — and ranks the best fit for your goals.</p>
+</div>
+<div class="mentor-step">
+<div class="ms-num">03</div>
+<div class="ms-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg></div>
+<h4>Book a session</h4>
+<p>Once matched, you schedule an initial 30-minute session with your mentor. No pressure, no commitment — just a conversation to get started.</p>
+</div>
+<div class="mentor-step">
+<div class="ms-num">04</div>
+<div class="ms-icon"><svg fill="none" height="22" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="22"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<h4>Build your future</h4>
+<p>Ongoing monthly check-ins, project reviews, CV feedback, interview prep, and introductions — whatever you need to break into tech.</p>
+</div>
+</div>
+<!-- CRITERIA ALIGNMENT NOTE -->
+<div class="criteria-strip">
+<h4>Built around the challenge brief</h4>
+<p style="font-size:0.83rem;color:var(--muted);margin-bottom:1rem">Centauri's Mentorship Hub directly addresses the judging criteria for the Centauri Challenge:</p>
+<div class="criteria-pills">
+<div class="cpill green">Problem Understanding — tackles network poverty in tech</div>
+<div class="cpill blue">Innovation — AI-matched mentorship at scale, free</div>
+<div class="cpill purple">Technical Execution — live matching, booking &amp; profiles</div>
+<div class="cpill orange">Impact — measurable career outcomes for young people</div>
+<div class="cpill red">Presentation — cohesive, real-world ready product</div>
+</div>
+</div>
+</div>
+<!-- MENTOR TYPES -->
+<div class="sec alt">
+<span class="sec-tag">Who mentors on Centauri</span>
+<div class="sec-title">Three types of<br/>mentor, one platform.</div>
+<p class="sec-sub">We bring together three distinct mentor types to give you the widest possible support network.</p>
+<div class="mentor-types">
+<div class="mtype-card">
+<div class="mtype-badge pro">Tech Professional</div>
+<h4>Industry Pros</h4>
+<p>Software engineers, data scientists, UX designers, cybersecurity analysts, and product managers working at leading UK tech companies.</p>
+<div class="mtype-perks">
+<div class="mtype-perk">Career pathway advice</div>
+<div class="mtype-perk">Portfolio and project feedback</div>
+<div class="mtype-perk">Interview preparation</div>
+<div class="mtype-perk">Industry introductions</div>
+</div>
+</div>
+<div class="mtype-card">
+<div class="mtype-badge biz">Business Partner</div>
+<h4>Business Mentors</h4>
+<p>Entrepreneurs, CTOs, and hiring managers from Centauri's network of 40+ partner companies — including startups, scale-ups, and established firms.</p>
+<div class="mtype-perks">
+<div class="mtype-perk">Work experience pathways</div>
+<div class="mtype-perk">Apprenticeship referrals</div>
+<div class="mtype-perk">Real project briefs to work on</div>
+<div class="mtype-perk">Potential employment routes</div>
+</div>
+</div>
+<div class="mtype-card">
+<div class="mtype-badge centauri">Centauri Mentor</div>
+<h4>Centauri Network</h4>
+<p>Vetted professionals from BCU's Centauri programme, specifically trained to support young people with no prior connections or experience in tech.</p>
+<div class="mtype-perks">
+<div class="mtype-perk">Dedicated 1-to-1 support</div>
+<div class="mtype-perk">Monthly check-ins guaranteed</div>
+<div class="mtype-perk">Scholarship &amp; course signposting</div>
+<div class="mtype-perk">Community cohort events</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FEATURED MENTORS -->
+<div class="sec">
+<span class="sec-tag">Featured Mentors</span>
+<div class="sec-title">Meet the people<br/>in your corner.</div>
+<p class="sec-sub">A snapshot of mentors currently available on Centauri.</p>
+<div class="mentor-grid">
+<div class="mentor-card">
+<div class="centauri-badge">Centauri Mentor</div>
+<div class="mentor-avatar"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
+<div class="mentor-name">Aisha Osei</div>
+<div class="mentor-role">Software Engineer</div>
+<div class="mentor-company">HSBC Tech</div>
+<div class="mentor-tags">
+<div class="mentor-tag-pill">Python</div>
+<div class="mentor-tag-pill">Backend</div>
+<div class="mentor-tag-pill">Careers</div>
+</div>
+</div>
+<div class="mentor-card">
+<div class="mentor-avatar"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
+<div class="mentor-name">Jordan Blake</div>
+<div class="mentor-role">CTO &amp; Co-Founder</div>
+<div class="mentor-company">Launchpad BHX</div>
+<div class="mentor-tags">
+<div class="mentor-tag-pill">Startups</div>
+<div class="mentor-tag-pill">Fundraising</div>
+<div class="mentor-tag-pill">Product</div>
+</div>
+</div>
+<div class="mentor-card">
+<div class="centauri-badge">Centauri Mentor</div>
+<div class="mentor-avatar"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
+<div class="mentor-name">Priya Sharma</div>
+<div class="mentor-role">Data Scientist</div>
+<div class="mentor-company">NHS Digital</div>
+<div class="mentor-tags">
+<div class="mentor-tag-pill">ML/AI</div>
+<div class="mentor-tag-pill">SQL</div>
+<div class="mentor-tag-pill">Health Tech</div>
+</div>
+</div>
+<div class="mentor-card">
+<div class="mentor-avatar"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
+<div class="mentor-name">Kofi Mensah</div>
+<div class="mentor-role">Senior UX Designer</div>
+<div class="mentor-company">BJSS</div>
+<div class="mentor-tags">
+<div class="mentor-tag-pill">Figma</div>
+<div class="mentor-tag-pill">Research</div>
+<div class="mentor-tag-pill">Portfolio</div>
+</div>
+</div>
+<div class="mentor-card">
+<div class="mentor-avatar"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
+<div class="mentor-name">Fatima Al-Rashid</div>
+<div class="mentor-role">Cybersecurity Analyst</div>
+<div class="mentor-company">PwC</div>
+<div class="mentor-tags">
+<div class="mentor-tag-pill">SecOps</div>
+<div class="mentor-tag-pill">Certifications</div>
+<div class="mentor-tag-pill">Apprenticeships</div>
+</div>
+</div>
+<div class="mentor-card">
+<div class="centauri-badge">Centauri Mentor</div>
+<div class="mentor-avatar"><svg fill="none" height="28" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="28"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
+<div class="mentor-name">Tom Halligan</div>
+<div class="mentor-role">Engineering Manager</div>
+<div class="mentor-company">bet365</div>
+<div class="mentor-tags">
+<div class="mentor-tag-pill">JavaScript</div>
+<div class="mentor-tag-pill">React</div>
+<div class="mentor-tag-pill">CV Review</div>
+</div>
+</div>
+</div>
+</div>
+<!-- REQUEST A MENTOR FORM -->
+<div class="sec alt" id="mentor-form-section">
+<span class="sec-tag">Request a Mentor</span>
+<div class="sec-title">Ready to find<br/>your mentor?</div>
+<p class="sec-sub">Tell us a bit about yourself and what kind of support you're looking for. It's completely free and takes under 5 minutes.</p>
+<div class="mentor-form-wrap">
+<div>
+<div class="form-box" id="mentor-form-box">
+<div class="fg"><label>Your Name</label><input id="m-name" placeholder="e.g. Amara Johnson" type="text"/></div>
+<div class="fg"><label>Your Email</label><input id="m-email" placeholder="e.g. amara@email.com" type="email"/></div>
+<div class="fg"><label>Your Age</label><select id="m-age"><option value="">Select age range</option><option>16 – 18</option><option>19 – 24</option><option>25 – 30</option></select></div>
+<div class="fg"><label>Area of interest</label><select id="m-area"><option value="">Select your area</option><option>Software Development</option><option>Cybersecurity</option><option>Data Science / AI</option><option>UX / Product Design</option><option>IT Support / Infrastructure</option><option>Digital Marketing</option><option>Entrepreneurship / Startups</option><option>Not sure yet</option></select></div>
+<div class="fg"><label>What kind of support do you need?</label><div class="chips" id="m-support-chips"><div class="chip on" data-val="Career advice">Career advice</div><div class="chip" data-val="CV &amp; portfolio review">CV &amp; portfolio review</div><div class="chip" data-val="Interview prep">Interview prep</div><div class="chip" data-val="Project feedback">Project feedback</div><div class="chip" data-val="Work experience">Work experience</div><div class="chip" data-val="Ongoing mentoring">Ongoing mentoring</div></div></div>
+<div class="fg"><label>Tell us your situation (optional)</label><textarea id="m-situation" placeholder="e.g. I'm self-teaching Python with no formal education and no contacts in tech. I want to become a junior developer." style="height:90px;resize:none;"></textarea></div>
+<button class="btn-p" onclick="submitMentorRequest()">Request my mentor →</button>
+</div>
+<div class="mentor-success" id="mentor-success">
+<div class="tick" style="color:var(--accent)"><svg fill="none" height="36" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24" width="36"><circle cx="12" cy="12" r="10" stroke-width="1.5"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></div>
+<h3>You're on your way!</h3>
+<p>Your request has been received. We'll match you with the best available mentor within 48 hours and email you with next steps. Your network starts now.</p>
+</div>
+</div>
+<div class="mentor-aside">
+<div class="aside-box">
+<h4><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><rect height="11" rx="2" width="18" x="3" y="11"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg> Safe &amp; supportive</h4>
+<p>All mentors are vetted. Sessions are structured and supportive. You're never under any obligation to continue beyond your first session.</p>
+</div>
+<div class="aside-box">
+<h4><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> What you can expect</h4>
+<ul>
+<li>A mentor matched to your goals within 48 hours</li>
+<li>An initial 30-minute intro session</li>
+<li>Monthly check-ins if you choose to continue</li>
+<li>Access to our community Discord for peer support</li>
+<li>Invites to Centauri networking events in Birmingham</li>
+</ul>
+</div>
+<div class="aside-box" style="background:var(--accent-light);border-color:rgba(0,184,122,0.25)">
+<h4 style="color:var(--accent-dark)"><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Centauri Priority</h4>
+<p style="color:#3a6b55">Young people with no prior industry contacts are automatically prioritised for Centauri mentor matching — the most dedicated support we offer.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- BECOME A MENTOR + BUSINESS PARTNERSHIP -->
+<div class="sec" id="become-mentor">
+<span class="sec-tag">Get involved</span>
+<div class="sec-title">Two ways to<br/>make a difference.</div>
+<p class="sec-sub">Whether you're a professional with experience to share or a business ready to open doors, there's a place for you in the Centauri network.</p>
+<!-- TABS -->
+<div class="involve-tabs">
+<button class="involve-tab active" onclick="switchTab('mentor-apply')">Apply to Mentor</button>
+<button class="involve-tab" onclick="switchTab('biz-partner')">Business Partnership</button>
+</div>
+<!-- MENTOR APPLY FORM -->
+<div class="involve-panel active" id="tab-mentor-apply">
+<div class="mentor-form-wrap">
+<div>
+<div class="form-box" id="apply-mentor-form-box">
+<div style="margin-bottom:1.2rem">
+<div style="font-family:var(--font-d);font-size:1.4rem;letter-spacing:0.03em;text-transform:uppercase;color:#000;margin-bottom:0.3rem">Apply to become a mentor</div>
+<div style="font-size:0.83rem;color:var(--muted)">Takes under 5 minutes. We'll review your application and get back to you within 3 working days.</div>
+</div>
+<div class="fg"><label>Full Name</label><input id="am-name" placeholder="e.g. Aisha Osei" type="text"/></div>
+<div class="fg"><label>Email Address</label><input id="am-email" placeholder="e.g. aisha@company.com" type="email"/></div>
+<div class="fg"><label>Current Job Title</label><input id="am-title" placeholder="e.g. Senior Software Engineer" type="text"/></div>
+<div class="fg"><label>Company / Organisation</label><input id="am-company" placeholder="e.g. HSBC Tech" type="text"/></div>
+<div class="fg"><label>Your area of expertise</label><select id="am-area"><option value="">Select your speciality</option><option>Software Development</option><option>Cybersecurity</option><option>Data Science / AI</option><option>UX / Product Design</option><option>IT Support / Infrastructure</option><option>Digital Marketing</option><option>Entrepreneurship / Startups</option><option>Other</option></select></div>
+<div class="fg"><label>How many hours per month can you offer?</label><div class="chips"><div class="chip on" data-group="hrs">1–2 hrs</div><div class="chip" data-group="hrs">3–4 hrs</div><div class="chip" data-group="hrs">5+ hrs</div></div></div>
+<div class="fg"><label>What would you like to offer? (select all that apply)</label><div class="chips"><div class="chip on" data-val="Career advice">Career advice</div><div class="chip" data-val="CV review">CV review</div><div class="chip" data-val="Interview prep">Interview prep</div><div class="chip" data-val="Project feedback">Project feedback</div><div class="chip" data-val="Work experience">Work experience / shadowing</div><div class="chip" data-val="Referrals">Referrals &amp; introductions</div></div></div>
+<div class="fg"><label>Why do you want to mentor with Centauri? (optional)</label><textarea id="am-why" placeholder="e.g. I grew up in a similar situation and want to give back. I know how much a single connection can change everything." style="height:90px;resize:none;"></textarea></div>
+<div class="fg"><label>LinkedIn profile URL (optional)</label><input id="am-linkedin" placeholder="https://linkedin.com/in/yourname" type="text"/></div>
+<button class="btn-p" onclick="submitMentorApply()">Submit my application →</button>
+</div>
+<div class="mentor-success" id="apply-mentor-success">
+<div class="tick" style="color:var(--accent)"><svg fill="none" height="36" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24" width="36"><circle cx="12" cy="12" r="10" stroke-width="1.5"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></div>
+<h3>Application received!</h3>
+<p>Thank you for stepping up. We'll review your application and be in touch within 3 working days. You're about to change someone's life.</p>
+</div>
+</div>
+<div class="mentor-aside">
+<div class="aside-box">
+<h4><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg> Minimal time commitment</h4>
+<p>Most mentors give 1–2 hours a month. Sessions are structured so you're never left wondering what to say — we give you a framework.</p>
+</div>
+<div class="aside-box">
+<h4><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> What mentoring looks like</h4>
+<ul>
+<li>A 30-minute intro call with your mentee</li>
+<li>Monthly check-in sessions (video or in-person)</li>
+<li>Occasional CV or portfolio reviews</li>
+<li>Optional: intro your mentee to your network</li>
+</ul>
+</div>
+<div class="aside-box" style="background:var(--accent-light);border-color:rgba(0,184,122,0.25)">
+<h4 style="color:var(--accent-dark)"><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Centauri Mentor Track</h4>
+<p style="color:#3a6b55">Experienced professionals can apply for our Centauri Mentor status — a dedicated track with additional training, recognition, and priority mentee matching.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- BUSINESS PARTNERSHIP FORM -->
+<div class="involve-panel" id="tab-biz-partner">
+<div class="mentor-form-wrap">
+<div>
+<div class="form-box" id="biz-form-box">
+<div style="margin-bottom:1.2rem">
+<div style="font-family:var(--font-d);font-size:1.4rem;letter-spacing:0.03em;text-transform:uppercase;color:#000;margin-bottom:0.3rem">Partner with Centauri</div>
+<div style="font-size:0.83rem;color:var(--muted)">Tell us about your organisation and how you'd like to get involved. We'll be in touch within 5 working days.</div>
+</div>
+<div class="fg"><label>Organisation Name</label><input id="biz-name" placeholder="e.g. Launchpad BHX Ltd" type="text"/></div>
+<div class="fg"><label>Contact Name</label><input id="biz-contact" placeholder="e.g. Jordan Blake" type="text"/></div>
+<div class="fg"><label>Contact Email</label><input id="biz-email" placeholder="e.g. jordan@launchpadbhx.co.uk" type="email"/></div>
+<div class="fg"><label>Organisation Size</label><select id="biz-size"><option value="">Select size</option><option>Freelancer / Solo</option><option>2–10 employees</option><option>11–50 employees</option><option>51–250 employees</option><option>250+ employees</option></select></div>
+<div class="fg"><label>Industry / Sector</label><select id="biz-sector"><option value="">Select sector</option><option>Software &amp; Technology</option><option>Cybersecurity</option><option>Design &amp; Creative</option><option>Finance &amp; FinTech</option><option>Healthcare &amp; Health Tech</option><option>Media &amp; Marketing</option><option>Education &amp; EdTech</option><option>Retail &amp; E-commerce</option><option>Other</option></select></div>
+<div class="fg"><label>How would you like to partner? (select all that apply)</label><div class="chips"><div class="chip on" data-val="Work experience">Offer work experience placements</div><div class="chip" data-val="Apprenticeships">Apprenticeship opportunities</div><div class="chip" data-val="Mentors">Provide employee mentors</div><div class="chip" data-val="Live briefs">Set real project briefs</div><div class="chip" data-val="Hiring">Hire Centauri graduates</div><div class="chip" data-val="Sponsor">Sponsor the platform</div><div class="chip" data-val="Devices">Donate tech equipment</div></div></div>
+<div class="fg"><label>Tell us more about what you have in mind (optional)</label><textarea id="biz-detail" placeholder="e.g. We have 3 junior dev placement spots open each quarter and would love to prioritise Centauri members. We can also offer a live brief project each cohort." style="height:100px;resize:none;"></textarea></div>
+<button class="btn-p" onclick="submitBizPartner()">Submit partnership enquiry →</button>
+</div>
+<div class="mentor-success" id="biz-success">
+<div class="tick" style="color:var(--accent)"><svg fill="none" height="36" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24" width="36"><circle cx="12" cy="12" r="10" stroke-width="1.5"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></div>
+<h3>Enquiry received!</h3>
+<p>Thank you for your interest in partnering with Centauri. We'll review your enquiry and reach out within 5 working days to discuss next steps.</p>
+</div>
+</div>
+<div class="mentor-aside">
+<div class="aside-box">
+<h4><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 010 20"></path></svg> Why partner with us?</h4>
+<p>Centauri gives businesses a direct line to motivated, talented young people who are often overlooked by traditional hiring pipelines. Your involvement creates real social impact — and a real talent pipeline.</p>
+</div>
+<div class="aside-box">
+<h4><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> What partners get</h4>
+<ul>
+<li>Early access to high-potential candidates</li>
+<li>Your brand featured on the Centauri platform</li>
+<li>Invitations to Centauri showcase events</li>
+<li>CSR reporting data for your annual report</li>
+<li>A dedicated Centauri partnership coordinator</li>
+</ul>
+</div>
+<div class="aside-box" style="background:#f3e8ff;border-color:rgba(124,58,237,0.2)">
+<h4 style="color:#6d28d9"><svg fill="none" height="14" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px" viewbox="0 0 24 24" width="14"><path d="M8 21h8M12 17v4M17 3H7l2 7H9a3 3 0 006 0h-2l2-7z"></path></svg> Founding Partner status</h4>
+<p style="color:#5b21b6">Businesses who partner before our official launch receive Founding Partner recognition — prominently featured across the platform and in press materials.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ===================== DONATE ===================== -->
+<div class="page" id="page-donate">
+<div class="sec">
+<span class="sec-tag">Donate Tech</span>
+<div class="sec-title">Got old tech?<br/>Give it a second life.</div>
+<p class="sec-sub">Your unused laptop, tablet, or smartphone could change a young person's future. It takes 5 minutes to register a donation.</p>
+<div class="donate-banner">
+<div><h3>Every device <span>matters.</span></h3><p>Last year, donated devices helped over 300 young people across Birmingham access education and employment opportunities they otherwise couldn't reach.</p></div>
+<div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+<div style="text-align:center"><div style="font-family:var(--font-d);font-size:2rem;color:var(--accent)">312</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.07em">Devices donated</div></div>
+<div style="text-align:center"><div style="font-family:var(--font-d);font-size:2rem;color:var(--accent)">47</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.07em">Partner orgs</div></div>
+<div style="text-align:center"><div style="font-family:var(--font-d);font-size:2rem;color:var(--accent)">18</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.07em">Cities covered</div></div>
+</div>
+</div>
+<div class="donate-steps">
+<div class="d-step"><div class="d-step-icon">01</div><div><h4>Register your device</h4><p>Fill in the form with your device details and location. Takes under 5 minutes.</p></div></div>
+<div class="d-step"><div class="d-step-icon">02</div><div><h4>We arrange collection</h4><p>Our partners arrange a free collection or drop-off point near you within 3–5 days.</p></div></div>
+<div class="d-step"><div class="d-step-icon">03</div><div><h4>Device gets matched</h4><p>Your device is wiped, tested, and matched to a young person who needs it most.</p></div></div>
+</div>
+<div class="two-col">
+<div>
+<div class="form-box" id="donate-form-box">
+<div class="fg"><label>Your Name</label><input id="d-name" placeholder="e.g. Sarah Ahmed" type="text"/></div>
+<div class="fg"><label>Your Email</label><input id="d-email" placeholder="e.g. sarah@email.com" type="email"/></div>
+<div class="fg"><label>Your Postcode</label><input id="d-postcode" placeholder="e.g. B5 4RX" type="text"/></div>
+<div class="fg"><label>Device Type</label><select id="d-type"><option value="">Select device type</option><option>Laptop</option><option>Desktop Computer</option><option>Tablet</option><option>Smartphone</option><option>Other</option></select></div>
+<div class="fg"><label>Device Condition</label><div class="chips"><div class="chip on" data-group="cond">Works perfectly</div><div class="chip" data-group="cond">Minor issues</div><div class="chip" data-group="cond">Needs repair</div></div></div>
+<div class="fg"><label>Additional notes (optional)</label><textarea id="d-notes" placeholder="e.g. Dell laptop, 8GB RAM, charger included." style="height:70px;resize:none;"></textarea></div>
+<button class="btn-p" onclick="submitDonation()">Register my donation →</button>
+</div>
+<div class="success-msg" id="donate-success">
+<div class="tick" style="font-size:2rem;color:var(--accent)">✓</div>
+<h3>Donation registered!</h3>
+<p>Thank you! We'll be in touch within 24 hours to arrange collection. You're helping close the digital divide.</p>
+</div>
+</div>
+<div>
+<div class="info-card">
+<h4>What we accept</h4>
+<ul>
+<li>Laptops and notebooks (any age)</li>
+<li>Tablets (iPad, Android, Windows)</li>
+<li>Smartphones (unlocked preferred)</li>
+<li>Desktop computers with monitors</li>
+<li>Chargers, mice, and accessories</li>
+<li>Devices with minor faults — we repair!</li>
+</ul>
+</div>
+<div class="note-card"><h4>What happens to your data?</h4><p>Every device is securely wiped to factory settings by our certified partners before being passed on. Your data is completely erased — guaranteed.</p></div>
+<div class="note-card"><h4>Tax relief available</h4><p>UK businesses donating tech equipment may be eligible for tax relief. We can provide a donation certificate on request.</p></div>
+</div>
+</div>
+</div>
+</div>
+<!-- ===================== IMPACT ===================== -->
+<div class="page" id="page-impact">
+<div class="sec">
+<span class="sec-tag">Our Impact</span>
+<div class="sec-title">Bridging the gap,<br/>one connection at a time.</div>
+<p class="sec-sub">Centauri is connecting young people across the UK to the devices, mentors, and networks they need to get ahead.</p>
+<div class="impact-grid">
+<div class="icard"><div class="inum">312</div><div class="ilabel">Devices matched to young people</div></div>
+<div class="icard"><div class="inum">47</div><div class="ilabel">Partner organisations UK-wide</div></div>
+<div class="icard"><div class="inum">120+</div><div class="ilabel">Active mentors on the platform</div></div>
+<div class="icard"><div class="inum">89%</div><div class="ilabel">Mentored users got job or placement</div></div>
+<div class="icard"><div class="inum">94%</div><div class="ilabel">Of device recipients back in education or work</div></div>
+<div class="icard"><div class="inum">£0</div><div class="ilabel">Cost to any young person</div></div>
+</div>
+</div>
+<div class="sec alt">
+<span class="sec-tag">Stories</span>
+<div class="sec-title">Real people,<br/>real change.</div>
+<p class="sec-sub">Here's what Centauri has meant to young people across the UK.</p>
+<div class="story-grid">
+<div class="story-card"><div class="story-stars"></div><p class="quote">"I'd been trying to complete my college assignments on my phone for months. Centauri matched me with a laptop within a week. I finished my course and got a job offer two months later."</p><div class="author">Amara, 19</div><div class="role">Birmingham · IT Support Apprentice</div></div>
+<div class="story-card"><div class="story-stars"></div><p class="quote">"My Centauri mentor helped me build my first GitHub portfolio, then introduced me to their team at bet365. I had no contacts in tech before Centauri. None. Now I'm starting a junior developer role."</p><div class="author">Marcus, 21</div><div class="role">Handsworth · Junior Developer</div></div>
+<div class="story-card"><div class="story-stars"></div><p class="quote">"I didn't even know resources like this existed. Within 48 hours I had a tablet and access to free coding courses. It completely changed my path."</p><div class="author">Priya, 17</div><div class="role">Sparkbrook · A-Level Student</div></div>
+</div>
+</div>
+</div>
+<!-- ===================== SKILLS ACADEMY ===================== -->
+<div class="page" id="page-academy">
+<div class="academy-hero">
+<div class="academy-grid-bg"></div>
+<div class="academy-hero-inner">
+<div class="academy-cs-badge"><span class="academy-cs-dot"></span>Centauri Digital Skills Pathway</div>
+<h1>Learn skills.<br/><em>Build futures.</em></h1>
+<p class="academy-hero-sub">A free learning platform for young people starting from any level. Build practical skills across coding, web development, AI tools, graphic design, marketing, and video editing with progress tracking, projects, badges, mentors, and clear next steps.</p>
+<div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center">
+<button class="btn-academy" onclick="scrollToPathway()">Explore pathways</button>
+<button class="btn-o-inv" onclick="goTo('dashboard')">View student dashboard</button>
+</div>
+</div>
+</div>
+<div class="waitlist-bar">
+<div class="wl-stat"><div class="wl-n">6</div><div class="wl-l">Skill tracks</div></div>
+<div class="wl-stat"><div class="wl-n">18</div><div class="wl-l">Levels</div></div>
+<div class="wl-stat"><div class="wl-n">3,200</div><div class="wl-l">XP available</div></div>
+<div class="wl-msg"><strong>Built for momentum.</strong> Learners earn XP, maintain streaks, collect badges, complete mini projects, and receive mentor support at key milestones.</div>
+</div>
+<div class="sec" id="digital-pathway">
+<span class="sec-tag">Learning platform</span>
+<div class="sec-title">Centauri Digital<br/>Skills Pathway.</div>
+<p class="sec-sub">Choose a track, follow structured lessons, complete portfolio-ready mini projects, and build confidence one level at a time.</p>
+<div class="learning-shell">
+<aside class="path-panel">
+<span class="sec-tag">Tracks</span>
+<div class="path-list" id="path-tabs"></div>
+</aside>
+<main>
+<div class="path-summary">
+<div class="mini-stat"><div class="num" id="track-xp">540</div><div class="label">XP points</div></div>
+<div class="mini-stat"><div class="num" id="track-streak">7</div><div class="label">Day streak</div></div>
+<div class="mini-stat"><div class="num" id="track-badges">3</div><div class="label">Badges</div></div>
+<div class="mini-stat"><div class="num" id="track-projects">2</div><div class="label">Mini projects</div></div>
+</div>
+<div class="level-row" id="level-row"></div>
+<div class="lesson-grid" id="lesson-grid"></div>
+</main>
+</div>
+</div>
+<div class="sec alt">
+<span class="sec-tag">Impact and sustainability</span>
+<div class="sec-title">Built for access,<br/>not gatekeeping.</div>
+<p class="sec-sub">Centauri combines free access, guided learning, and remote support to reduce barriers for young people who may not have devices, networks, confidence, or prior experience.</p>
+<div class="impact-strip">
+<div class="impact-point"><h4>Free access</h4><p>All learning paths, progress tools, and mentor-matching features are free for young people.</p></div>
+<div class="impact-point"><h4>No experience needed</h4><p>Beginner tracks start from the basics and build up gradually using plain language and practical tasks.</p></div>
+<div class="impact-point"><h4>Underserved communities</h4><p>The platform prioritises young people who face barriers to devices, broadband, confidence, and professional networks.</p></div>
+<div class="impact-point"><h4>Employability skills</h4><p>Each pathway ends with a mini project learners can add to a portfolio, CV, or interview discussion.</p></div>
+<div class="impact-point"><h4>Remote learning</h4><p>Flexible online lessons and mentor sessions reduce travel, cost, timing, and location barriers.</p></div>
+<div class="impact-point"><h4>Sustainable inclusion</h4><p>Refurbished devices, digital access, and skills development work together to create longer-term opportunity.</p></div>
+</div>
+</div>
+</div>
+<!-- ===================== STUDENT DASHBOARD ===================== -->
+<div class="page" id="page-dashboard">
+<div class="sec">
+<span class="sec-tag">Student dashboard</span>
+<div class="sec-title">Welcome back,<br/>Amara.</div>
+<p class="sec-sub">Mock learner dashboard showing how Centauri tracks progress, recommends next steps, and connects learning with mentorship.</p>
+<div class="dashboard-grid">
+<div class="dashboard-card">
+<h3>Current learning path</h3>
+<div class="dash-item"><strong>Web Development Beginner Pathway</strong><span>64% complete</span></div>
+<div class="progress-bg"><div class="progress-fill" style="width:64%"></div></div>
+<div class="dash-kpis">
+<div class="mini-stat"><div class="num">1,240</div><div class="label">XP points</div></div>
+<div class="mini-stat"><div class="num">9</div><div class="label">Day streak</div></div>
+<div class="mini-stat"><div class="num">5</div><div class="label">Badges earned</div></div>
+</div>
+<div class="dash-list">
+<div class="dash-item"><strong>HTML Foundations</strong><span>Complete</span></div>
+<div class="dash-item"><strong>CSS Layout Basics</strong><span>Complete</span></div>
+<div class="dash-item"><strong>Responsive Landing Page</strong><span>In progress</span></div>
+<div class="dash-item"><strong>JavaScript Interactivity</strong><span>Next</span></div>
+</div>
+</div>
+<div class="dashboard-card">
+<h3>Recommended next step</h3>
+<div class="dash-list">
+<div class="dash-item"><strong>Next lesson</strong><span>Responsive grids</span></div>
+<div class="dash-item"><strong>Upcoming mentor session</strong><span>Portfolio review, Thu 4:30pm</span></div>
+<div class="dash-item"><strong>Badge target</strong><span>Frontend Starter</span></div>
+<div class="dash-item"><strong>Mini project</strong><span>Personal landing page</span></div>
+</div>
+<button class="btn-p" onclick="goTo('academy')" style="margin-top:1rem;width:100%;justify-content:center">Continue learning</button>
+</div>
+</div>
+</div>
+</div>
+<footer>
+<div class="flogo" onclick="goTo('home')"><img src="centauri-black-logo.png"/>Access. Skills.<br/>Opportunity.</div>
+<div class="fcopy">Built for Unihack Innovation Fest 2026 · Birmingham City University</div>
+<div class="fsocial">
+<a aria-label="LinkedIn" href="https://linkedin.com" rel="noopener" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+</a>
+<a aria-label="Instagram" href="https://instagram.com" rel="noopener" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"></path></svg>
+</a>
+<a aria-label="TikTok" href="https://tiktok.com" rel="noopener" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"></path></svg>
+</a>
+<a aria-label="GitHub" href="https://github.com" rel="noopener" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg>
+</a>
+</div>
+</footer>
+<!-- ===================== PROTOTYPE MODALS AND CHATBOT ===================== -->
+<div aria-hidden="true" class="modal-overlay2" id="auth-modal">
+<div class="modal-panel2">
+<div class="modal-head2"><h3 id="auth-title">Sign in</h3><button class="modal-close2" onclick="closeAuth()">×</button></div>
+<div class="modal-body2">
+<div class="form-row2" id="auth-name-row" style="display:none"><div class="fg"><label>First name</label><input id="auth-first" placeholder="First name"/></div><div class="fg"><label>Last name</label><input id="auth-last" placeholder="Last name"/></div></div>
+<div class="fg"><label>Email address</label><input id="auth-email" placeholder="you@example.com" type="email"/></div>
+<div class="fg"><label>Password</label><input id="auth-pass" placeholder="Password" type="password"/></div>
+<button class="btn-p" id="auth-submit" onclick="submitAuth()" style="width:100%;justify-content:center">Sign in</button>
+<p id="auth-success" style="display:none;margin-top:1rem;color:var(--accent-dark);font-size:0.85rem;text-align:center">Success. Loading your Centauri dashboard now.</p>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="modal-overlay2" id="mentor-booking-modal">
+<div class="modal-panel2">
+<div class="modal-head2"><div><h3 id="book-mentor-name">Book mentor</h3><p id="book-mentor-role" style="font-size:0.82rem;color:var(--muted);margin-top:0.25rem"></p></div><button class="modal-close2" onclick="closeMentorBooking()">×</button></div>
+<div class="modal-body2">
+<div class="mentor-book-card" style="margin-bottom:1rem">
+<div class="mentor-avatar" id="book-mentor-avatar" style="margin:0 0 0.8rem 0"></div>
+<p id="book-mentor-bio" style="font-size:0.84rem;color:#444;line-height:1.6"></p>
+<div class="badge-row" id="book-mentor-tags" style="margin-top:0.8rem"></div>
+</div>
+<div class="form-row2">
+<div class="fg"><label>Session type</label><select id="booking-type"><option>Career guidance</option><option>CV review</option><option>Portfolio review</option><option>Mock interview</option><option>Project feedback</option></select></div>
+<div class="fg"><label>Time slot</label><select id="booking-slot"><option>Tuesday 10:00</option><option>Wednesday 14:30</option><option>Thursday 16:30</option><option>Friday 11:00</option></select></div>
+</div>
+<div class="fg"><label>Your goal for the session</label><textarea id="booking-goal" placeholder="Tell your mentor what you want help with" style="height:80px;resize:none"></textarea></div>
+<button class="btn-p" onclick="submitMentorBooking()" style="width:100%;justify-content:center">Confirm booking</button>
+<p id="booking-confirmation" style="display:none;margin-top:1rem;color:var(--accent-dark);font-size:0.85rem;text-align:center">Booking confirmed. A mock calendar invite has been added to your dashboard.</p>
+</div>
+</div>
+</div>
+<button class="chatbot-btn" onclick="toggleChatbot()">AI Mentor</button>
+<div class="chatbot" id="chatbot">
+<div class="chat-head"><strong>Centauri AI Mentor</strong><button onclick="toggleChatbot()">×</button></div>
+<div class="chat-body" id="chat-body"><div class="msg bot">Hi, I can help you choose a pathway, plan your first project, or prepare for a mentor session. What goal are you working towards?</div></div>
+<div class="chat-suggestions"><button onclick="quickAsk('I want to become a web designer but I have no experience.')">Web designer</button><button onclick="quickAsk('Which course should I start with?')">Choose a course</button><button onclick="quickAsk('How do I get into tech with no experience?')">Career advice</button></div>
+<form class="chat-form" onsubmit="sendChat(event)"><input id="chat-input" placeholder="Ask a question"/><button type="submit">Send</button></form>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  function goTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    if(page === 'academy') initPathway();
+    if(page === 'mentor') enhanceMentorCards();
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  document.querySelectorAll('.chip:not([data-group])').forEach(c => c.addEventListener('click', () => c.classList.toggle('on')));
+  document.querySelectorAll('.chip[data-group]').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll(`.chip[data-group="${c.dataset.group}"]`).forEach(x => x.classList.remove('on'));
+      c.classList.add('on');
+    });
+  });
+
+  function toggleFaq(el) {
+    el.parentElement.classList.toggle('open');
+  }
+
+  /* ===== FIND A DEVICE — DATA & LOGIC ===== */
+
+  const orgs = [
+    { name:"Digital Birmingham Trust", badge:"Laptop Available", meta:"Digbeth, Birmingham &middot; 0.8 miles away", desc:"Refurbished laptops (Windows 10/11) for students aged 16–24 in further education or employment training. Devices wiped, tested, and ready to collect.", reason:"Strong match for your area and age group. They currently have <strong>8 laptops available</strong> and prioritise students in tech-related courses." },
+    { name:"Moseley Community Tech Hub", badge:"Laptop + Tablet", meta:"Moseley, Birmingham &middot; 1.4 miles away", desc:"Donated devices from local businesses, matched to young people based on need. Also offers drop-in digital skills sessions every Wednesday.", reason:"Matched because they support <strong>cybersecurity and IT learners</strong> specifically, with resources aligned with your goal." },
+    { name:"Connecting Brum", badge:"Broadband Support", meta:"Citywide Birmingham &middot; Free scheme", desc:"Funded broadband for qualifying households — up to 18 months free connectivity for young people not in employment or education.", reason:"AI flagged this because many device recipients find connectivity a second barrier — <strong>worth applying alongside your device request</strong>." }
+  ];
+
+  // Upgraded findMatches — now also highlights AI scores
+  function findMatches() {
+    const pc = document.getElementById('postcode').value;
+    const age = document.getElementById('age').value;
+    const needs = [...document.querySelectorAll('#page-find .chip.on')].map(c => c.dataset.val).filter(Boolean);
+    const panel = document.getElementById('results');
+    if (!pc || !age) { panel.innerHTML = `<div class="placeholder" style="border-color:rgba(220,50,50,0.3)"><span>Please enter your postcode and age to find matches.</span></div>`; return; }
+    panel.innerHTML = `<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:1.2rem"><div class="ltxt" style="margin-bottom:0.6rem"><span>AI is finding your matches</span><span class="dots"><span>.</span><span>.</span><span>.</span></span></div><div class="lbar" id="lb"></div><div style="font-size:0.75rem;color:var(--muted)">Searching ${pc.toUpperCase()} &middot; ${needs.join(', ') || 'All resources'}</div></div>`;
+    setTimeout(()=>{ const b=document.getElementById('lb'); if(b) b.style.width='60%'; },100);
+    setTimeout(()=>{ const b=document.getElementById('lb'); if(b) b.style.width='100%'; },800);
+    const scores = [94,87,76];
+    setTimeout(()=>{
+      panel.innerHTML = `<div style="font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;font-weight:600;margin-bottom:0.4rem">AI found ${orgs.length} matches near ${pc.toUpperCase()}</div>`;
+      orgs.forEach((o,i)=>{
+        const c = document.createElement('div'); c.className='rcard';
+        c.innerHTML=`<div class="rh"><div class="rn">${o.name}</div><div class="rbadge">${o.badge}</div></div>
+          <div class="rmeta">${o.meta}</div>
+          <div class="rdesc">${o.desc}</div>
+          <div class="ai-box">
+            <div style="width:100%">
+              <div class="ai-score-row">
+                <div class="ai-icon"></div>
+                <span class="ai-score-pct">${scores[i]}% Match</span>
+                <div class="ai-bar-bg"><div class="ai-bar-fill" style="width:${scores[i]}%"></div></div>
+              </div>
+              <div class="ai-txt"><strong>Why this matches you:</strong> ${o.reason}</div>
+            </div>
+          </div>`;
+        panel.appendChild(c);
+        setTimeout(()=>c.classList.add('show'), 100+i*180);
+      });
+    },1600);
+  }
+
+  /* ===== MAP ===== */
+  const mapLocations = [
+    { name:"Digital Birmingham Trust", dist:"0.8 miles away", devices:"8 laptops available", desc:"Refurbished Windows laptops for students in FE or employment training. Wiped and tested." },
+    { name:"Moseley Community Tech Hub", dist:"1.4 miles away", devices:"4 laptops · 3 tablets", desc:"Donated devices from local businesses. Drop-in digital skills every Wednesday." },
+    { name:"Connecting Brum", dist:"Citywide scheme", devices:"Broadband support", desc:"Free broadband for qualifying households — up to 18 months for young people not in work or education." },
+    { name:"Aston Digital Support", dist:"1.1 miles away", devices:"5 smartphones · 2 tablets", desc:"Smartphones and tablets for young people in employment or apprenticeship programmes." }
+  ];
+
+  let mapVisible = true;
+  function toggleMapView() {
+    mapVisible = !mapVisible;
+    document.getElementById('find-map').style.display = mapVisible ? 'block' : 'none';
+    document.querySelector('.find-map-toggle').textContent = mapVisible ? 'Hide map' : 'Show map';
+  }
+
+  function showMapPopup(idx, pinEl) {
+    const loc = mapLocations[idx];
+    const popup = document.getElementById('map-popup');
+    document.getElementById('pp-name').textContent = loc.name;
+    document.getElementById('pp-dist').textContent = ' ' + loc.dist;
+    document.getElementById('pp-devices').textContent = ' ' + loc.devices;
+    document.getElementById('pp-desc').textContent = loc.desc;
+    const map = document.getElementById('find-map');
+    const pinRect = pinEl.getBoundingClientRect();
+    const mapRect = map.getBoundingClientRect();
+    const pinCenterX = pinRect.left - mapRect.left + pinRect.width / 2;
+    const pinTopY = pinRect.top - mapRect.top;
+    popup.style.left = Math.min(Math.max(pinCenterX, 105), mapRect.width - 105) + 'px';
+    popup.style.top = (pinTopY - 10) + 'px';
+    popup.style.transform = 'translateX(-50%) translateY(-100%)';
+    popup.classList.add('visible');
+  }
+
+  function closeMapPopup() {
+    document.getElementById('map-popup').classList.remove('visible');
+  }
+
+  function scrollToDevices() {
+    closeMapPopup();
+    document.getElementById('device-section').scrollIntoView({ behavior:'smooth' });
+  }
+
+  /* ===== DEVICE DATA ===== */
+  const devices = [
+    { id:0, type:'laptop', name:'Lenovo ThinkPad E14', screen:'14"', ram:8, storage:256, condition:'Good', org:'Digital Birmingham Trust', location:'Digbeth · 0.8 mi', status:'available', match:94, added:1, matchReason:'Strong match — 8GB RAM suits coding and cybersecurity courses. Located 0.8 miles from Digbeth, close to your area.', specs:{screen:'14" FHD',ram:'8GB DDR4',storage:'256GB SSD',os:'Windows 11',cpu:'Intel i5',battery:'Good'}, locName:'Digital Birmingham Trust', locMeta:'Unit 4, Digbeth High St, Birmingham B5 · Open Mon–Fri 9am–5pm', eligibility:['Aged 16–30 in Birmingham','Currently in education or employment training','No existing laptop at home','Free to all qualifying applicants'] },
+    { id:1, type:'laptop', name:'Dell Latitude 5490', screen:'14"', ram:16, storage:512, condition:'Very Good', org:'Digital Birmingham Trust', location:'Digbeth · 0.8 mi', status:'available', match:91, added:2, matchReason:'16GB RAM ideal for development work. Fastest available device in your area — highly recommended for tech learners.', specs:{screen:'14" FHD',ram:'16GB DDR4',storage:'512GB SSD',os:'Windows 11 Pro',cpu:'Intel i7',battery:'Excellent'}, locName:'Digital Birmingham Trust', locMeta:'Unit 4, Digbeth High St, Birmingham B5 · Open Mon–Fri 9am–5pm', eligibility:['Aged 16–30 in Birmingham','In FE, HE, or employment training','No home device','Referral from education provider preferred'] },
+    { id:2, type:'laptop', name:'HP ProBook 450', screen:'15.6"', ram:8, storage:128, condition:'Good', org:'Moseley Community Tech Hub', location:'Moseley · 1.4 mi', status:'pending', match:82, added:5, matchReason:'Solid all-round laptop for coursework. Currently has one pending request — may be available soon.', specs:{screen:'15.6" HD',ram:'8GB DDR4',storage:'128GB SSD',os:'Windows 10',cpu:'Intel i5',battery:'Fair'}, locName:'Moseley Community Tech Hub', locMeta:'43 Alcester Rd, Moseley B13 · Open Tue & Thu 10am–4pm, Wed 6–8pm', eligibility:['Aged 16–25','Birmingham resident','In education, training, or seeking work','Self-referral accepted'] },
+    { id:3, type:'tablet', name:'Samsung Galaxy Tab A8', screen:'10.5"', ram:4, storage:64, condition:'Good', org:'Moseley Community Tech Hub', location:'Moseley · 1.4 mi', status:'available', match:78, added:3, matchReason:'Great portable option for accessing learning resources and online courses. 64GB storage fits most learning apps.', specs:{screen:'10.5" TFT',ram:'4GB',storage:'64GB',os:'Android 12',cpu:'Unisoc T618',battery:'Very Good'}, locName:'Moseley Community Tech Hub', locMeta:'43 Alcester Rd, Moseley B13 · Open Tue & Thu 10am–4pm', eligibility:['Aged 16–30','Birmingham resident','No existing device','Self-referral accepted'] },
+    { id:4, type:'tablet', name:'iPad 9th Gen', screen:'10.2"', ram:4, storage:64, condition:'Very Good', org:'Aston Digital Support', location:'Aston · 1.1 mi', status:'reserved', match:74, added:7, matchReason:'Popular choice for creative and digital marketing learners. Currently reserved — check back in 3–5 days.', specs:{screen:'10.2" Retina',ram:'4GB',storage:'64GB',os:'iPadOS 16',cpu:'Apple A13',battery:'Excellent'}, locName:'Aston Digital Support', locMeta:'Aston Community Centre, Witton Lane B6 · Open Mon, Wed, Fri 10am–3pm', eligibility:['Aged 16–24','Aston or North Birmingham postcode','In education or NEET programme','Referred by school/college or self-refer'] },
+    { id:5, type:'smartphone', name:'Samsung Galaxy A53', screen:'6.5"', ram:6, storage:128, condition:'Good', org:'Aston Digital Support', location:'Aston · 1.1 mi', status:'available', match:71, added:1, matchReason:'Keeps you connected while job searching. Unlocked and compatible with all UK networks. Ready for immediate collection.', specs:{screen:'6.5" Super AMOLED',ram:'6GB',storage:'128GB',os:'Android 13',cpu:'Exynos 1280',battery:'Good'}, locName:'Aston Digital Support', locMeta:'Aston Community Centre, Witton Lane B6 · Open Mon, Wed, Fri 10am–3pm', eligibility:['Aged 16–30','No existing smartphone','In employment, training, or job seeking','Birmingham resident'] },
+    { id:6, type:'smartphone', name:'iPhone SE (2022)', screen:'4.7"', ram:4, storage:64, condition:'Good', org:'Connecting Brum', location:'City Centre · 0.4 mi', status:'available', match:68, added:4, matchReason:'Compact and reliable. Good for accessing job boards and course portals. Unlocked, SIM-free.', specs:{screen:'4.7" Retina',ram:'4GB',storage:'64GB',os:'iOS 16',cpu:'Apple A15',battery:'Good'}, locName:'Connecting Brum Hub', locMeta:'5 Colmore Row, Birmingham B3 · Open Mon–Fri 8:30am–4:30pm', eligibility:['Aged 16–25','Birmingham city postcode','Not currently employed full-time','Self-referral form required'] },
+    { id:7, type:'laptop', name:'Acer Aspire 5', screen:'15.6"', ram:8, storage:256, condition:'Fair', org:'Connecting Brum', location:'City Centre · 0.4 mi', status:'available', match:65, added:9, matchReason:'Good entry-level laptop for general study. Slight cosmetic wear but fully functional. Available for immediate collection.', specs:{screen:'15.6" FHD',ram:'8GB DDR4',storage:'256GB SSD',os:'Windows 11',cpu:'AMD Ryzen 5',battery:'Fair'}, locName:'Connecting Brum Hub', locMeta:'5 Colmore Row, Birmingham B3 · Open Mon–Fri 8:30am–4:30pm', eligibility:['Aged 16–30','Birmingham resident','In education or employment training','No existing device at home'] },
+    { id:8, type:'tablet', name:'Lenovo Tab M10 Plus', screen:'10.3"', ram:4, storage:128, condition:'Good', org:'Digital Birmingham Trust', location:'Digbeth · 0.8 mi', status:'out', match:60, added:12, matchReason:'128GB storage makes this one of the best-value tablets available. Currently out of stock — added to waitlist automatically on request.', specs:{screen:'10.3" FHD',ram:'4GB',storage:'128GB',os:'Android 12',cpu:'MediaTek Helio P22T',battery:'Good'}, locName:'Digital Birmingham Trust', locMeta:'Unit 4, Digbeth High St, Birmingham B5 · Open Mon–Fri 9am–5pm', eligibility:['Aged 16–30','Birmingham resident','In education or training','No existing tablet or laptop at home'] }
+  ];
+
+  let filterAvailOnly = false;
+  let currentModalDevice = null;
+
+  function deviceSVG(type) {
+    if (type === 'laptop') return `<svg viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="6" width="64" height="40" rx="4" fill="#e2e8e2" stroke="#c8d4c8" stroke-width="2"/><rect x="14" y="12" width="52" height="28" rx="2" fill="#c8d8c8"/><rect x="2" y="48" width="76" height="5" rx="2.5" fill="#d4dcd4"/><rect x="28" y="49" width="24" height="3" rx="1.5" fill="#c0ccc0"/></svg>`;
+    if (type === 'tablet') return `<svg viewBox="0 0 52 72" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="44" height="64" rx="6" fill="#e2e8e2" stroke="#c8d4c8" stroke-width="2"/><rect x="10" y="12" width="32" height="44" rx="2" fill="#c8d8c8"/><circle cx="26" cy="62" r="3" fill="#c0ccc0"/></svg>`;
+    return `<svg viewBox="0 0 36 68" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="30" height="62" rx="7" fill="#e2e8e2" stroke="#c8d4c8" stroke-width="2"/><rect x="8" y="12" width="20" height="38" rx="2" fill="#c8d8c8"/><circle cx="18" cy="57" r="3" fill="#c0ccc0"/><rect x="13" y="7" width="10" height="3" rx="1.5" fill="#c0ccc0"/></svg>`;
+  }
+
+  function statusPillHTML(status) {
+    const map = { available:['pill-available','Available'], pending:['pill-pending','Pending'], reserved:['pill-reserved','Reserved'], out:['pill-out','Out of Stock'] };
+    const [cls,lbl] = map[status] || ['pill-out','Unknown'];
+    return `<span class="device-status-pill ${cls}">${lbl}</span>`;
+  }
+
+  function renderDeviceCard(d) {
+    const isUnavail = d.status === 'out';
+    const reqDisabled = (d.status !== 'available') ? 'disabled' : '';
+    const reqLabel = d.status === 'available' ? 'Request' : d.status === 'pending' ? 'Pending' : d.status === 'reserved' ? 'Reserved' : 'Notify Me';
+    return `
+      <div class="device-card${isUnavail?' unavailable':''}" onclick="openModal(${d.id})">
+        <div class="device-card-img">
+          ${deviceSVG(d.type)}
+          ${statusPillHTML(d.status)}
+          <div class="device-org-badge">${d.org}</div>
+        </div>
+        <div class="device-card-body">
+          <div class="device-card-name">${d.name}</div>
+          <div class="device-card-location"> ${d.location}</div>
+          <div class="device-specs">
+            <div class="device-spec">Screen: <strong>${d.screen}</strong></div>
+            <div class="device-spec">RAM: <strong>${d.ram}GB</strong></div>
+            <div class="device-spec">Storage: <strong>${d.storage}GB</strong></div>
+            <div class="device-spec">Condition: <strong>${d.condition}</strong></div>
+          </div>
+          <div class="ai-match-row">
+            <span class="ai-match-pct"> ${d.match}% Match</span>
+            <div class="ai-match-bar-bg"><div class="ai-match-bar-fill" style="width:0%" data-width="${d.match}%"></div></div>
+          </div>
+          <div class="ai-match-text">${d.matchReason}</div>
+          <div class="device-card-actions">
+            <button class="btn-device-req" ${reqDisabled} onclick="event.stopPropagation();handleRequest(${d.id})">${reqLabel}</button>
+            <button class="btn-device-det" onclick="event.stopPropagation();openModal(${d.id})">Details</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function applyFilters() {
+    const type = document.getElementById('f-type').value;
+    const ram = parseInt(document.getElementById('f-ram').value) || 0;
+    const storage = parseInt(document.getElementById('f-storage').value) || 0;
+    const sort = document.getElementById('f-sort').value;
+    let filtered = devices.filter(d => {
+      if (type && d.type !== type) return false;
+      if (ram && d.ram < ram) return false;
+      if (storage && d.storage < storage) return false;
+      if (filterAvailOnly && d.status !== 'available') return false;
+      return true;
+    });
+    if (sort === 'distance') filtered.sort((a,b) => parseFloat(a.location) - parseFloat(b.location));
+    else if (sort === 'specs') filtered.sort((a,b) => (b.ram + b.storage/32) - (a.ram + a.storage/32));
+    else if (sort === 'new') filtered.sort((a,b) => a.added - b.added);
+    else filtered.sort((a,b) => b.match - a.match);
+    const grid = document.getElementById('device-grid');
+    grid.innerHTML = filtered.length === 0
+      ? `<div class="no-results" style="grid-column:1/-1">No devices match your current filters. <a href="#" onclick="resetFilters();return false;" style="color:var(--accent);font-weight:600;">Reset filters</a></div>`
+      : filtered.map(renderDeviceCard).join('');
+    document.getElementById('f-count').innerHTML = `<strong>${filtered.length}</strong> device${filtered.length!==1?'s':''} shown`;
+    // Animate match bars after render
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('.ai-match-bar-fill').forEach(el => {
+        el.style.width = el.dataset.width || '0%';
+      });
+    });
+  }
+
+  function toggleAvailFilter() {
+    filterAvailOnly = !filterAvailOnly;
+    const lbl = document.getElementById('f-avail-label');
+    const ico = document.getElementById('f-avail-icon');
+    lbl.classList.toggle('on', filterAvailOnly);
+    ico.textContent = filterAvailOnly ? '' : '';
+    applyFilters();
+  }
+
+  function resetFilters() {
+    document.getElementById('f-type').value = '';
+    document.getElementById('f-ram').value = '';
+    document.getElementById('f-storage').value = '';
+    document.getElementById('f-sort').value = 'match';
+    filterAvailOnly = false;
+    document.getElementById('f-avail-label').classList.remove('on');
+    document.getElementById('f-avail-icon').textContent = '';
+    applyFilters();
+  }
+
+  /* ===== MODAL ===== */
+  function openModal(id) {
+    const d = devices.find(x => x.id === id);
+    if (!d) return;
+    currentModalDevice = d;
+    // Image
+    const imgEl = document.getElementById('modal-img');
+    imgEl.innerHTML = `${deviceSVG(d.type)}<div class="modal-status-pill ${d.status==='available'?'pill-available':d.status==='pending'?'pill-pending':d.status==='reserved'?'pill-reserved':'pill-out'}">${d.status==='available'?'Available':d.status==='pending'?'Pending':d.status==='reserved'?'Reserved':'Out of Stock'}</div><button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>`;
+    document.getElementById('modal-name').textContent = d.name;
+    document.getElementById('modal-org').textContent = d.org + ' · ' + d.location;
+    // Specs
+    const specKeys = Object.entries(d.specs);
+    document.getElementById('modal-specs').innerHTML = specKeys.map(([k,v])=>`<div class="modal-spec-item"><div class="modal-spec-label">${k}</div><div class="modal-spec-val">${v}</div></div>`).join('');
+    document.getElementById('modal-loc-name').textContent = d.locName;
+    document.getElementById('modal-loc-meta').textContent = d.locMeta;
+    document.getElementById('modal-eligibility').innerHTML = d.eligibility.map(e=>`<li>${e}</li>`).join('');
+    document.getElementById('modal-ai-pct').textContent = ` ${d.match}% Match`;
+    document.getElementById('modal-ai-bar').style.width = d.match + '%';
+    document.getElementById('modal-ai-reason').textContent = d.matchReason.replace(/<[^>]+>/g,'');
+    const reqBtn = document.getElementById('modal-req-btn');
+    if (d.status === 'available') { reqBtn.textContent = 'Request This Device →'; reqBtn.disabled = false; }
+    else if (d.status === 'out') { reqBtn.textContent = 'Join Waitlist'; reqBtn.disabled = false; }
+    else { reqBtn.textContent = d.status === 'pending' ? 'Currently Pending' : 'Currently Reserved'; reqBtn.disabled = true; }
+    document.getElementById('device-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('device-modal').classList.remove('open');
+    document.body.style.overflow = '';
+    currentModalDevice = null;
+  }
+
+  function handleModalClick(e) {
+    if (e.target === document.getElementById('device-modal')) closeModal();
+  }
+
+  function handleRequest(id) {
+    const d = devices.find(x => x.id === id);
+    if (!d) return;
+    if (d.status === 'out') { alert('You\'ve been added to the waitlist for ' + d.name + '. We\'ll contact you when it becomes available.'); return; }
+    alert('Request submitted for ' + d.name + '. ' + d.org + ' will be in touch within 2 working days.');
+  }
+
+  function requestDevice() {
+    if (!currentModalDevice) return;
+    closeModal();
+    handleRequest(currentModalDevice.id);
+  }
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Initialise device grid when Find page is shown
+  const _origGoTo = typeof goTo === 'function' ? goTo : null;
+  function initDeviceGrid() {
+    const grid = document.getElementById('device-grid');
+    if (grid && grid.children.length === 0) applyFilters();
+  }
+
+  // Observe page visibility to init grid
+  const _findPageObserver = new MutationObserver(()=>{ if(document.getElementById('page-find').classList.contains('active')) initDeviceGrid(); });
+  _findPageObserver.observe(document.getElementById('page-find'), {attributes:true, attributeFilter:['class']});
+
+  function submitDonation() {
+    const name = document.getElementById('d-name').value;
+    const email = document.getElementById('d-email').value;
+    const postcode = document.getElementById('d-postcode').value;
+    const type = document.getElementById('d-type').value;
+    if (!name || !email || !postcode || !type) { alert('Please fill in your name, email, postcode, and device type.'); return; }
+    document.getElementById('donate-form-box').style.display = 'none';
+    document.getElementById('donate-success').style.display = 'block';
+  }
+
+  function submitMentorRequest() {
+    const name = document.getElementById('m-name').value;
+    const email = document.getElementById('m-email').value;
+    const age = document.getElementById('m-age').value;
+    const area = document.getElementById('m-area').value;
+    if (!name || !email || !age || !area) { alert('Please fill in your name, email, age, and area of interest.'); return; }
+    document.getElementById('mentor-form-box').style.display = 'none';
+    document.getElementById('mentor-success').style.display = 'block';
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.involve-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.involve-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function submitMentorApply() {
+    const name = document.getElementById('am-name').value;
+    const email = document.getElementById('am-email').value;
+    const title = document.getElementById('am-title').value;
+    const company = document.getElementById('am-company').value;
+    const area = document.getElementById('am-area').value;
+    if (!name || !email || !title || !company || !area) { alert('Please fill in your name, email, job title, company, and area of expertise.'); return; }
+    document.getElementById('apply-mentor-form-box').style.display = 'none';
+    document.getElementById('apply-mentor-success').style.display = 'block';
+  }
+
+  function submitBizPartner() {
+    const name = document.getElementById('biz-name').value;
+    const contact = document.getElementById('biz-contact').value;
+    const email = document.getElementById('biz-email').value;
+    const size = document.getElementById('biz-size').value;
+    const sector = document.getElementById('biz-sector').value;
+    if (!name || !contact || !email || !size || !sector) { alert('Please fill in your organisation name, contact details, size, and sector.'); return; }
+    document.getElementById('biz-form-box').style.display = 'none';
+    document.getElementById('biz-success').style.display = 'block';
+  }
+
+  function submitAcademySignup() {
+    const name = document.getElementById('acad-name').value;
+    const email = document.getElementById('acad-email').value;
+    if (!name || !email) { alert('Please enter your name and email address.'); return; }
+    document.getElementById('academy-signup-form').style.display = 'none';
+    document.getElementById('academy-confirmed-email').textContent = email;
+    document.getElementById('academy-success').style.display = 'block';
+  }
+
+  /* ===== COMPLETED PROTOTYPE JAVASCRIPT ===== */
+  const courseTracks = {
+    'Coding': {desc:'Python fundamentals, logic, automation and problem solving.', xp:540, streak:7, badges:3, projects:2, levels:[28,12,0], lessons:['Python basics','Variables and decisions','Build a calculator'], project:'Command-line toolkit'},
+    'Web Development': {desc:'HTML, CSS, JavaScript and responsive website building.', xp:1240, streak:9, badges:5, projects:3, levels:[85,64,18], lessons:['HTML and page structure','CSS layouts and flexbox','Build a responsive landing page'], project:'Personal portfolio site'},
+    'AI Tools': {desc:'Responsible AI use, prompting, automation and AI-assisted workflows.', xp:410, streak:4, badges:2, projects:1, levels:[42,8,0], lessons:['AI basics and safety','Prompting for study and work','Build an AI workflow plan'], project:'AI productivity toolkit'},
+    'Graphic Design': {desc:'Figma, typography, layout, branding and accessible visual design.', xp:680, streak:6, badges:3, projects:2, levels:[66,31,0], lessons:['Design principles','Figma interface basics','Create a social campaign'], project:'Brand starter pack'},
+    'Marketing': {desc:'SEO, social content, analytics, email campaigns and digital strategy.', xp:360, streak:3, badges:2, projects:1, levels:[38,10,0], lessons:['Marketing funnels','Content planning','Create a launch campaign'], project:'Campaign planner'},
+    'Video Editing': {desc:'Editing workflows, pacing, audio, captions and short-form content.', xp:295, streak:2, badges:1, projects:1, levels:[22,4,0], lessons:['Editing foundations','Cuts, pacing and captions','Produce a short promo'], project:'60-second promo edit'}
+  };
+  let currentTrack = 'Web Development';
+  function initPathway(){
+    const tabs = document.getElementById('path-tabs');
+    if(!tabs) return;
+    tabs.innerHTML = Object.keys(courseTracks).map(name => `<button class="path-tab ${name===currentTrack?'active':''}" onclick="selectTrack('${name}')"><strong>${name}</strong><span>${courseTracks[name].desc}</span></button>`).join('');
+    renderTrack();
+  }
+  function selectTrack(name){ currentTrack=name; initPathway(); }
+  function renderTrack(){
+    const data = courseTracks[currentTrack];
+    if(!data) return;
+    document.getElementById('track-xp').textContent = data.xp;
+    document.getElementById('track-streak').textContent = data.streak;
+    document.getElementById('track-badges').textContent = data.badges;
+    document.getElementById('track-projects').textContent = data.projects;
+    const levels=['Beginner','Intermediate','Advanced'];
+    document.getElementById('level-row').innerHTML = levels.map((lvl,i)=>`<div class="level-card"><h4>${lvl}</h4><div class="progress-bg"><div class="progress-fill" style="width:${data.levels[i]}%"></div></div><div class="level-meta"><span>${data.levels[i]}% complete</span><span>${i===0?'Start here':i===1?'Build confidence':'Career-ready'}</span></div></div>`).join('');
+    document.getElementById('lesson-grid').innerHTML = data.lessons.map((lesson,i)=>`<div class="lesson-card"><div class="lesson-label">Lesson ${String(i+1).padStart(2,'0')}</div><h4>${lesson}</h4><p>${i===2?'Apply your skills in a portfolio-ready mini project.':'Short lessons, practice tasks, and checkpoints designed for beginners.'}</p><div class="badge-row"><span class="badge-pill">+${120+(i*40)} XP</span><span class="badge-pill">Streak boost</span><span class="badge-pill">Badge</span>${i===2?`<span class="badge-pill project-pill">Mini project: ${data.project}</span>`:''}</div><button class="btn-small" onclick="showToast('Opening ${lesson} in the Centauri learning player')">Continue Learning</button></div>`).join('');
+  }
+  function scrollToPathway(){ document.getElementById('digital-pathway').scrollIntoView({behavior:'smooth'}); }
+
+  let authMode='signin';
+  function openAuth(mode){ authMode=mode; document.getElementById('auth-title').textContent = mode==='signup'?'Create your Centauri account':'Sign in to Centauri'; document.getElementById('auth-name-row').style.display = mode==='signup'?'grid':'none'; document.getElementById('auth-submit').textContent = mode==='signup'?'Create account':'Sign in'; document.getElementById('auth-success').style.display='none'; document.getElementById('auth-modal').classList.add('open'); }
+  function closeAuth(){ document.getElementById('auth-modal').classList.remove('open'); }
+  function submitAuth(){ const email=document.getElementById('auth-email').value; const pass=document.getElementById('auth-pass').value; if(!email || !pass){ alert('Please enter an email address and password.'); return; } document.getElementById('auth-success').style.display='block'; setTimeout(()=>{ closeAuth(); goTo('dashboard'); },900); }
+
+  const mentorDetails = {
+    'Aisha Osei': {role:'Software Engineer at HSBC Tech', spec:'Python, backend development, career planning', bio:'Aisha helps beginners understand coding fundamentals, build confidence with Python, and plan realistic routes into junior developer roles.', tags:['Career guidance','CV review','Project feedback']},
+    'Jordan Blake': {role:'CTO and Co-Founder at Launchpad BHX', spec:'Startups, product thinking, business mentoring', bio:'Jordan supports learners who want to understand product strategy, startup pathways, business ideas, and how to communicate technical projects clearly.', tags:['Career guidance','Project feedback','Mock interview']},
+    'Priya Sharma': {role:'Data Scientist at NHS Digital', spec:'Data, AI tools, SQL, analytics', bio:'Priya helps learners explore data careers, AI tools, beginner analytics projects, and how to build a practical data portfolio.', tags:['Career guidance','Portfolio review','Project feedback']},
+    'Kofi Mensah': {role:'Senior UX Designer at BJSS', spec:'UX, Figma, portfolio design', bio:'Kofi supports aspiring designers with Figma workflows, design thinking, portfolio reviews, and confidence presenting creative decisions.', tags:['Portfolio review','CV review','Project feedback']},
+    'Fatima Al-Rashid': {role:'Cybersecurity Analyst at PwC', spec:'Security operations, certifications, apprenticeships', bio:'Fatima guides beginners through cyber security routes, entry-level certifications, SOC skills, and interview preparation.', tags:['Career guidance','Mock interview','CV review']},
+    'Tom Halligan': {role:'Engineering Manager at bet365', spec:'JavaScript, React, interviews', bio:'Tom helps learners prepare for frontend roles with JavaScript practice, React project reviews, CV feedback, and mock interviews.', tags:['Mock interview','Portfolio review','Project feedback']}
+  };
+  function enhanceMentorCards(){ document.querySelectorAll('.mentor-card').forEach(card=>{ const name=card.querySelector('.mentor-name')?.textContent?.trim(); if(name && mentorDetails[name]){ if(!card.querySelector('.book-hint')) card.insertAdjacentHTML('beforeend','<div class="book-hint">View profile and book</div>'); card.onclick=()=>openMentorBooking(name); } }); }
+  function openMentorBooking(name){ const d=mentorDetails[name]; if(!d) return; document.getElementById('book-mentor-name').textContent=name; document.getElementById('book-mentor-role').textContent=d.role+' • '+d.spec; document.getElementById('book-mentor-avatar').textContent=name.split(' ').map(x=>x[0]).join(''); document.getElementById('book-mentor-bio').textContent=d.bio; document.getElementById('book-mentor-tags').innerHTML=d.tags.map(t=>`<span class="badge-pill">${t}</span>`).join(''); document.getElementById('booking-confirmation').style.display='none'; document.getElementById('mentor-booking-modal').classList.add('open'); }
+  function closeMentorBooking(){ document.getElementById('mentor-booking-modal').classList.remove('open'); }
+  function submitMentorBooking(){ document.getElementById('booking-confirmation').style.display='block'; showToast('Mentor session booked. Check the student dashboard for your upcoming session.'); }
+
+  function toggleChatbot(){ document.getElementById('chatbot').classList.toggle('open'); }
+  function quickAsk(text){ document.getElementById('chat-input').value=text; sendChat(new Event('submit')); }
+  function sendChat(e){ e.preventDefault(); const input=document.getElementById('chat-input'); const text=input.value.trim(); if(!text) return; addMsg(text,'user'); input.value=''; setTimeout(()=>addMsg(chatReply(text),'bot'),350); }
+  function addMsg(text,type){ const body=document.getElementById('chat-body'); const div=document.createElement('div'); div.className='msg '+type; div.textContent=text; body.appendChild(div); body.scrollTop=body.scrollHeight; }
+  function chatReply(text){ const t=text.toLowerCase(); if(t.includes('web designer')||t.includes('designer')) return 'Start with the Web Development Beginner Pathway, then add Graphic Design Beginner. Complete HTML and CSS Basics, then build your first landing page. I also recommend booking a portfolio review with Kofi Mensah.'; if(t.includes('course')||t.includes('pathway')||t.includes('start')) return 'Choose one pathway based on your goal: Web Development for websites, Coding for Python, Graphic Design for visual work, Marketing for campaigns, Video Editing for content, or AI Tools if you want to improve productivity across any role.'; if(t.includes('experience')||t.includes('career')) return 'Begin with a beginner pathway, complete one mini project, then book a mentor session for CV or portfolio feedback. Your first goal is not to know everything; it is to create one clear piece of evidence that shows what you can do.'; if(t.includes('cv')) return 'Use a simple CV structure: profile, skills, projects, education, experience, and links. Add your Centauri mini projects as evidence, even before you have formal tech experience.'; return 'A good next step is to pick one goal, choose the matching beginner pathway, complete the first mini project, and book a mentor session for feedback. I can help you choose between Coding, Web Development, AI Tools, Graphic Design, Marketing, and Video Editing.'; }
+  function showToast(msg){ const t=document.getElementById('toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+  document.addEventListener('DOMContentLoaded',()=>{ initPathway(); enhanceMentorCards(); });
+
+  /* ===== ACCESSIBILITY ===== */
+  let a11yFontSize = 0;
+  let speechActive = false;
+
+  function toggleA11yPanel() {
+    const panel = document.getElementById('a11y-panel');
+    panel.classList.toggle('open');
+  }
+
+  function changeFontSize(dir) {
+    a11yFontSize = Math.max(-3, Math.min(5, a11yFontSize + dir));
+    document.body.style.fontSize = (15 + a11yFontSize) + 'px';
+  }
+
+  function toggleHighContrast() {
+    const on = document.body.classList.toggle('hc-mode');
+    const btn = document.getElementById('a11y-hc');
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on);
+  }
+
+  function toggleDyslexia() {
+    const on = document.body.classList.toggle('dyslexia-mode');
+    const btn = document.getElementById('a11y-dyslexia');
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on);
+  }
+
+  function toggleFocusMode() {
+    const on = document.body.classList.toggle('focus-mode');
+    const btn = document.getElementById('a11y-focus');
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on);
+  }
+
+  function startSpeech() {
+    if (!window.speechSynthesis) { alert('Sorry, your browser does not support text-to-speech.'); return; }
+    stopSpeech();
+    const activePage = document.querySelector('.page.active');
+    const text = activePage ? activePage.innerText.replace(/\s+/g,' ').trim() : document.body.innerText;
+    const utter = new SpeechSynthesisUtterance(text.substring(0, 5000));
+    utter.rate = 0.95;
+    utter.pitch = 1;
+    window.speechSynthesis.speak(utter);
+    speechActive = true;
+  }
+
+  function stopSpeech() {
+    if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+    speechActive = false;
+  }
+
+  // Close panel when clicking outside
+  document.addEventListener('click', function(e) {
+    const panel = document.getElementById('a11y-panel');
+    const btn = document.getElementById('a11y-btn');
+    if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn) {
+      panel.classList.remove('open');
+    }
+  });
+</script>
