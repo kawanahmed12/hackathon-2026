@@ -1,0 +1,2293 @@
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #00b87a; --accent-dark: #008f5e; --accent-light: #e6f9f2;
+    --off: #f5f5f7; --border: rgba(0,0,0,0.09); --text: #0a0a0f; --muted: #6b6b7a;
+    --font-d: 'Bebas Neue', sans-serif; --font-b: 'DM Sans', sans-serif;
+  }
+  body { background:#fff; color:var(--text); font-family:var(--font-b); font-size:15px; line-height:1.6; overflow-x:hidden; }
+  a { text-decoration:none; }
+
+  /* NAV */
+  nav {
+    display:flex; align-items:center;
+    padding:0.55rem 3rem;
+    background:#fff; border-bottom:1px solid var(--border);
+    position:sticky; top:0; z-index:100;
+    gap:0;
+  }
+  .logo { display:flex; align-items:center; cursor:pointer; flex-shrink:0; margin-right:3rem; gap:0.75rem; }
+  .logo-img { height:58px; width:auto; }
+  /* ── Centauri nav logo ── */
+  .centauri-logo { display:flex; align-items:center; gap:0.6rem; cursor:pointer; flex-shrink:0; margin-right:2.5rem; user-select:none; }
+  .centauri-logo-mark { width:34px; height:34px; flex-shrink:0; }
+  .centauri-logo-text { display:flex; flex-direction:column; justify-content:center; gap:1px; }
+  .centauri-logo-word { font-family:var(--font-d); font-size:1.55rem; letter-spacing:0.1em; color:#000; text-transform:uppercase; line-height:1; }
+  .centauri-logo-tag { font-family:var(--font-b); font-size:0.48rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent-dark); line-height:1; }
+  @media(max-width:768px){ .centauri-logo-tag{display:none;} .centauri-logo-word{font-size:1.25rem;} .centauri-logo-mark{width:26px;height:26px;} }
+  @media(max-width:480px){ .centauri-logo{margin-right:1rem;} }
+  .logo-tagline { font-family:var(--font-b); font-size:0.65rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); line-height:1.2; }
+  .nav-links { display:flex; gap:2rem; flex:1; justify-content:center; }
+  .nav-links a { color:var(--muted); font-size:0.82rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; transition:color 0.2s; cursor:pointer; white-space:nowrap; }
+  .nav-links a:hover, .nav-links a.active { color:var(--accent); }
+  .nav-links a.mentor-link { color:#000; font-weight:700; }
+  .nav-links a.mentor-link:hover, .nav-links a.mentor-link.active { color:var(--accent); }
+  .nav-links a.academy-link { color:#000; font-weight:700; }
+  .nav-links a.academy-link:hover, .nav-links a.academy-link.active { color:var(--accent); }
+  .nav-right { flex-shrink:0; margin-left:3rem; }
+  .nav-cta { background:var(--accent); color:#fff; border:none; padding:0.5rem 1.3rem; border-radius:6px; font-family:var(--font-b); font-weight:600; font-size:0.85rem; cursor:pointer; transition:background 0.2s; white-space:nowrap; }
+  .nav-cta:hover { background:var(--accent-dark); }
+
+  /* PAGE SYSTEM */
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* SHARED */
+  .sec { padding:3rem 3rem; }
+  .sec.alt { background:var(--off); }
+  .sec-tag { font-size:0.72rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; display:block; }
+  .sec-title { font-family:var(--font-d); font-size:clamp(2rem,4vw,3rem); letter-spacing:0.03em; text-transform:uppercase; line-height:1; margin-bottom:0.75rem; color:#000; }
+  .sec-sub { font-size:0.9rem; color:var(--muted); max-width:500px; line-height:1.65; margin-bottom:2rem; }
+  .btn-p { background:var(--accent); color:#fff; border:none; padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-p:hover { background:var(--accent-dark); transform:translateY(-1px); }
+  .btn-o { background:transparent; color:#000; border:1.5px solid rgba(0,0,0,0.18); padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:500; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+  .btn-o:hover { border-color:var(--accent); color:var(--accent); }
+  .form-box { background:#fff; border:1px solid var(--border); border-radius:12px; padding:2rem; box-shadow:0 2px 16px rgba(0,0,0,0.05); }
+  .fg { margin-bottom:1.1rem; }
+  .fg label { display:block; font-size:0.75rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
+  .fg input, .fg select, .fg textarea { width:100%; background:var(--off); border:1px solid var(--border); border-radius:7px; padding:0.7rem 0.9rem; color:#000; font-family:var(--font-b); font-size:0.9rem; outline:none; transition:border-color 0.2s; -webkit-appearance:none; }
+  .fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--accent); background:#fff; }
+  .chips { display:flex; flex-wrap:wrap; gap:0.5rem; }
+  .chip { background:var(--off); border:1px solid var(--border); border-radius:100px; padding:0.35rem 0.9rem; font-size:0.78rem; color:var(--muted); cursor:pointer; transition:all 0.2s; user-select:none; }
+  .chip.on { background:var(--accent-light); border-color:var(--accent); color:var(--accent-dark); }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+
+  /* HOME */
+  .hero { padding:3.5rem 3rem 3rem; background:#fff; position:relative; overflow:hidden; border-bottom:1px solid var(--border); }
+  .hero-grid { position:absolute; inset:0; z-index:0; background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px); background-size:50px 50px; mask-image:radial-gradient(ellipse 80% 80% at 60% 50%,black 20%,transparent 80%); }
+  .hero-blob { position:absolute; top:-60px; right:-80px; width:400px; height:400px; background:radial-gradient(circle,rgba(0,184,122,0.08) 0%,transparent 70%); z-index:0; }
+  .hero-tag { display:inline-flex; align-items:center; gap:7px; background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); border-radius:100px; padding:0.3rem 0.9rem; font-size:0.72rem; font-weight:600; color:var(--accent-dark); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1rem; position:relative; z-index:1; }
+  .hero-tag::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+  .hero h1 { font-family:var(--font-d); font-size:clamp(3.2rem,8vw,6rem); line-height:0.92; letter-spacing:0.02em; text-transform:uppercase; position:relative; z-index:1; margin-bottom:1rem; color:#000; }
+  .hero h1 em { font-style:normal; color:var(--accent); }
+  .hero h1 .outline { -webkit-text-stroke:2px #000; color:transparent; }
+  .hero-sub { font-size:0.95rem; color:var(--muted); max-width:460px; position:relative; z-index:1; margin-bottom:1.5rem; line-height:1.65; }
+  .hero-actions { display:flex; gap:0.8rem; flex-wrap:wrap; position:relative; z-index:1; margin-bottom:2rem; }
+  .stats { display:flex; gap:2.5rem; padding-top:1.5rem; border-top:1px solid var(--border); position:relative; z-index:1; }
+  .stat-n { font-family:var(--font-d); font-size:2.2rem; line-height:1; color:var(--accent); }
+  .stat-l { font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-top:2px; }
+  .home-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+  .home-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.75rem; cursor:pointer; transition:border-color 0.2s,transform 0.2s; }
+  .home-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .home-card-icon { font-size:1.6rem; margin-bottom:0.8rem; }
+  .home-card h3 { font-family:var(--font-d); font-size:1.4rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.4rem; }
+  .home-card p { font-size:0.82rem; color:var(--muted); line-height:1.55; margin-bottom:1rem; }
+  .home-card-link { font-size:0.82rem; font-weight:600; color:var(--accent); display:flex; align-items:center; gap:4px; }
+  .home-card.mentor-card { border-color:rgba(0,184,122,0.4); background:linear-gradient(135deg,#f0fdf8 0%,#fff 60%); position:relative; }
+  .home-card.mentor-card::before { content:'FEATURED'; font-size:0.6rem; font-weight:700; letter-spacing:0.1em; color:var(--accent-dark); background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); padding:0.2rem 0.6rem; border-radius:100px; position:absolute; top:1rem; right:1rem; }
+
+  /* MENTORSHIP BANNER ON HOME */
+  .mentor-banner { margin:0 3rem 2rem; background:#000; border-radius:14px; padding:2.5rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; position:relative; overflow:hidden; }
+  .mentor-banner::before { content:''; position:absolute; top:-40px; right:-40px; width:220px; height:220px; background:radial-gradient(circle,rgba(0,184,122,0.18) 0%,transparent 70%); }
+  .mentor-banner-left { position:relative; z-index:1; }
+  .mentor-banner-tag { font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; display:flex; align-items:center; gap:6px; }
+  .mentor-banner-tag::before { content:''; width:5px; height:5px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+  .mentor-banner h3 { font-family:var(--font-d); font-size:clamp(1.6rem,3vw,2.4rem); color:#fff; letter-spacing:0.03em; text-transform:uppercase; line-height:1; margin-bottom:0.5rem; }
+  .mentor-banner h3 span { color:var(--accent); }
+  .mentor-banner p { font-size:0.85rem; color:rgba(255,255,255,0.55); max-width:380px; line-height:1.6; }
+  .mentor-banner-right { display:flex; flex-direction:column; gap:0.8rem; position:relative; z-index:1; }
+  .mentor-stat-row { display:flex; gap:1.5rem; }
+  .mstat { text-align:center; }
+  .mstat-n { font-family:var(--font-d); font-size:1.8rem; color:var(--accent); line-height:1; }
+  .mstat-l { font-size:0.68rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.07em; }
+
+  /* HOW IT WORKS */
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:2rem; }
+  .step { background:#fff; padding:1.75rem 1.5rem; position:relative; transition:background 0.2s; }
+  .step:hover { background:#fafafa; }
+  .step-n { font-family:var(--font-d); font-size:3rem; line-height:1; color:rgba(0,184,122,0.15); margin-bottom:0.8rem; }
+  .step h3 { font-size:0.95rem; font-weight:600; margin-bottom:0.4rem; color:#000; }
+  .step p { font-size:0.83rem; color:var(--muted); line-height:1.6; }
+  .step-bar { position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; border-radius:0; }
+  .step:hover .step-bar { transform:scaleX(1); }
+  .faq-list { display:flex; flex-direction:column; gap:0.8rem; }
+  .faq-item { background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .faq-q { padding:1rem 1.25rem; font-weight:600; font-size:0.9rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:#000; }
+  .faq-q:hover { background:var(--off); }
+  .faq-arrow { color:var(--muted); transition:transform 0.2s; font-size:1rem; }
+  .faq-a { padding:0 1.25rem 1rem; font-size:0.83rem; color:var(--muted); line-height:1.6; display:none; }
+  .faq-item.open .faq-a { display:block; }
+  .faq-item.open .faq-arrow { transform:rotate(180deg); color:var(--accent); }
+
+  /* FIND */
+  .res-panel { display:flex; flex-direction:column; gap:0.8rem; }
+  .rcard { background:#fff; border:1px solid var(--border); border-radius:10px; padding:1.2rem; opacity:0; transform:translateY(10px); transition:opacity 0.4s,transform 0.4s,border-color 0.2s; }
+  .rcard.show { opacity:1; transform:translateY(0); }
+  .rcard:hover { border-color:rgba(0,184,122,0.35); }
+  .rh { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; }
+  .rn { font-weight:600; font-size:0.95rem; color:#000; }
+  .rbadge { font-size:0.68rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; background:var(--accent-light); color:var(--accent-dark); border:1px solid rgba(0,184,122,0.2); padding:0.2rem 0.6rem; border-radius:100px; }
+  .rmeta { font-size:0.78rem; color:var(--muted); margin-bottom:0.4rem; }
+  .rdesc { font-size:0.83rem; color:#444; line-height:1.5; }
+  .ai-box { display:flex; gap:8px; background:var(--accent-light); border:1px solid rgba(0,184,122,0.18); border-radius:7px; padding:0.75rem; margin-top:0.6rem; }
+  .ai-icon { color:var(--accent); font-size:0.9rem; flex-shrink:0; margin-top:1px; }
+  .ai-txt { font-size:0.78rem; color:#3a6b55; line-height:1.5; }
+  .ai-txt strong { color:var(--accent-dark); }
+  .placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2.5rem 1.5rem; text-align:center; background:var(--off); border:1.5px dashed rgba(0,0,0,0.1); border-radius:10px; color:var(--muted); font-size:0.85rem; gap:0.5rem; }
+
+  /* DONATE */
+  .donate-banner { background:#000; border-radius:12px; padding:2rem; margin-bottom:2rem; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; }
+  .donate-banner h3 { font-family:var(--font-d); font-size:1.8rem; color:#fff; letter-spacing:0.03em; text-transform:uppercase; line-height:1; margin-bottom:0.4rem; }
+  .donate-banner h3 span { color:var(--accent); }
+  .donate-banner p { font-size:0.85rem; color:rgba(255,255,255,0.5); max-width:380px; }
+  .donate-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+  .d-step { background:var(--off); border:1px solid var(--border); border-radius:10px; padding:1.2rem; display:flex; gap:0.9rem; align-items:flex-start; }
+  .d-step-icon { width:36px; height:36px; background:var(--accent-light); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--accent-dark); font-size:1rem; flex-shrink:0; font-weight:700; font-family:var(--font-d); }
+  .d-step h4 { font-size:0.88rem; font-weight:600; color:#000; margin-bottom:0.25rem; }
+  .d-step p { font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .info-card { background:var(--accent-light); border:1px solid rgba(0,184,122,0.2); border-radius:10px; padding:1.2rem; margin-bottom:1rem; }
+  .info-card h4 { font-size:0.88rem; font-weight:600; color:var(--accent-dark); margin-bottom:0.5rem; }
+  .info-card ul { list-style:disc; padding-left:1.2rem; display:flex; flex-direction:column; gap:0.35rem; }
+  .info-card ul li { font-size:0.82rem; color:#3a6b55; }
+  .note-card { background:var(--off); border:1px solid var(--border); border-radius:10px; padding:1.2rem; margin-bottom:1rem; }
+  .note-card h4 { font-size:0.88rem; font-weight:600; color:#000; margin-bottom:0.4rem; }
+  .note-card p { font-size:0.82rem; color:var(--muted); line-height:1.55; }
+  .success-msg { display:none; background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); border-radius:10px; padding:2rem; text-align:center; }
+  .success-msg .tick { font-size:2rem; margin-bottom:0.5rem; }
+  .success-msg h3 { font-family:var(--font-d); font-size:1.5rem; color:var(--accent-dark); letter-spacing:0.03em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .success-msg p { font-size:0.85rem; color:#3a6b55; }
+
+  /* INVOLVE TABS */
+  .involve-tabs { display:flex; gap:0.5rem; margin-bottom:2rem; border-bottom:2px solid var(--border); padding-bottom:0; }
+  .involve-tab { background:transparent; border:none; padding:0.75rem 1.5rem; font-family:var(--font-b); font-weight:600; font-size:0.88rem; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+  .involve-tab:hover { color:#000; }
+  .involve-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .involve-panel { display:none; }
+  .involve-panel.active { display:block; }
+
+  /* SKILLS ACADEMY PAGE */
+  .academy-hero { background:linear-gradient(135deg,#0d0221 0%,#1a0a3d 40%,#0d1a3d 100%); padding:5rem 3rem 4rem; position:relative; overflow:hidden; min-height:70vh; display:flex; align-items:center; justify-content:center; }
+  .academy-hero::before { content:''; position:absolute; inset:0; background-image:radial-gradient(ellipse 60% 60% at 80% 30%,rgba(124,58,237,0.25) 0%,transparent 70%), radial-gradient(ellipse 40% 40% at 20% 80%,rgba(0,184,122,0.12) 0%,transparent 70%); }
+  .academy-grid-bg { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px); background-size:60px 60px; }
+  .academy-hero-inner { position:relative; z-index:1; max-width:680px; text-align:center; display:flex; flex-direction:column; align-items:center; }
+  .academy-cs-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.4); border-radius:100px; padding:0.4rem 1rem; font-size:0.72rem; font-weight:700; color:#a78bfa; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:1.5rem; }
+  .academy-cs-dot { width:7px; height:7px; background:#7c3aed; border-radius:50%; animation:pulse 2s infinite; }
+  .academy-hero h1 { font-family:var(--font-d); font-size:clamp(3rem,8vw,6rem); line-height:0.9; letter-spacing:0.02em; text-transform:uppercase; color:#fff; margin-bottom:1.2rem; }
+  .academy-hero h1 em { font-style:normal; background:linear-gradient(90deg,#7c3aed,#00b87a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .academy-hero-sub { font-size:1rem; color:rgba(255,255,255,0.5); line-height:1.7; margin-bottom:2.5rem; max-width:520px; text-align:center; }
+  .academy-signup-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:2rem; backdrop-filter:blur(10px); max-width:500px; }
+  .academy-signup-box h3 { font-family:var(--font-d); font-size:1.4rem; letter-spacing:0.04em; text-transform:uppercase; color:#fff; margin-bottom:0.4rem; }
+  .academy-signup-box p { font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:1.2rem; line-height:1.55; }
+  .academy-input-row { display:flex; gap:0.6rem; margin-bottom:0.8rem; }
+  .academy-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:0.75rem 1rem; color:#fff; font-family:var(--font-b); font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+  .academy-input-row input::placeholder { color:rgba(255,255,255,0.3); }
+  .academy-input-row input:focus { border-color:rgba(124,58,237,0.6); background:rgba(255,255,255,0.1); }
+  .btn-academy { background:linear-gradient(135deg,#7c3aed,#5b21b6); color:#fff; border:none; padding:0.75rem 1.4rem; border-radius:8px; font-family:var(--font-b); font-weight:700; font-size:0.88rem; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .btn-academy:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(124,58,237,0.4); }
+  .academy-privacy { font-size:0.72rem; color:rgba(255,255,255,0.3); display:flex; align-items:center; gap:5px; }
+  .academy-signup-success { display:none; text-align:center; padding:1rem 0; }
+  .academy-signup-success .tick { font-size:2rem; margin-bottom:0.5rem; }
+  .academy-signup-success p { color:rgba(255,255,255,0.7); font-size:0.88rem; line-height:1.55; }
+  .academy-signup-success strong { color:#a78bfa; }
+
+  /* TRACK CARDS */
+  .academy-tracks { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; }
+  .track-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:1.75rem; position:relative; overflow:hidden; transition:border-color 0.2s,transform 0.2s; }
+  .track-card:hover { transform:translateY(-3px); }
+  .track-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+  .track-card.code::before { background:linear-gradient(90deg,#7c3aed,#a855f7); }
+  .track-card.design::before { background:linear-gradient(90deg,#ec4899,#f97316); }
+  .track-card.marketing::before { background:linear-gradient(90deg,#0ea5e9,#06b6d4); }
+  .track-card.video::before { background:linear-gradient(90deg,#ef4444,#f97316); }
+  .track-card.ai::before { background:linear-gradient(90deg,#00b87a,#0ea5e9); }
+  .track-card.web::before { background:linear-gradient(90deg,#f59e0b,#84cc16); }
+  .track-card:hover.code { border-color:rgba(124,58,237,0.4); }
+  .track-card:hover.design { border-color:rgba(236,72,153,0.4); }
+  .track-card:hover.marketing { border-color:rgba(14,165,233,0.4); }
+  .track-card:hover.video { border-color:rgba(239,68,68,0.4); }
+  .track-card:hover.ai { border-color:rgba(0,184,122,0.4); }
+  .track-card:hover.web { border-color:rgba(245,158,11,0.4); }
+  .track-icon { font-size:2rem; margin-bottom:0.8rem; }
+  .track-label { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .track-card.code .track-label { color:#7c3aed; }
+  .track-card.design .track-label { color:#ec4899; }
+  .track-card.marketing .track-label { color:#0ea5e9; }
+  .track-card.video .track-label { color:#ef4444; }
+  .track-card.ai .track-label { color:#00b87a; }
+  .track-card.web .track-label { color:#f59e0b; }
+  .track-card h4 { font-family:var(--font-d); font-size:1.25rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.4rem; }
+  .track-card p { font-size:0.8rem; color:var(--muted); line-height:1.55; margin-bottom:0.9rem; }
+  .track-levels { display:flex; gap:0.3rem; }
+  .level-pill { font-size:0.65rem; font-weight:600; background:var(--off); color:var(--muted); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.5rem; }
+  .track-coming { position:absolute; top:1rem; right:1rem; font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; background:#f3f4f6; color:var(--muted); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.55rem; }
+
+  /* WAITLIST COUNTER */
+  .waitlist-bar { background:linear-gradient(135deg,#0d0221,#1a0a3d); padding:2rem 3rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .wl-stat { text-align:center; }
+  .wl-n { font-family:var(--font-d); font-size:2.2rem; color:#a78bfa; line-height:1; }
+  .wl-l { font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.07em; margin-top:2px; }
+  .wl-msg { font-size:0.9rem; color:rgba(255,255,255,0.6); max-width:380px; line-height:1.6; }
+  .wl-msg strong { color:#a78bfa; }
+
+  .impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .icard { background:#fff; border:1px solid var(--border); border-radius:10px; padding:1.5rem 1.2rem; text-align:center; transition:border-color 0.2s,transform 0.2s; }
+  .icard:hover { border-color:rgba(0,184,122,0.35); transform:translateY(-2px); }
+  .inum { font-family:var(--font-d); font-size:2.6rem; line-height:1; color:var(--accent); }
+  .ilabel { font-size:0.8rem; color:var(--muted); margin-top:0.3rem; line-height:1.35; }
+  .story-stars { color:#f59e0b; font-size:0.85rem; letter-spacing:0.05em; margin-bottom:0.6rem; }
+  .story-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+  .story-card { background:#fff; border:1px solid var(--border); border-radius:10px; padding:1.4rem; }
+  .story-card .quote { font-size:0.88rem; color:#333; line-height:1.6; font-style:italic; margin-bottom:0.9rem; }
+  .story-card .author { font-size:0.78rem; font-weight:600; color:var(--accent-dark); }
+  .story-card .role { font-size:0.75rem; color:var(--muted); }
+
+  footer { background:#0a0a0f; padding:1.75rem 3rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+  .flogo { display:flex; align-items:center; gap:0.6rem; cursor:pointer; flex-shrink:0; }
+  .flogo img { display:none; }
+  .flogo-mark { flex-shrink:0; }
+  .flogo-wordmark { font-family:var(--font-d); font-size:1.15rem; letter-spacing:0.12em; color:#fff; text-transform:uppercase; line-height:1; }
+  .flogo-tag { font-family:var(--font-b); font-size:0.56rem; font-weight:600; letter-spacing:0.11em; text-transform:uppercase; color:rgba(255,255,255,0.38); line-height:1.35; padding-left:0.6rem; border-left:1px solid rgba(255,255,255,0.12); }
+  .fcopy { font-size:0.78rem; color:rgba(255,255,255,0.35); }
+  .ftag { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); background:rgba(0,184,122,0.1); border:1px solid rgba(0,184,122,0.2); padding:0.3rem 0.9rem; border-radius:100px; }
+  .fsocial { display:flex; align-items:center; gap:0.75rem; }
+  .fsocial a { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:7px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.5); transition:all 0.2s; }
+  .fsocial a:hover { background:rgba(0,184,122,0.15); border-color:rgba(0,184,122,0.4); color:var(--accent); }
+  .fsocial svg { width:15px; height:15px; fill:currentColor; }
+
+  .lbar { height:3px; background:var(--accent); border-radius:2px; width:0%; transition:width 1.2s ease; margin-bottom:0.6rem; }
+  .ltxt { font-size:0.78rem; color:var(--muted); display:flex; align-items:center; gap:5px; }
+  .dots span { display:inline-block; animation:db 1.2s infinite; color:var(--accent); }
+  .dots span:nth-child(2){animation-delay:0.2s} .dots span:nth-child(3){animation-delay:0.4s}
+  @keyframes db { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-4px)} }
+
+  /* ===== MENTORSHIP PAGE ===== */
+  .mentor-hero { background:#000; padding:3.5rem 3rem; position:relative; overflow:hidden; }
+  .mentor-hero::before { content:''; position:absolute; top:-80px; right:-80px; width:500px; height:500px; background:radial-gradient(circle,rgba(0,184,122,0.12) 0%,transparent 70%); }
+  .mentor-hero::after { content:''; position:absolute; bottom:-60px; left:-60px; width:350px; height:350px; background:radial-gradient(circle,rgba(0,184,122,0.06) 0%,transparent 70%); }
+  .mentor-hero-inner { position:relative; z-index:1; }
+  .mentor-hero-tag { display:inline-flex; align-items:center; gap:7px; border:1px solid rgba(0,184,122,0.4); border-radius:100px; padding:0.3rem 0.9rem; font-size:0.72rem; font-weight:600; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1.2rem; }
+  .mentor-hero h1 { font-family:var(--font-d); font-size:clamp(2.8rem,7vw,5.5rem); line-height:0.92; letter-spacing:0.02em; text-transform:uppercase; color:#fff; margin-bottom:1rem; }
+  .mentor-hero h1 em { font-style:normal; color:var(--accent); }
+  .mentor-hero-sub { font-size:0.95rem; color:rgba(255,255,255,0.55); max-width:520px; line-height:1.7; margin-bottom:2rem; }
+  .mentor-hero-actions { display:flex; gap:0.8rem; flex-wrap:wrap; }
+  .btn-p-inv { background:var(--accent); color:#fff; border:none; padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-p-inv:hover { background:var(--accent-dark); transform:translateY(-1px); }
+  .btn-o-inv { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.25); padding:0.75rem 1.6rem; border-radius:7px; font-family:var(--font-b); font-weight:500; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+  .btn-o-inv:hover { border-color:var(--accent); color:var(--accent); }
+  .mentor-stats { display:flex; gap:2.5rem; margin-top:2.5rem; padding-top:2rem; border-top:1px solid rgba(255,255,255,0.08); }
+  .mentor-stat-item .msi-n { font-family:var(--font-d); font-size:2.2rem; line-height:1; color:var(--accent); }
+  .mentor-stat-item .msi-l { font-size:0.75rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.07em; margin-top:2px; }
+
+  /* WHY MENTORSHIP MATTERS */
+  .problem-strip { background:var(--off); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:2rem 3rem; }
+  .problem-strip-inner { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.5rem; }
+  .prob-item { display:flex; gap:1rem; align-items:flex-start; }
+  .prob-icon { width:40px; height:40px; background:var(--accent-light); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+  .prob-text h4 { font-size:0.9rem; font-weight:600; color:#000; margin-bottom:0.2rem; }
+  .prob-text p { font-size:0.8rem; color:var(--muted); line-height:1.5; }
+
+  /* HOW MENTORSHIP WORKS */
+  .mentor-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; margin-bottom:2rem; }
+  .mentor-step { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; position:relative; transition:border-color 0.2s,transform 0.2s; }
+  .mentor-step:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .ms-num { font-family:var(--font-d); font-size:2.5rem; color:rgba(0,184,122,0.12); line-height:1; margin-bottom:0.8rem; }
+  .ms-icon { font-size:1.4rem; margin-bottom:0.6rem; }
+  .mentor-step h4 { font-size:0.95rem; font-weight:600; color:#000; margin-bottom:0.35rem; }
+  .mentor-step p { font-size:0.82rem; color:var(--muted); line-height:1.55; }
+
+  /* MENTOR TYPES */
+  .mentor-types { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.2rem; }
+  .mtype-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; transition:border-color 0.2s,transform 0.2s; }
+  .mtype-card:hover { border-color:rgba(0,184,122,0.4); transform:translateY(-2px); }
+  .mtype-badge { display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.65rem; border-radius:100px; margin-bottom:0.8rem; }
+  .mtype-badge.pro { background:#e8f0fe; color:#1a73e8; border:1px solid rgba(26,115,232,0.2); }
+  .mtype-badge.biz { background:#fce8ff; color:#8b00d4; border:1px solid rgba(139,0,212,0.2); }
+  .mtype-badge.centauri { background:var(--accent-light); color:var(--accent-dark); border:1px solid rgba(0,184,122,0.25); }
+  .mtype-card h4 { font-family:var(--font-d); font-size:1.3rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.4rem; }
+  .mtype-card p { font-size:0.82rem; color:var(--muted); line-height:1.55; margin-bottom:1rem; }
+  .mtype-perks { display:flex; flex-direction:column; gap:0.35rem; }
+  .mtype-perk { font-size:0.8rem; color:#333; display:flex; gap:0.5rem; align-items:flex-start; }
+  .mtype-perk::before { content:''; color:var(--accent); font-weight:700; flex-shrink:0; }
+
+  /* FEATURED MENTORS */
+  .mentor-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; }
+  .mentor-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; text-align:center; transition:border-color 0.2s,transform 0.2s; }
+  .mentor-card:hover { border-color:rgba(0,184,122,0.4); transform:translateY(-2px); }
+  .mentor-avatar { width:60px; height:60px; border-radius:50%; background:var(--off); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin:0 auto 0.8rem; }
+  .mentor-name { font-weight:700; font-size:0.95rem; color:#000; margin-bottom:0.15rem; }
+  .mentor-role { font-size:0.78rem; color:var(--muted); margin-bottom:0.4rem; }
+  .mentor-company { font-size:0.75rem; font-weight:600; color:var(--accent-dark); background:var(--accent-light); border:1px solid rgba(0,184,122,0.2); border-radius:100px; padding:0.15rem 0.6rem; display:inline-block; margin-bottom:0.8rem; }
+  .mentor-tags { display:flex; flex-wrap:wrap; gap:0.3rem; justify-content:center; }
+  .mentor-tag-pill { font-size:0.7rem; color:var(--muted); background:var(--off); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.55rem; }
+  .centauri-badge { font-size:0.65rem; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:var(--accent-dark); background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); padding:0.15rem 0.55rem; border-radius:100px; display:inline-block; margin-bottom:0.5rem; }
+
+  /* REQUEST FORM */
+  .mentor-form-wrap { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+  .mentor-aside { display:flex; flex-direction:column; gap:1rem; }
+  .aside-box { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
+  .aside-box h4 { font-size:0.9rem; font-weight:700; color:#000; margin-bottom:0.6rem; display:flex; align-items:center; gap:0.5rem; }
+  .aside-box p { font-size:0.82rem; color:var(--muted); line-height:1.55; }
+  .aside-box ul { list-style:none; display:flex; flex-direction:column; gap:0.4rem; margin-top:0.5rem; }
+  .aside-box ul li { font-size:0.82rem; color:#333; display:flex; gap:0.5rem; align-items:flex-start; }
+  .aside-box ul li::before { content:'→'; color:var(--accent); font-weight:700; flex-shrink:0; }
+  .mentor-success { display:none; background:var(--accent-light); border:1px solid rgba(0,184,122,0.3); border-radius:12px; padding:2.5rem; text-align:center; }
+  .mentor-success .tick { font-size:2.5rem; margin-bottom:0.6rem; color:var(--accent); }
+  .mentor-success h3 { font-family:var(--font-d); font-size:1.8rem; color:var(--accent-dark); letter-spacing:0.03em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .mentor-success p { font-size:0.85rem; color:#3a6b55; line-height:1.6; }
+
+  /* IMPACT LINK CALLOUT */
+  .criteria-strip { background:var(--off); border:1px solid var(--border); border-radius:12px; padding:2rem; margin-bottom:2rem; }
+  .criteria-strip h4 { font-family:var(--font-d); font-size:1.3rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.8rem; }
+  .criteria-pills { display:flex; flex-wrap:wrap; gap:0.6rem; }
+  .cpill { font-size:0.78rem; font-weight:600; padding:0.35rem 0.9rem; border-radius:100px; border:1px solid; }
+  .cpill.green { background:var(--accent-light); color:var(--accent-dark); border-color:rgba(0,184,122,0.3); }
+  .cpill.blue { background:#e8f0fe; color:#1a73e8; border-color:rgba(26,115,232,0.2); }
+  .cpill.purple { background:#fce8ff; color:#8b00d4; border-color:rgba(139,0,212,0.2); }
+  .cpill.orange { background:#fff3e0; color:#e65100; border-color:rgba(230,81,0,0.2); }
+  .cpill.red { background:#fdecea; color:#c62828; border-color:rgba(198,40,40,0.2); }
+  /* ===== FIND A DEVICE ENHANCEMENTS ===== */
+  .find-live-bar { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.75rem; padding:0.85rem 1.2rem; background:var(--off); border:1px solid var(--border); border-radius:10px; }
+  .live-dot { width:7px; height:7px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
+  .live-stat { font-size:0.78rem; color:var(--muted); display:flex; align-items:center; gap:6px; }
+  .live-stat strong { color:#000; font-weight:600; }
+  .live-divider { width:1px; height:14px; background:var(--border); }
+  .find-map-wrap { margin-bottom:2rem; }
+  .find-map-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem; }
+  .find-map-title { font-size:0.8rem; font-weight:700; color:#000; letter-spacing:0.04em; text-transform:uppercase; }
+  .find-map-toggle { font-size:0.75rem; color:var(--accent); font-weight:600; cursor:pointer; background:none; border:none; padding:0; }
+  #find-map { position:relative; height:280px; border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#ecf0eb; }
+  .map-bg { position:absolute; inset:0; background:linear-gradient(135deg,#e4ede6 0%,#eef3ed 50%,#e8f0e6 100%); }
+  .map-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(0,0,0,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.035) 1px,transparent 1px); background-size:44px 44px; }
+  .map-road-h { position:absolute; left:0; right:0; background:rgba(255,255,255,0.75); }
+  .map-road-v { position:absolute; top:0; bottom:0; background:rgba(255,255,255,0.75); }
+  .map-label { position:absolute; font-size:0.6rem; font-weight:600; color:rgba(0,0,0,0.3); letter-spacing:0.07em; text-transform:uppercase; pointer-events:none; }
+  .map-pin { position:absolute; transform:translate(-50%,-100%); cursor:pointer; z-index:10; transition:transform 0.15s; }
+  .map-pin:hover { transform:translate(-50%,-100%) scale(1.15); }
+  .map-popup { position:absolute; z-index:20; background:#fff; border:1px solid var(--border); border-radius:10px; padding:1rem; box-shadow:0 8px 28px rgba(0,0,0,0.12); width:200px; opacity:0; transform:translateY(6px) translateX(-50%); transition:opacity 0.2s,transform 0.2s; pointer-events:none; }
+  .map-popup.visible { opacity:1; transform:translateY(0) translateX(-50%); pointer-events:auto; }
+  .map-popup-arrow { position:absolute; bottom:-7px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:7px solid #fff; }
+  .map-popup-arrow-border { position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-top:8px solid var(--border); }
+  .map-popup-close { position:absolute; top:0.4rem; right:0.5rem; background:none; border:none; font-size:0.9rem; color:var(--muted); cursor:pointer; line-height:1; }
+  .map-popup-name { font-size:0.8rem; font-weight:700; color:#000; margin-bottom:0.25rem; padding-right:1rem; }
+  .map-popup-dist { font-size:0.7rem; color:var(--muted); margin-bottom:0.3rem; }
+  .map-popup-devices { font-size:0.72rem; color:var(--accent-dark); font-weight:600; margin-bottom:0.5rem; }
+  .map-popup-desc { font-size:0.7rem; color:#555; line-height:1.45; margin-bottom:0.65rem; }
+  .map-popup-btn { display:block; width:100%; background:var(--accent); color:#fff; border:none; border-radius:6px; padding:0.38rem; font-size:0.73rem; font-weight:600; cursor:pointer; text-align:center; font-family:var(--font-b); }
+  .map-popup-btn:hover { background:var(--accent-dark); }
+  .map-center-badge { position:absolute; bottom:0.7rem; right:0.7rem; font-size:0.62rem; color:rgba(0,0,0,0.35); font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+  .find-filters { display:flex; flex-wrap:wrap; align-items:center; gap:0.55rem; margin-bottom:1.5rem; padding:0.85rem 1rem; background:#fff; border:1px solid var(--border); border-radius:10px; }
+  .filter-label { font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-right:0.1rem; white-space:nowrap; }
+  .filter-select { background:var(--off); border:1px solid var(--border); border-radius:6px; padding:0.35rem 0.7rem; font-family:var(--font-b); font-size:0.78rem; color:#000; outline:none; cursor:pointer; -webkit-appearance:none; transition:border-color 0.2s; }
+  .filter-select:focus { border-color:var(--accent); }
+  .filter-toggle { display:flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:500; color:var(--muted); cursor:pointer; padding:0.35rem 0.7rem; background:var(--off); border:1px solid var(--border); border-radius:6px; transition:all 0.2s; white-space:nowrap; user-select:none; }
+  .filter-toggle.on { background:var(--accent-light); border-color:var(--accent); color:var(--accent-dark); }
+  .filter-sep { width:1px; height:18px; background:var(--border); }
+  .results-count { margin-left:auto; font-size:0.73rem; color:var(--muted); white-space:nowrap; }
+  .results-count strong { color:#000; }
+  .device-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.1rem; margin-bottom:2rem; }
+  .device-card { background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s; cursor:pointer; }
+  .device-card:hover { border-color:rgba(0,184,122,0.4); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.06); }
+  .device-card-img { height:126px; background:var(--off); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--border); }
+  .device-card-img svg { width:66px; height:66px; opacity:0.55; }
+  .device-status-pill { position:absolute; top:0.55rem; right:0.55rem; font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.18rem 0.5rem; border-radius:100px; }
+  .pill-available { background:#dcfce7; color:#15803d; }
+  .pill-pending { background:#fff7ed; color:#c2410c; }
+  .pill-reserved { background:#eff6ff; color:#1d4ed8; }
+  .pill-out { background:#f1f5f9; color:#94a3b8; }
+  .device-org-badge { position:absolute; bottom:0.5rem; left:0.6rem; font-size:0.58rem; font-weight:600; background:rgba(0,0,0,0.055); color:#666; padding:0.18rem 0.45rem; border-radius:100px; max-width:calc(100% - 1.2rem); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .device-card-body { padding:0.9rem; }
+  .device-card-name { font-family:var(--font-d); font-size:1.05rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.2rem; line-height:1.1; }
+  .device-card-location { font-size:0.7rem; color:var(--muted); margin-bottom:0.65rem; }
+  .device-specs { display:grid; grid-template-columns:1fr 1fr; gap:0.25rem 0.4rem; margin-bottom:0.7rem; }
+  .device-spec { font-size:0.7rem; color:var(--muted); }
+  .device-spec strong { color:#000; font-weight:600; }
+  .ai-match-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem; }
+  .ai-match-pct { font-size:0.7rem; font-weight:700; color:var(--accent-dark); white-space:nowrap; }
+  .ai-match-bar-bg { flex:1; height:3px; background:rgba(0,184,122,0.12); border-radius:2px; overflow:hidden; }
+  .ai-match-bar-fill { height:100%; background:var(--accent); border-radius:2px; width:0; transition:width 0.9s ease; }
+  .ai-match-text { font-size:0.67rem; color:var(--muted); line-height:1.4; margin-bottom:0.75rem; }
+  .device-card-actions { display:flex; gap:0.45rem; }
+  .btn-device-req { flex:1; background:var(--accent); color:#fff; border:none; border-radius:6px; padding:0.48rem; font-family:var(--font-b); font-size:0.76rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
+  .btn-device-req:hover { background:var(--accent-dark); }
+  .btn-device-req:disabled { background:#ccc; cursor:not-allowed; color:#fff; }
+  .btn-device-det { background:var(--off); color:#000; border:1px solid var(--border); border-radius:6px; padding:0.48rem 0.65rem; font-family:var(--font-b); font-size:0.76rem; font-weight:500; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .btn-device-det:hover { border-color:var(--accent); color:var(--accent); }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.42); z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.25s; display:flex; align-items:center; justify-content:center; padding:1rem; }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-box { background:#fff; border-radius:16px; width:100%; max-width:570px; max-height:90vh; overflow-y:auto; transform:translateY(18px) scale(0.98); transition:transform 0.25s; box-shadow:0 20px 60px rgba(0,0,0,0.18); }
+  .modal-overlay.open .modal-box { transform:translateY(0) scale(1); }
+  .modal-img { height:170px; background:var(--off); display:flex; align-items:center; justify-content:center; border-bottom:1px solid var(--border); position:relative; }
+  .modal-img svg { width:85px; height:85px; opacity:0.45; }
+  .modal-close { position:absolute; top:0.9rem; right:0.9rem; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,0.07); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#555; transition:background 0.2s; }
+  .modal-close:hover { background:rgba(0,0,0,0.13); }
+  .modal-status-pill { position:absolute; top:0.9rem; left:0.9rem; font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.6rem; border-radius:100px; }
+  .modal-body { padding:1.4rem; }
+  .modal-name { font-family:var(--font-d); font-size:1.55rem; letter-spacing:0.03em; text-transform:uppercase; color:#000; margin-bottom:0.2rem; line-height:1; }
+  .modal-org { font-size:0.76rem; color:var(--muted); margin-bottom:1.1rem; }
+  .modal-section-title { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.55rem; margin-top:1.1rem; }
+  .modal-specs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.55rem; }
+  .modal-spec-item { background:var(--off); border-radius:8px; padding:0.65rem 0.75rem; }
+  .modal-spec-label { font-size:0.6rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-bottom:0.15rem; }
+  .modal-spec-val { font-size:0.85rem; font-weight:600; color:#000; }
+  .modal-location-box { background:var(--off); border:1px solid var(--border); border-radius:8px; padding:0.8rem; margin-top:0.4rem; }
+  .modal-location-name { font-size:0.82rem; font-weight:600; color:#000; margin-bottom:0.2rem; }
+  .modal-location-meta { font-size:0.72rem; color:var(--muted); }
+  .modal-eligibility { background:var(--accent-light); border:1px solid rgba(0,184,122,0.2); border-radius:8px; padding:0.8rem; margin-top:0.4rem; }
+  .modal-eligibility ul { list-style:disc; padding-left:1.1rem; display:flex; flex-direction:column; gap:0.28rem; }
+  .modal-eligibility ul li { font-size:0.76rem; color:#3a6b55; line-height:1.45; }
+  .modal-ai-box { background:var(--off); border-radius:8px; padding:0.8rem; margin-top:0.4rem; }
+  .modal-ai-head { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem; }
+  .modal-ai-pct { font-size:0.95rem; font-weight:700; color:var(--accent-dark); }
+  .modal-ai-bar-bg { flex:1; height:4px; background:rgba(0,184,122,0.12); border-radius:2px; overflow:hidden; }
+  .modal-ai-bar-fill { height:100%; background:var(--accent); border-radius:2px; }
+  .modal-ai-reason { font-size:0.76rem; color:#555; line-height:1.55; }
+  .modal-footer { padding:0.9rem 1.4rem 1.4rem; display:flex; gap:0.65rem; }
+  .modal-req-btn { flex:1; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:0.72rem; font-family:var(--font-b); font-weight:600; font-size:0.88rem; cursor:pointer; transition:background 0.2s; }
+  .modal-req-btn:hover { background:var(--accent-dark); }
+  .modal-req-btn:disabled { background:#ccc; cursor:not-allowed; }
+  .modal-cancel-btn { background:var(--off); color:#000; border:1px solid var(--border); border-radius:8px; padding:0.72rem 1.1rem; font-family:var(--font-b); font-weight:500; font-size:0.88rem; cursor:pointer; transition:all 0.2s; }
+  .modal-cancel-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .no-results { text-align:center; padding:2.5rem 1.5rem; color:var(--muted); font-size:0.85rem; background:var(--off); border-radius:10px; border:1.5px dashed rgba(0,0,0,0.1); }
+  @media(max-width:600px) { .modal-specs-grid { grid-template-columns:1fr 1fr; } .device-grid { grid-template-columns:1fr; } .find-filters { gap:0.4rem; } }
+
+  /* Toast notification */
+  #toast { position:fixed; top:1.2rem; left:50%; transform:translateX(-50%) translateY(-80px); z-index:10000; background:#000; color:#fff; padding:0.65rem 1.4rem; border-radius:8px; font-size:0.82rem; font-weight:500; box-shadow:0 4px 18px rgba(0,0,0,0.25); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); pointer-events:none; white-space:nowrap; }
+  #toast.show { transform:translateX(-50%) translateY(0); }
+  #toast span { color:var(--accent); font-weight:700; }
+  /* ── Floating controls — both bottom-right, stacked ── */
+  /* Chatbot: primary bottom-right anchor */
+  #chatbot-bubble-wrap { position:fixed; bottom:1.5rem; right:1.5rem; z-index:9999; display:flex; flex-direction:column; align-items:flex-end; gap:0.55rem; }
+  /* Shared fab base */
+  .fab { position:relative; width:46px; height:46px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 0.18s, box-shadow 0.18s; }
+  .fab:hover { transform:scale(1.08); }
+  .fab svg { width:22px; height:22px; display:block; }
+  /* Tooltip */
+  .fab-tooltip { position:absolute; right:54px; top:50%; transform:translateY(-50%); background:#000; color:#fff; font-family:var(--font-b); font-size:0.7rem; font-weight:600; letter-spacing:0.04em; white-space:nowrap; padding:0.3rem 0.65rem; border-radius:5px; pointer-events:none; opacity:0; transition:opacity 0.15s; }
+  .fab-tooltip::after { content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-left-color:#000; }
+  .fab:hover .fab-tooltip, .fab:focus .fab-tooltip { opacity:1; }
+  /* Accessibility button */
+  #a11y-btn { background:var(--accent); color:#fff; box-shadow:0 3px 12px rgba(0,184,122,0.35); }
+  #a11y-btn:hover { background:var(--accent-dark); box-shadow:0 5px 18px rgba(0,184,122,0.45); }
+  /* Chatbot button */
+  #chatbot-bubble { background:#000; color:var(--accent); box-shadow:0 4px 18px rgba(0,0,0,0.28); }
+  #chatbot-bubble:hover { background:#1a1a1a; box-shadow:0 6px 22px rgba(0,0,0,0.38); }
+  /* A11y panel opens above the button stack */
+  #a11y-panel { position:fixed; bottom:6rem; right:1.5rem; z-index:10000; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 8px 32px rgba(0,0,0,0.14); width:230px; padding:1rem; display:none; flex-direction:column; gap:0.5rem; }
+  #a11y-panel.open { display:flex; }
+  .a11y-title { font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.25rem; }
+  .a11y-row { display:flex; gap:0.4rem; }
+  .a11y-btn2 { flex:1; background:var(--off); border:1px solid var(--border); border-radius:7px; padding:0.45rem 0.5rem; font-family:var(--font-b); font-size:0.78rem; font-weight:500; color:#000; cursor:pointer; transition:all 0.2s; text-align:center; line-height:1.2; }
+  .a11y-btn2:hover { border-color:var(--accent); color:var(--accent); }
+  .a11y-btn2.on { background:var(--accent-light); border-color:var(--accent); color:var(--accent-dark); }
+  .a11y-divider { height:1px; background:var(--border); margin:0.25rem 0; }
+  /* When a11y panel is open, nudge it up if needed (panel is 280px tall approx) */
+  @media(max-height:560px){ #a11y-panel { bottom:1rem; max-height:70vh; overflow-y:auto; } }
+  @media(max-width:480px){ #a11y-panel{width:calc(100vw - 3rem);right:1.5rem;} #chatbot-panel{width:calc(100vw - 3rem);right:1.5rem;} #chatbot-bubble-wrap{right:1rem;bottom:1rem;} }
+  /* High contrast mode */
+  body.hc-mode { background:#000 !important; color:#fff !important; }
+  body.hc-mode nav, body.hc-mode .hero, body.hc-mode .sec, body.hc-mode .home-card, body.hc-mode .story-card, body.hc-mode .step, body.hc-mode .rcard, body.hc-mode .form-box, body.hc-mode .faq-item, body.hc-mode .track-card, body.hc-mode .mentor-card-item, body.hc-mode #a11y-panel { background:#111 !important; color:#fff !important; border-color:#555 !important; }
+  body.hc-mode .sec-title, body.hc-mode h1, body.hc-mode h2, body.hc-mode h3, body.hc-mode h4, body.hc-mode .step h3, body.hc-mode .rn { color:#fff !important; }
+  body.hc-mode .sec-sub, body.hc-mode .hero-sub, body.hc-mode .step p, body.hc-mode .muted, body.hc-mode [class*="muted"] { color:#ccc !important; }
+  body.hc-mode a, body.hc-mode .nav-links a { color:#0ff !important; }
+  /* Dyslexia font */
+  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap');
+  body.dyslexia-mode, body.dyslexia-mode * { font-family:'Lexend', sans-serif !important; letter-spacing:0.04em !important; line-height:1.9 !important; word-spacing:0.12em !important; }
+  /* Focus outlines */
+  body.focus-mode *:focus { outline:3px solid var(--accent) !important; outline-offset:3px !important; }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<nav>
+  <div class="centauri-logo" onclick="goTo('home')" role="button" tabindex="0" aria-label="Centauri — go to home">
+    <!-- Compact accent mark: orbit circle with core dot -->
+    <svg class="centauri-logo-mark" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="17" cy="17" r="15.5" stroke="#00b87a" stroke-width="2" fill="none"/>
+      <ellipse cx="17" cy="17" rx="15.5" ry="6.5" stroke="rgba(0,184,122,0.3)" stroke-width="1.2" fill="none" transform="rotate(-28 17 17)"/>
+      <circle cx="17" cy="17" r="4" fill="#00b87a"/>
+      <circle cx="29.5" cy="12" r="2.2" fill="#00b87a"/>
+    </svg>
+    <div class="centauri-logo-text">
+      <span class="centauri-logo-word">Centauri</span>
+      <span class="centauri-logo-tag">Access. Skills. Opportunity.</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a onclick="goTo('how')" id="nav-how">How it works</a>
+    <a onclick="goTo('find')" id="nav-find">Resources</a>
+    <a onclick="goTo('mentor')" id="nav-mentor" class="mentor-link">Mentorship</a>
+    <a onclick="goTo('academy')" id="nav-academy" class="academy-link">Skills Academy</a>
+    <a onclick="goTo('donate')" id="nav-donate">Donate Tech</a>
+    <a onclick="goTo('impact')" id="nav-impact">Impact</a>
+  </div>
+  <div class="nav-right" style="display:flex;gap:0.6rem;align-items:center;" id="nav-right">
+    <button class="btn-o" style="padding:0.4rem 1rem;font-size:0.8rem;" onclick="openAuthModal('signin')">Sign in</button>
+    <button class="nav-cta" onclick="openAuthModal('signup')">Join free</button>
+  </div>
+</nav>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ACCESSIBILITY PANEL -->
+<div id="a11y-panel" role="dialog" aria-label="Accessibility options">
+  <div class="a11y-title">Accessibility</div>
+  <div class="a11y-row">
+    <button class="a11y-btn2" onclick="changeFontSize(1)" aria-label="Increase text size">A+ Larger</button>
+    <button class="a11y-btn2" onclick="changeFontSize(-1)" aria-label="Decrease text size">A− Smaller</button>
+  </div>
+  <div class="a11y-divider"></div>
+  <button class="a11y-btn2" id="a11y-hc" onclick="toggleHighContrast()" aria-pressed="false">High Contrast</button>
+  <button class="a11y-btn2" id="a11y-dyslexia" onclick="toggleDyslexia()" aria-pressed="false">Dyslexia Font</button>
+  <button class="a11y-btn2" id="a11y-focus" onclick="toggleFocusMode()" aria-pressed="false">Focus Outlines</button>
+  <div class="a11y-divider"></div>
+  <div class="a11y-row">
+    <button class="a11y-btn2" onclick="startSpeech()" aria-label="Read page aloud">Read Aloud</button>
+    <button class="a11y-btn2" onclick="stopSpeech()" aria-label="Stop reading">Stop</button>
+  </div>
+</div>
+
+<!-- ===================== HOME ===================== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-blob"></div>
+    <div class="hero-tag">Free Digital Skills Platform &middot; Powered by Centauri AI</div>
+    <h1>Learn digital skills that<br>create <em>real opportunities.</em></h1>
+    <p class="hero-sub">Free beginner-friendly pathways in coding, AI, design, marketing, video editing, and web development &mdash; built for young people from underserved communities. No experience needed.</p>
+    <div class="hero-actions">
+      <button class="btn-p" onclick="goTo('academy')">Start Learning &rarr;</button>
+      <button class="btn-o" onclick="goTo('academy')">Explore Pathways</button>
+      <button class="btn-o" onclick="goTo('mentor')">Book a Mentor</button>
+    </div>
+    <div class="stats">
+      <div><div class="stat-n">6</div><div class="stat-l">Free skill tracks available now</div></div>
+      <div><div class="stat-n">89%</div><div class="stat-l">Mentored learners got job or placement</div></div>
+      <div><div class="stat-n">£0</div><div class="stat-l">Cost to any young person</div></div>
+    </div>
+  </div>
+
+  <!-- MENTORSHIP BANNER -->
+  <div class="mentor-banner">
+    <div class="mentor-banner-left">
+      <div class="mentor-banner-tag">New &middot; Now Live</div>
+      <h3>Your network is<br><span>your net worth.</span></h3>
+      <p>Most young people in tech got their break through who they knew. Centauri Mentorship Hub connects you with real tech professionals, businesses, and Centauri mentors &mdash; so your background is never a barrier.</p>
+      <div style="margin-top:1.2rem;display:flex;gap:0.8rem;flex-wrap:wrap">
+        <button class="btn-p-inv" onclick="goTo('mentor')">Book a Mentor &rarr;</button>
+        <button class="btn-o-inv" onclick="goTo('mentor')">Become a Mentor</button>
+      </div>
+    </div>
+    <div class="mentor-banner-right">
+      <div class="mentor-stat-row">
+        <div class="mstat"><div class="mstat-n">120+</div><div class="mstat-l">Active mentors</div></div>
+        <div class="mstat"><div class="mstat-n">40+</div><div class="mstat-l">Partner companies</div></div>
+        <div class="mstat"><div class="mstat-n">Free</div><div class="mstat-l">Always &amp; forever</div></div>
+      </div>
+      <div style="background:rgba(0,184,122,0.08);border:1px solid rgba(0,184,122,0.2);border-radius:10px;padding:1rem;max-width:260px">
+        <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem">Centauri Mentors</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.5">Vetted industry professionals from BCU's Centauri network, assigned to guide you through your first steps in tech.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE PILLARS -->
+  <div class="sec alt">
+    <span class="sec-tag">What we offer</span>
+    <div class="sec-title">Everything you need<br>to break in.</div>
+    <p class="sec-sub">Centauri tackles every barrier young people face entering tech &mdash; not just the hardware.</p>
+    <div class="home-cards">
+      <div class="home-card" onclick="goTo('find')">
+        <div class="home-card-icon"></div>
+        <h3>Resources</h3>
+        <p>AI-matched refurbished laptops, tablets, and broadband schemes near you. Free for anyone aged 16–30.</p>
+        <div class="home-card-link">Find resources &rarr;</div>
+      </div>
+      <div class="home-card mentor-card" onclick="goTo('mentor')">
+        <div class="home-card-icon"></div>
+        <h3>Get a Mentor</h3>
+        <p>One-to-one guidance from tech professionals, businesses, and Centauri mentors. Build the network you never had.</p>
+        <div class="home-card-link">Find a mentor &rarr;</div>
+      </div>
+      <div class="home-card" onclick="goTo('impact')">
+        <div class="home-card-icon"></div>
+        <h3>See the Impact</h3>
+        <p>312 devices matched. 94% back in education or work. Real stories from young people whose paths changed.</p>
+        <div class="home-card-link">View impact &rarr;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORIES TEASER -->
+  <div class="sec">
+    <span class="sec-tag">Real Stories</span>
+    <div class="sec-title">It started with<br>one connection.</div>
+    <p class="sec-sub">The digital divide isn't just about hardware. It's about who you know. Centauri changes both.</p>
+    <div class="story-grid">
+      <div class="story-card"><div class="story-stars"></div><p class="quote">"I'd been trying to complete my college assignments on my phone for months. Centauri matched me with a laptop within a week. I finished my course and got a job offer two months later."</p><div class="author">Amara, 19</div><div class="role">Birmingham &middot; IT Support Apprentice</div></div>
+      <div class="story-card"><div class="story-stars"></div><p class="quote">"My Centauri mentor helped me build my first portfolio and introduced me to their team. Three months later I was doing paid work experience. I didn't have a single contact in tech before joining Centauri."</p><div class="author">Marcus, 21</div><div class="role">Handsworth &middot; Junior Web Developer</div></div>
+      <div class="story-card"><div class="story-stars"></div><p class="quote">"I didn't even know resources like this existed. Within 48 hours I had a tablet, free coding courses, and a mentor helping me prep for my first tech interview. It completely changed my path."</p><div class="author">Priya, 17</div><div class="role">Sparkbrook &middot; A-Level Student</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<div class="page" id="page-how">
+  <div class="sec">
+    <span class="sec-tag">How it works</span>
+    <div class="sec-title">Simple steps,<br>real results.</div>
+    <p class="sec-sub">Centauri is built to be fast, free, and frictionless for young people with limited time and resources.</p>
+    <div class="steps">
+      <div class="step"><div class="step-bar"></div><div class="step-n">01</div><h3>Tell us what you need</h3><p>Enter your postcode, age, and what you're looking for &mdash; a device, broadband, a mentor, or all three.</p></div>
+      <div class="step"><div class="step-bar"></div><div class="step-n">02</div><h3>AI finds your matches</h3><p>Our AI analyses your needs and searches nearby organisations, charities, and Centauri mentors.</p></div>
+      <div class="step"><div class="step-bar"></div><div class="step-n">03</div><h3>Get a recommendation</h3><p>You receive tailored results with an AI explanation of why each resource or mentor fits your goals.</p></div>
+      <div class="step"><div class="step-bar"></div><div class="step-n">04</div><h3>Connect and start</h3><p>Contact the organisation, book a mentor session, or get guided next steps &mdash; all from one place.</p></div>
+    </div>
+    <div style="margin-bottom:2rem">
+      <span class="sec-tag">FAQs</span>
+      <div class="sec-title" style="font-size:2rem">Common questions</div>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Who is Centauri for? <span class="faq-arrow">&#9662;</span></div><div class="faq-a">Centauri is for young people aged 16–30 in the UK who lack access to the devices, connectivity, networks, or mentorship they need to progress in education or employment in tech.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is it free to use? <span class="faq-arrow">&#9662;</span></div><div class="faq-a">Yes &mdash; completely free. Centauri is a community platform supported by partner organisations and donations. There is no cost to find a device, access learning resources, or connect with a mentor.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the AI matching work? <span class="faq-arrow">&#9662;</span></div><div class="faq-a">You fill in a short form with your location, age, and needs. Our AI analyses that information alongside a database of partner organisations, available devices, and available mentors near you, then generates a personalised list of matches with an explanation for each.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is a Centauri mentor? <span class="faq-arrow">&#9662;</span></div><div class="faq-a">Centauri mentors are vetted tech professionals from Birmingham City University's Centauri network. They offer dedicated one-to-one guidance to young people who have no existing connections in the industry &mdash; from career planning to project reviews and introductions.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I donate on behalf of my company? <span class="faq-arrow">&#9662;</span></div><div class="faq-a">Absolutely. Business donations are welcome and may qualify for tax relief. Head to the Donate Tech page to register devices and request a donation certificate.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FIND A DEVICE ===================== -->
+<div class="page" id="page-find">
+  <div class="sec">
+    <span class="sec-tag">Resources</span>
+    <div class="sec-title">What do you need?</div>
+    <p class="sec-sub">Fill in your details and Centauri's AI will match you to the best resources near you — free, fast, and accurate.</p>
+
+    <!-- Live platform stats -->
+    <div class="find-live-bar">
+      <div class="live-dot"></div>
+      <div class="live-stat"><strong>3</strong> new devices added today</div>
+      <div class="live-divider"></div>
+      <div class="live-stat"><strong>12</strong> people helped this week</div>
+      <div class="live-divider"></div>
+      <div class="live-stat">Last updated <strong>5 minutes ago</strong></div>
+      <div class="live-divider"></div>
+      <div class="live-stat"><strong>47</strong> devices available now</div>
+    </div>
+
+    <!-- Search form -->
+    <div class="two-col" style="margin-bottom:2rem;">
+      <div class="form-box">
+        <div class="fg"><label>Your Postcode</label><input type="text" id="postcode" placeholder="e.g. B1 1BB" /></div>
+        <div class="fg"><label>Your Age</label><select id="age"><option value="">Select age range</option><option>Under 16</option><option>16 – 18</option><option>19 – 24</option><option>25 – 30</option></select></div>
+        <div class="fg"><label>What do you need?</label><div class="chips"><div class="chip on" data-val="Laptop">Laptop</div><div class="chip" data-val="Tablet">Tablet</div><div class="chip" data-val="Broadband">Broadband</div><div class="chip" data-val="Learning Resources">Learning Resources</div><div class="chip" data-val="Smartphone">Smartphone</div></div></div>
+        <div class="fg"><label>Your goal (optional)</label><textarea id="goal" placeholder="e.g. I want to get into cybersecurity and need a laptop for my course" style="height:80px;resize:none;"></textarea></div>
+        <button class="btn-p" onclick="findMatches()">Find my matches &rarr;</button>
+      </div>
+      <div class="res-panel" id="results">
+        <div class="placeholder"><span>Fill in your details and we'll find the best resources near you.</span></div>
+      </div>
+    </div>
+
+    <!-- Interactive Map -->
+    <div class="find-map-wrap">
+      <div class="find-map-header">
+        <span class="find-map-title"> Device Locations — Birmingham</span>
+        <button class="find-map-toggle" onclick="toggleMapView()">Hide map</button>
+      </div>
+      <div id="find-map">
+        <div class="map-bg"></div>
+        <div class="map-grid"></div>
+        <!-- Roads -->
+        <div class="map-road-h" style="top:38%;height:10px;opacity:0.9;"></div>
+        <div class="map-road-h" style="top:62%;height:7px;opacity:0.7;"></div>
+        <div class="map-road-h" style="top:22%;height:6px;opacity:0.6;"></div>
+        <div class="map-road-v" style="left:30%;width:8px;opacity:0.8;"></div>
+        <div class="map-road-v" style="left:55%;width:6px;opacity:0.65;"></div>
+        <div class="map-road-v" style="left:72%;width:5px;opacity:0.55;"></div>
+        <!-- Labels -->
+        <div class="map-label" style="top:36%;left:32%;">Corporation St</div>
+        <div class="map-label" style="top:60%;left:56%;">Bristol Rd</div>
+        <div class="map-label" style="top:20%;left:42%;">New St</div>
+        <div class="map-label" style="top:50%;left:4%;">Broad St</div>
+        <div class="map-label" style="top:15%;left:60%;">Aston</div>
+        <div class="map-label" style="top:70%;left:15%;">Ladywood</div>
+        <div class="map-label" style="top:72%;left:55%;">Moseley</div>
+        <!-- Map Pins -->
+        <div class="map-pin" id="pin-0" style="left:31%;top:44%;" onclick="showMapPopup(0,this)">
+          <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#00b87a"/><circle cx="14" cy="14" r="6" fill="white" class="pin-inner"/></svg>
+        </div>
+        <div class="map-pin" id="pin-1" style="left:55%;top:70%;" onclick="showMapPopup(1,this)">
+          <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#00b87a"/><circle cx="14" cy="14" r="6" fill="white" class="pin-inner"/></svg>
+        </div>
+        <div class="map-pin" id="pin-2" style="left:20%;top:58%;" onclick="showMapPopup(2,this)">
+          <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#00b87a"/><circle cx="14" cy="14" r="6" fill="white" class="pin-inner"/></svg>
+        </div>
+        <div class="map-pin" id="pin-3" style="left:68%;top:26%;" onclick="showMapPopup(3,this)">
+          <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22s14-12.37 14-22C28 6.27 21.73 0 14 0z" fill="#008f5e"/><circle cx="14" cy="14" r="6" fill="white" class="pin-inner"/></svg>
+        </div>
+        <!-- Popup (single, repositioned by JS) -->
+        <div class="map-popup" id="map-popup">
+          <div class="map-popup-arrow-border"></div>
+          <div class="map-popup-arrow"></div>
+          <button class="map-popup-close" onclick="closeMapPopup()">×</button>
+          <div class="map-popup-name" id="pp-name"></div>
+          <div class="map-popup-dist" id="pp-dist"></div>
+          <div class="map-popup-devices" id="pp-devices"></div>
+          <div class="map-popup-desc" id="pp-desc"></div>
+          <button class="map-popup-btn" onclick="scrollToDevices()">View Devices &darr;</button>
+        </div>
+        <div class="map-center-badge">Birmingham City Centre</div>
+      </div>
+    </div>
+
+    <!-- Device Cards Section -->
+    <div id="device-section">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <span class="sec-tag" style="margin-bottom:0.2rem;">Available Devices</span>
+          <div style="font-family:var(--font-d);font-size:1.4rem;letter-spacing:0.03em;text-transform:uppercase;color:#000;line-height:1;">Browse &amp; Request</div>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="find-filters">
+        <span class="filter-label">Filter</span>
+        <select class="filter-select" id="f-type" onchange="applyFilters()">
+          <option value="">All Types</option>
+          <option value="laptop">Laptop</option>
+          <option value="tablet">Tablet</option>
+          <option value="smartphone">Smartphone</option>
+        </select>
+        <select class="filter-select" id="f-ram" onchange="applyFilters()">
+          <option value="">Any RAM</option>
+          <option value="4">4GB+</option>
+          <option value="8">8GB+</option>
+          <option value="16">16GB+</option>
+        </select>
+        <select class="filter-select" id="f-storage" onchange="applyFilters()">
+          <option value="">Any Storage</option>
+          <option value="64">64GB+</option>
+          <option value="128">128GB+</option>
+          <option value="256">256GB+</option>
+        </select>
+        <label class="filter-toggle" id="f-avail-label" onclick="toggleAvailFilter()">
+          <span id="f-avail-icon"></span> Available only
+        </label>
+        <div class="filter-sep"></div>
+        <span class="filter-label">Sort</span>
+        <select class="filter-select" id="f-sort" onchange="applyFilters()">
+          <option value="match">Best Match</option>
+          <option value="distance">Closest</option>
+          <option value="specs">Best Specs</option>
+          <option value="new">Newly Added</option>
+        </select>
+        <span class="results-count" id="f-count"><strong>9</strong> devices shown</span>
+      </div>
+
+      <!-- Device grid -->
+      <div class="device-grid" id="device-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Device Details Modal -->
+<div class="modal-overlay" id="device-modal" onclick="handleModalClick(event)">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-label="Device details">
+    <div class="modal-img" id="modal-img">
+      <div class="modal-status-pill" id="modal-status-pill"></div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-name" id="modal-name"></div>
+      <div class="modal-org" id="modal-org"></div>
+      <div class="modal-section-title">Specifications</div>
+      <div class="modal-specs-grid" id="modal-specs"></div>
+      <div class="modal-section-title">Collection Location</div>
+      <div class="modal-location-box">
+        <div class="modal-location-name" id="modal-loc-name"></div>
+        <div class="modal-location-meta" id="modal-loc-meta"></div>
+      </div>
+      <div class="modal-section-title">Eligibility</div>
+      <div class="modal-eligibility">
+        <ul id="modal-eligibility"></ul>
+      </div>
+      <div class="modal-section-title">AI Recommendation</div>
+      <div class="modal-ai-box">
+        <div class="modal-ai-head">
+          <span class="modal-ai-pct" id="modal-ai-pct"></span>
+          <div class="modal-ai-bar-bg"><div class="modal-ai-bar-fill" id="modal-ai-bar"></div></div>
+        </div>
+        <div class="modal-ai-reason" id="modal-ai-reason"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-req-btn" id="modal-req-btn" onclick="requestDevice()">Request This Device &rarr;</button>
+      <button class="modal-cancel-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MENTORSHIP ===================== -->
+<div class="page" id="page-mentor">
+
+  <!-- HERO -->
+  <div class="mentor-hero">
+    <div class="mentor-hero-inner">
+      <div class="mentor-hero-tag">&#9679; Mentorship Hub &middot; Powered by Centauri &amp; Centauri</div>
+      <h1>Your network<br>starts <em>here.</em></h1>
+      <p class="mentor-hero-sub">In tech, who you know matters as much as what you know. For young people with no connections and no network, that's an invisible wall. Centauri tears it down — connecting you with real professionals, businesses, and Centauri mentors ready to invest in your future.</p>
+      <div class="mentor-hero-actions">
+        <button class="btn-p-inv" onclick="document.getElementById('mentor-form-section').scrollIntoView({behavior:'smooth'})">Request a Mentor &rarr;</button>
+        <button class="btn-o-inv" onclick="document.getElementById('become-mentor').scrollIntoView({behavior:'smooth'})">Become a Mentor</button>
+      </div>
+      <div class="mentor-stats">
+        <div class="mentor-stat-item"><div class="msi-n">120+</div><div class="msi-l">Active mentors</div></div>
+        <div class="mentor-stat-item"><div class="msi-n">40+</div><div class="msi-l">Partner companies</div></div>
+        <div class="mentor-stat-item"><div class="msi-n">89%</div><div class="msi-l">Got job or placement</div></div>
+        <div class="mentor-stat-item"><div class="msi-n">£0</div><div class="msi-l">Cost to young people</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHY IT MATTERS -->
+  <div class="problem-strip">
+    <div class="problem-strip-inner">
+      <div class="prob-item">
+        <div class="prob-icon"></div>
+        <div class="prob-text">
+          <h4>No network, no foot in the door</h4>
+          <p>70% of jobs are never publicly advertised. Without industry contacts, young people from underserved backgrounds are locked out from the start.</p>
+        </div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-icon"></div>
+        <div class="prob-text">
+          <h4>No one to ask for advice</h4>
+          <p>Career guidance at school rarely covers tech careers in depth. Without a mentor, young people navigate an unfamiliar industry entirely alone.</p>
+        </div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-icon"></div>
+        <div class="prob-text">
+          <h4>Portfolios built in a vacuum</h4>
+          <p>Self-taught developers, designers, and analysts often build projects with no professional feedback — making it harder to stand out to employers.</p>
+        </div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-icon"></div>
+        <div class="prob-text">
+          <h4>Geography is a barrier</h4>
+          <p>Tech hubs are concentrated in London. Young people in Birmingham and other cities are less likely to encounter working professionals in tech day to day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW MENTORSHIP WORKS -->
+  <div class="sec">
+    <span class="sec-tag">How it works</span>
+    <div class="sec-title">From zero network<br>to connected.</div>
+    <p class="sec-sub">Our matching process is free, fast, and built for young people who've never had access to professional guidance before.</p>
+    <div class="mentor-steps">
+      <div class="mentor-step">
+        <div class="ms-num">01</div>
+        <div class="ms-icon"></div>
+        <h4>Tell us about you</h4>
+        <p>Share your interests, goals, and what kind of support you're looking for — career advice, project feedback, job referrals, or ongoing guidance.</p>
+      </div>
+      <div class="mentor-step">
+        <div class="ms-num">02</div>
+        <div class="ms-icon"></div>
+        <h4>AI matches you</h4>
+        <p>Our AI reviews your profile against available mentors — tech professionals, businesses, and Centauri mentors — and ranks the best fit for your goals.</p>
+      </div>
+      <div class="mentor-step">
+        <div class="ms-num">03</div>
+        <div class="ms-icon"></div>
+        <h4>Book a session</h4>
+        <p>Once matched, you schedule an initial 30-minute session with your mentor. No pressure, no commitment — just a conversation to get started.</p>
+      </div>
+      <div class="mentor-step">
+        <div class="ms-num">04</div>
+        <div class="ms-icon"></div>
+        <h4>Build your future</h4>
+        <p>Ongoing monthly check-ins, project reviews, CV feedback, interview prep, and introductions — whatever you need to break into tech.</p>
+      </div>
+    </div>
+
+    <!-- CRITERIA ALIGNMENT NOTE -->
+    <div class="criteria-strip">
+      <h4>Built around the challenge brief</h4>
+      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:1rem">Centauri Mentorship Hub directly addresses the judging criteria for the Centauri Challenge:</p>
+      <div class="criteria-pills">
+        <div class="cpill green"> Problem Understanding — tackles network poverty in tech</div>
+        <div class="cpill blue"> Innovation — AI-matched mentorship at scale, free</div>
+        <div class="cpill purple"> Technical Execution — live matching, booking &amp; profiles</div>
+        <div class="cpill orange"> Impact — measurable career outcomes for young people</div>
+        <div class="cpill red"> Presentation — cohesive, real-world ready product</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENTOR TYPES -->
+  <div class="sec alt">
+    <span class="sec-tag">Who mentors on Centauri</span>
+    <div class="sec-title">Three types of<br>mentor, one platform.</div>
+    <p class="sec-sub">We bring together three distinct mentor types to give you the widest possible support network.</p>
+    <div class="mentor-types">
+      <div class="mtype-card">
+        <div class="mtype-badge pro">Tech Professional</div>
+        <h4>Industry Pros</h4>
+        <p>Software engineers, data scientists, UX designers, cybersecurity analysts, and product managers working at leading UK tech companies.</p>
+        <div class="mtype-perks">
+          <div class="mtype-perk">Career pathway advice</div>
+          <div class="mtype-perk">Portfolio and project feedback</div>
+          <div class="mtype-perk">Interview preparation</div>
+          <div class="mtype-perk">Industry introductions</div>
+        </div>
+      </div>
+      <div class="mtype-card">
+        <div class="mtype-badge biz">Business Partner</div>
+        <h4>Business Mentors</h4>
+        <p>Entrepreneurs, CTOs, and hiring managers from Centauri's network of 40+ partner companies — including startups, scale-ups, and established firms.</p>
+        <div class="mtype-perks">
+          <div class="mtype-perk">Work experience pathways</div>
+          <div class="mtype-perk">Apprenticeship referrals</div>
+          <div class="mtype-perk">Real project briefs to work on</div>
+          <div class="mtype-perk">Potential employment routes</div>
+        </div>
+      </div>
+      <div class="mtype-card">
+        <div class="mtype-badge centauri">Centauri Mentor</div>
+        <h4>Centauri Network</h4>
+        <p>Vetted professionals from BCU's Centauri programme, specifically trained to support young people with no prior connections or experience in tech.</p>
+        <div class="mtype-perks">
+          <div class="mtype-perk">Dedicated 1-to-1 support</div>
+          <div class="mtype-perk">Monthly check-ins guaranteed</div>
+          <div class="mtype-perk">Scholarship &amp; course signposting</div>
+          <div class="mtype-perk">Community cohort events</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED MENTORS -->
+  <div class="sec">
+    <span class="sec-tag">Featured Mentors</span>
+    <div class="sec-title">Meet the people<br>in your corner.</div>
+    <p class="sec-sub">A snapshot of mentors currently available on Centauri.</p>
+    <div class="mentor-grid">
+      <div class="mentor-card">
+        <div class="centauri-badge">Centauri Mentor</div>
+        <div class="mentor-avatar"></div>
+        <div class="mentor-name">Aisha Osei</div>
+        <div class="mentor-role">Software Engineer</div>
+        <div class="mentor-company">HSBC Tech</div>
+        <div class="mentor-tags">
+          <div class="mentor-tag-pill">Python</div>
+          <div class="mentor-tag-pill">Backend</div>
+          <div class="mentor-tag-pill">Careers</div>
+        </div>
+      </div>
+      <div class="mentor-card">
+        <div class="mentor-avatar"></div>
+        <div class="mentor-name">Jordan Blake</div>
+        <div class="mentor-role">CTO &amp; Co-Founder</div>
+        <div class="mentor-company">Launchpad BHX</div>
+        <div class="mentor-tags">
+          <div class="mentor-tag-pill">Startups</div>
+          <div class="mentor-tag-pill">Fundraising</div>
+          <div class="mentor-tag-pill">Product</div>
+        </div>
+      </div>
+      <div class="mentor-card">
+        <div class="centauri-badge">Centauri Mentor</div>
+        <div class="mentor-avatar"></div>
+        <div class="mentor-name">Priya Sharma</div>
+        <div class="mentor-role">Data Scientist</div>
+        <div class="mentor-company">NHS Digital</div>
+        <div class="mentor-tags">
+          <div class="mentor-tag-pill">ML/AI</div>
+          <div class="mentor-tag-pill">SQL</div>
+          <div class="mentor-tag-pill">Health Tech</div>
+        </div>
+      </div>
+      <div class="mentor-card">
+        <div class="mentor-avatar"></div>
+        <div class="mentor-name">Kofi Mensah</div>
+        <div class="mentor-role">Senior UX Designer</div>
+        <div class="mentor-company">BJSS</div>
+        <div class="mentor-tags">
+          <div class="mentor-tag-pill">Figma</div>
+          <div class="mentor-tag-pill">Research</div>
+          <div class="mentor-tag-pill">Portfolio</div>
+        </div>
+      </div>
+      <div class="mentor-card">
+        <div class="mentor-avatar"></div>
+        <div class="mentor-name">Fatima Al-Rashid</div>
+        <div class="mentor-role">Cybersecurity Analyst</div>
+        <div class="mentor-company">PwC</div>
+        <div class="mentor-tags">
+          <div class="mentor-tag-pill">SecOps</div>
+          <div class="mentor-tag-pill">Certifications</div>
+          <div class="mentor-tag-pill">Apprenticeships</div>
+        </div>
+      </div>
+      <div class="mentor-card">
+        <div class="centauri-badge">Centauri Mentor</div>
+        <div class="mentor-avatar"></div>
+        <div class="mentor-name">Tom Halligan</div>
+        <div class="mentor-role">Engineering Manager</div>
+        <div class="mentor-company">bet365</div>
+        <div class="mentor-tags">
+          <div class="mentor-tag-pill">JavaScript</div>
+          <div class="mentor-tag-pill">React</div>
+          <div class="mentor-tag-pill">CV Review</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REQUEST A MENTOR FORM -->
+  <div class="sec alt" id="mentor-form-section">
+    <span class="sec-tag">Request a Mentor</span>
+    <div class="sec-title">Ready to find<br>your mentor?</div>
+    <p class="sec-sub">Tell us a bit about yourself and what kind of support you're looking for. It's completely free and takes under 5 minutes.</p>
+    <div class="mentor-form-wrap">
+      <div>
+        <div class="form-box" id="mentor-form-box">
+          <div class="fg"><label>Your Name</label><input type="text" id="m-name" placeholder="e.g. Amara Johnson" /></div>
+          <div class="fg"><label>Your Email</label><input type="email" id="m-email" placeholder="e.g. amara@email.com" /></div>
+          <div class="fg"><label>Your Age</label><select id="m-age"><option value="">Select age range</option><option>16 – 18</option><option>19 – 24</option><option>25 – 30</option></select></div>
+          <div class="fg"><label>Area of interest</label><select id="m-area"><option value="">Select your area</option><option>Software Development</option><option>Cybersecurity</option><option>Data Science / AI</option><option>UX / Product Design</option><option>IT Support / Infrastructure</option><option>Digital Marketing</option><option>Entrepreneurship / Startups</option><option>Not sure yet</option></select></div>
+          <div class="fg"><label>What kind of support do you need?</label><div class="chips" id="m-support-chips"><div class="chip on" data-val="Career advice">Career advice</div><div class="chip" data-val="CV &amp; portfolio review">CV &amp; portfolio review</div><div class="chip" data-val="Interview prep">Interview prep</div><div class="chip" data-val="Project feedback">Project feedback</div><div class="chip" data-val="Work experience">Work experience</div><div class="chip" data-val="Ongoing mentoring">Ongoing mentoring</div></div></div>
+          <div class="fg"><label>Tell us your situation (optional)</label><textarea id="m-situation" placeholder="e.g. I'm self-teaching Python with no formal education and no contacts in tech. I want to become a junior developer." style="height:90px;resize:none;"></textarea></div>
+          <button class="btn-p" onclick="submitMentorRequest()">Request my mentor &rarr;</button>
+        </div>
+        <div class="mentor-success" id="mentor-success">
+          <div class="tick"></div>
+          <h3>You're on your way!</h3>
+          <p>Your request has been received. We'll match you with the best available mentor within 48 hours and email you with next steps. Your network starts now.</p>
+        </div>
+      </div>
+      <div class="mentor-aside">
+        <div class="aside-box">
+          <h4> Safe &amp; supportive</h4>
+          <p>All mentors are vetted. Sessions are structured and supportive. You're never under any obligation to continue beyond your first session.</p>
+        </div>
+        <div class="aside-box">
+          <h4> What you can expect</h4>
+          <ul>
+            <li>A mentor matched to your goals within 48 hours</li>
+            <li>An initial 30-minute intro session</li>
+            <li>Monthly check-ins if you choose to continue</li>
+            <li>Access to our community Discord for peer support</li>
+            <li>Invites to Centauri networking events in Birmingham</li>
+          </ul>
+        </div>
+        <div class="aside-box" style="background:var(--accent-light);border-color:rgba(0,184,122,0.25)">
+          <h4 style="color:var(--accent-dark)"> Centauri Priority</h4>
+          <p style="color:#3a6b55">Young people with no prior industry contacts are automatically prioritised for Centauri mentor matching — the most dedicated support we offer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BECOME A MENTOR + BUSINESS PARTNERSHIP -->
+  <div class="sec" id="become-mentor">
+    <span class="sec-tag">Get involved</span>
+    <div class="sec-title">Two ways to<br>make a difference.</div>
+    <p class="sec-sub">Whether you're a professional with experience to share or a business ready to open doors, there's a place for you in the Centauri network.</p>
+
+    <!-- TABS -->
+    <div class="involve-tabs">
+      <button class="involve-tab active" onclick="switchTab('mentor-apply')"> Apply to Mentor</button>
+      <button class="involve-tab" onclick="switchTab('biz-partner')"> Business Partnership</button>
+    </div>
+
+    <!-- MENTOR APPLY FORM -->
+    <div id="tab-mentor-apply" class="involve-panel active">
+      <div class="mentor-form-wrap">
+        <div>
+          <div class="form-box" id="apply-mentor-form-box">
+            <div style="margin-bottom:1.2rem">
+              <div style="font-family:var(--font-d);font-size:1.4rem;letter-spacing:0.03em;text-transform:uppercase;color:#000;margin-bottom:0.3rem">Apply to become a mentor</div>
+              <div style="font-size:0.83rem;color:var(--muted)">Takes under 5 minutes. We'll review your application and get back to you within 3 working days.</div>
+            </div>
+            <div class="fg"><label>Full Name</label><input type="text" id="am-name" placeholder="e.g. Aisha Osei" /></div>
+            <div class="fg"><label>Email Address</label><input type="email" id="am-email" placeholder="e.g. aisha@company.com" /></div>
+            <div class="fg"><label>Current Job Title</label><input type="text" id="am-title" placeholder="e.g. Senior Software Engineer" /></div>
+            <div class="fg"><label>Company / Organisation</label><input type="text" id="am-company" placeholder="e.g. HSBC Tech" /></div>
+            <div class="fg"><label>Your area of expertise</label><select id="am-area"><option value="">Select your speciality</option><option>Software Development</option><option>Cybersecurity</option><option>Data Science / AI</option><option>UX / Product Design</option><option>IT Support / Infrastructure</option><option>Digital Marketing</option><option>Entrepreneurship / Startups</option><option>Other</option></select></div>
+            <div class="fg"><label>How many hours per month can you offer?</label><div class="chips"><div class="chip on" data-group="hrs">1–2 hrs</div><div class="chip" data-group="hrs">3–4 hrs</div><div class="chip" data-group="hrs">5+ hrs</div></div></div>
+            <div class="fg"><label>What would you like to offer? (select all that apply)</label><div class="chips"><div class="chip on" data-val="Career advice">Career advice</div><div class="chip" data-val="CV review">CV review</div><div class="chip" data-val="Interview prep">Interview prep</div><div class="chip" data-val="Project feedback">Project feedback</div><div class="chip" data-val="Work experience">Work experience / shadowing</div><div class="chip" data-val="Referrals">Referrals &amp; introductions</div></div></div>
+            <div class="fg"><label>Why do you want to mentor with Centauri? (optional)</label><textarea id="am-why" placeholder="e.g. I grew up in a similar situation and want to give back. I know how much a single connection can change everything." style="height:90px;resize:none;"></textarea></div>
+            <div class="fg"><label>LinkedIn profile URL (optional)</label><input type="text" id="am-linkedin" placeholder="https://linkedin.com/in/yourname" /></div>
+            <button class="btn-p" onclick="submitMentorApply()">Submit my application &rarr;</button>
+          </div>
+          <div class="mentor-success" id="apply-mentor-success">
+            <div class="tick"></div>
+            <h3>Application received!</h3>
+            <p>Thank you for stepping up. We'll review your application and be in touch within 3 working days. You're about to change someone's life.</p>
+          </div>
+        </div>
+        <div class="mentor-aside">
+          <div class="aside-box">
+            <h4>⏱ Minimal time commitment</h4>
+            <p>Most mentors give 1–2 hours a month. Sessions are structured so you're never left wondering what to say — we give you a framework.</p>
+          </div>
+          <div class="aside-box">
+            <h4> What mentoring looks like</h4>
+            <ul>
+              <li>A 30-minute intro call with your mentee</li>
+              <li>Monthly check-in sessions (video or in-person)</li>
+              <li>Occasional CV or portfolio reviews</li>
+              <li>Optional: intro your mentee to your network</li>
+            </ul>
+          </div>
+          <div class="aside-box" style="background:var(--accent-light);border-color:rgba(0,184,122,0.25)">
+            <h4 style="color:var(--accent-dark)"> Centauri Mentor Track</h4>
+            <p style="color:#3a6b55">Experienced professionals can apply for our Centauri Mentor status — a dedicated track with additional training, recognition, and priority mentee matching.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUSINESS PARTNERSHIP FORM -->
+    <div id="tab-biz-partner" class="involve-panel">
+      <div class="mentor-form-wrap">
+        <div>
+          <div class="form-box" id="biz-form-box">
+            <div style="margin-bottom:1.2rem">
+              <div style="font-family:var(--font-d);font-size:1.4rem;letter-spacing:0.03em;text-transform:uppercase;color:#000;margin-bottom:0.3rem">Partner with Centauri</div>
+              <div style="font-size:0.83rem;color:var(--muted)">Tell us about your organisation and how you'd like to get involved. We'll be in touch within 5 working days.</div>
+            </div>
+            <div class="fg"><label>Organisation Name</label><input type="text" id="biz-name" placeholder="e.g. Launchpad BHX Ltd" /></div>
+            <div class="fg"><label>Contact Name</label><input type="text" id="biz-contact" placeholder="e.g. Jordan Blake" /></div>
+            <div class="fg"><label>Contact Email</label><input type="email" id="biz-email" placeholder="e.g. jordan@launchpadbhx.co.uk" /></div>
+            <div class="fg"><label>Organisation Size</label><select id="biz-size"><option value="">Select size</option><option>Freelancer / Solo</option><option>2–10 employees</option><option>11–50 employees</option><option>51–250 employees</option><option>250+ employees</option></select></div>
+            <div class="fg"><label>Industry / Sector</label><select id="biz-sector"><option value="">Select sector</option><option>Software &amp; Technology</option><option>Cybersecurity</option><option>Design &amp; Creative</option><option>Finance &amp; FinTech</option><option>Healthcare &amp; Health Tech</option><option>Media &amp; Marketing</option><option>Education &amp; EdTech</option><option>Retail &amp; E-commerce</option><option>Other</option></select></div>
+            <div class="fg"><label>How would you like to partner? (select all that apply)</label><div class="chips"><div class="chip on" data-val="Work experience">Offer work experience placements</div><div class="chip" data-val="Apprenticeships">Apprenticeship opportunities</div><div class="chip" data-val="Mentors">Provide employee mentors</div><div class="chip" data-val="Live briefs">Set real project briefs</div><div class="chip" data-val="Hiring">Hire Centauri graduates</div><div class="chip" data-val="Sponsor">Sponsor the platform</div><div class="chip" data-val="Devices">Donate tech equipment</div></div></div>
+            <div class="fg"><label>Tell us more about what you have in mind (optional)</label><textarea id="biz-detail" placeholder="e.g. We have 3 junior dev placement spots open each quarter and would love to prioritise Centauri learners. We can also offer a live brief project each cohort." style="height:100px;resize:none;"></textarea></div>
+            <button class="btn-p" onclick="submitBizPartner()">Submit partnership enquiry &rarr;</button>
+          </div>
+          <div class="mentor-success" id="biz-success">
+            <div class="tick"></div>
+            <h3>Enquiry received!</h3>
+            <p>Thank you for your interest in partnering with Centauri. We'll review your enquiry and reach out within 5 working days to discuss next steps.</p>
+          </div>
+        </div>
+        <div class="mentor-aside">
+          <div class="aside-box">
+            <h4> Why partner with us?</h4>
+            <p>Centauri gives businesses a direct line to motivated, talented young people who are often overlooked by traditional hiring pipelines. Your involvement creates real social impact — and a real talent pipeline.</p>
+          </div>
+          <div class="aside-box">
+            <h4> What partners get</h4>
+            <ul>
+              <li>Early access to high-potential candidates</li>
+              <li>Your brand featured on the Centauri platform</li>
+              <li>Invitations to Centauri showcase events</li>
+              <li>CSR reporting data for your annual report</li>
+              <li>A dedicated Centauri partnership coordinator</li>
+            </ul>
+          </div>
+          <div class="aside-box" style="background:#f3e8ff;border-color:rgba(124,58,237,0.2)">
+            <h4 style="color:#6d28d9"> Founding Partner status</h4>
+            <p style="color:#5b21b6">Businesses who partner before our official launch receive Founding Partner recognition — prominently featured across the platform and in press materials.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== DONATE ===================== -->
+<div class="page" id="page-donate">
+  <div class="sec">
+    <span class="sec-tag">Donate Tech</span>
+    <div class="sec-title">Got old tech?<br>Give it a second life.</div>
+    <p class="sec-sub">Your unused laptop, tablet, or smartphone could change a young person's future. It takes 5 minutes to register a donation.</p>
+    <div class="donate-banner">
+      <div><h3>Every device <span>matters.</span></h3><p>Last year, donated devices helped over 300 young people across Birmingham access education and employment opportunities they otherwise couldn't reach.</p></div>
+      <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+        <div style="text-align:center"><div style="font-family:var(--font-d);font-size:2rem;color:var(--accent)">312</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.07em">Devices donated</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-d);font-size:2rem;color:var(--accent)">47</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.07em">Partner orgs</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-d);font-size:2rem;color:var(--accent)">18</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.07em">Cities covered</div></div>
+      </div>
+    </div>
+    <div class="donate-steps">
+      <div class="d-step"><div class="d-step-icon">01</div><div><h4>Register your device</h4><p>Fill in the form with your device details and location. Takes under 5 minutes.</p></div></div>
+      <div class="d-step"><div class="d-step-icon">02</div><div><h4>We arrange collection</h4><p>Our partners arrange a free collection or drop-off point near you within 3–5 days.</p></div></div>
+      <div class="d-step"><div class="d-step-icon">03</div><div><h4>Device gets matched</h4><p>Your device is wiped, tested, and matched to a young person who needs it most.</p></div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="form-box" id="donate-form-box">
+          <div class="fg"><label>Your Name</label><input type="text" id="d-name" placeholder="e.g. Sarah Ahmed" /></div>
+          <div class="fg"><label>Your Email</label><input type="email" id="d-email" placeholder="e.g. sarah@email.com" /></div>
+          <div class="fg"><label>Your Postcode</label><input type="text" id="d-postcode" placeholder="e.g. B5 4RX" /></div>
+          <div class="fg"><label>Device Type</label><select id="d-type"><option value="">Select device type</option><option>Laptop</option><option>Desktop Computer</option><option>Tablet</option><option>Smartphone</option><option>Other</option></select></div>
+          <div class="fg"><label>Device Condition</label><div class="chips"><div class="chip on" data-group="cond">Works perfectly</div><div class="chip" data-group="cond">Minor issues</div><div class="chip" data-group="cond">Needs repair</div></div></div>
+          <div class="fg"><label>Additional notes (optional)</label><textarea id="d-notes" placeholder="e.g. Dell laptop, 8GB RAM, charger included." style="height:70px;resize:none;"></textarea></div>
+          <button class="btn-p" onclick="submitDonation()">Register my donation &rarr;</button>
+        </div>
+        <div class="success-msg" id="donate-success">
+          <div class="tick" style="font-size:2rem;color:var(--accent)">&#10003;</div>
+          <h3>Donation registered!</h3>
+          <p>Thank you! We'll be in touch within 24 hours to arrange collection. You're helping close the digital divide.</p>
+        </div>
+      </div>
+      <div>
+        <div class="info-card">
+          <h4>What we accept</h4>
+          <ul>
+            <li>Laptops and notebooks (any age)</li>
+            <li>Tablets (iPad, Android, Windows)</li>
+            <li>Smartphones (unlocked preferred)</li>
+            <li>Desktop computers with monitors</li>
+            <li>Chargers, mice, and accessories</li>
+            <li>Devices with minor faults — we repair!</li>
+          </ul>
+        </div>
+        <div class="note-card"><h4>What happens to your data?</h4><p>Every device is securely wiped to factory settings by our certified partners before being passed on. Your data is completely erased — guaranteed.</p></div>
+        <div class="note-card"><h4>Tax relief available</h4><p>UK businesses donating tech equipment may be eligible for tax relief. We can provide a donation certificate on request.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== IMPACT ===================== -->
+<div class="page" id="page-impact">
+  <div class="sec">
+    <span class="sec-tag">Our Impact</span>
+    <div class="sec-title">Bridging the gap,<br>one connection at a time.</div>
+    <p class="sec-sub">Centauri is connecting young people across the UK to the devices, mentors, and networks they need to get ahead.</p>
+    <div class="impact-grid">
+      <div class="icard"><div class="inum">312</div><div class="ilabel">Devices matched to young people</div></div>
+      <div class="icard"><div class="inum">47</div><div class="ilabel">Partner organisations UK-wide</div></div>
+      <div class="icard"><div class="inum">120+</div><div class="ilabel">Active mentors on the platform</div></div>
+      <div class="icard"><div class="inum">89%</div><div class="ilabel">Mentored users got job or placement</div></div>
+      <div class="icard"><div class="inum">94%</div><div class="ilabel">Of device recipients back in education or work</div></div>
+      <div class="icard"><div class="inum">&pound;0</div><div class="ilabel">Cost to any young person</div></div>
+    </div>
+  </div>
+  <div class="sec alt">
+    <span class="sec-tag">Stories</span>
+    <div class="sec-title">Real people,<br>real change.</div>
+    <p class="sec-sub">Here's what Centauri has meant to young people across the UK.</p>
+    <div class="story-grid">
+      <div class="story-card"><div class="story-stars"></div><p class="quote">"I'd been trying to complete my college assignments on my phone for months. Centauri matched me with a laptop within a week. I finished my course and got a job offer two months later."</p><div class="author">Amara, 19</div><div class="role">Birmingham &middot; IT Support Apprentice</div></div>
+      <div class="story-card"><div class="story-stars"></div><p class="quote">"My Centauri mentor helped me build my first GitHub portfolio, then introduced me to their team at bet365. I had no contacts in tech before joining Centauri. None. Now I'm starting a junior developer role."</p><div class="author">Marcus, 21</div><div class="role">Handsworth &middot; Junior Developer</div></div>
+      <div class="story-card"><div class="story-stars"></div><p class="quote">"I didn't even know resources like this existed. Within 48 hours I had a tablet and access to free coding courses. It completely changed my path."</p><div class="author">Priya, 17</div><div class="role">Sparkbrook &middot; A-Level Student</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SKILLS ACADEMY ===================== -->
+<div class="page" id="page-academy">
+
+  <!-- HERO -->
+  <div class="academy-hero">
+    <div class="academy-grid-bg"></div>
+    <div class="academy-hero-inner">
+      <div class="academy-cs-badge"><span class="academy-cs-dot"></span>Live Now &middot; Start Free Today</div>
+      <h1>Learn skills.<br><em>Build futures.</em></h1>
+      <p class="academy-hero-sub">Centauri Digital Skills Pathway is a free structured learning platform built for young people starting from zero — covering coding, design, marketing, video editing, AI, and web development. No prior experience needed. No cost. Ever.</p>
+
+      <div class="academy-signup-box">
+        <h3>Join the waitlist</h3>
+        <p>Join thousands of young people building real digital skills. Pick a track and start your first lesson today.</p>
+        <div id="academy-signup-form">
+          <div class="academy-input-row">
+            <input type="text" id="acad-name" placeholder="Your first name" />
+            <input type="email" id="acad-email" placeholder="Your email address" />
+          </div>
+          <div style="margin-bottom:0.8rem">
+            <select id="acad-track" style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:0.75rem 1rem;color:rgba(255,255,255,0.7);font-family:var(--font-b);font-size:0.88rem;outline:none;-webkit-appearance:none;">
+              <option value="">Which track interests you most?</option>
+              <option>Coding</option>
+              <option>Web Development</option>
+              <option>Design</option>
+              <option>AI &amp; Machine Learning</option>
+              <option>Digital Marketing</option>
+              <option>Video Editing</option>
+              <option>Not sure yet — show me everything</option>
+            </select>
+          </div>
+          <button class="btn-academy" style="width:100%;padding:0.85rem;" onclick="handleAcademyStart()">Start Learning Free &rarr;</button>
+          <div class="academy-privacy" style="margin-top:0.7rem"> No spam, ever. We'll only email you when we launch.</div>
+        </div>
+        <div class="academy-signup-success" id="academy-success">
+          <div class="tick"></div>
+          <p>You're on the list! We'll email <strong id="academy-confirmed-email"></strong> the moment Skills Academy goes live. Get ready to build something great.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WAITLIST COUNTER -->
+  <div class="waitlist-bar">
+    <div class="wl-stat"><div class="wl-n">2,847</div><div class="wl-l">Learners active</div></div>
+    <div class="wl-stat"><div class="wl-n">6</div><div class="wl-l">Tracks live</div></div>
+    <div class="wl-stat"><div class="wl-n">Free</div><div class="wl-l">Always &amp; forever</div></div>
+    <div class="wl-msg"><strong>Why sign up early?</strong> Early access members get first pick of mentors, beta access to interactive projects, and a founding member badge on their Centauri profile.</div>
+  </div>
+
+  <!-- WHAT'S COMING -->
+  <div class="sec">
+    <span class="sec-tag">What's coming</span>
+    <div class="sec-title">Six tracks.<br>All starting points.</div>
+    <p class="sec-sub">Each track is structured from absolute beginner to job-ready, with real projects, mentor feedback, and a certificate at the end.</p>
+    <div class="academy-tracks">
+      <div class="track-card code">
+        <div class="track-coming">Free</div>
+        <div class="track-icon"></div>
+        <div class="track-label">Track 01</div>
+        <h4>Coding</h4>
+        <p>Learn Python from scratch. Build real scripts, automate tasks, and understand the fundamentals every developer needs.</p>
+        <div class="track-levels"><div class="level-pill">Beginner</div><div class="level-pill">Intermediate</div><div class="level-pill">Advanced</div></div>
+      </div>
+      <div class="track-card design">
+        <div class="track-coming">Free</div>
+        <div class="track-icon"></div>
+        <div class="track-label">Track 02</div>
+        <h4>Design</h4>
+        <p>Figma, typography, colour theory, and UX thinking. Go from zero to a professional portfolio that gets you hired.</p>
+        <div class="track-levels"><div class="level-pill">Beginner</div><div class="level-pill">Intermediate</div></div>
+      </div>
+      <div class="track-card marketing">
+        <div class="track-coming">Free</div>
+        <div class="track-icon"></div>
+        <div class="track-label">Track 03</div>
+        <h4>Marketing</h4>
+        <p>SEO, social strategy, email marketing, analytics, and paid ads. Learn the digital skills every business needs.</p>
+        <div class="track-levels"><div class="level-pill">Beginner</div><div class="level-pill">Intermediate</div></div>
+      </div>
+      <div class="track-card video">
+        <div class="track-coming">Free</div>
+        <div class="track-icon"></div>
+        <div class="track-label">Track 04</div>
+        <h4>Video Editing</h4>
+        <p>Edit for YouTube, social, and brands. Learn DaVinci Resolve and CapCut, storytelling, pacing, and colour grading.</p>
+        <div class="track-levels"><div class="level-pill">Beginner</div><div class="level-pill">Intermediate</div></div>
+      </div>
+      <div class="track-card ai">
+        <div class="track-coming">Free</div>
+        <div class="track-icon"></div>
+        <div class="track-label">Track 05</div>
+        <h4>AI &amp; Prompting</h4>
+        <p>Understand how AI works, how to use it in your career, and how to build basic AI-assisted tools. The skill of the decade.</p>
+        <div class="track-levels"><div class="level-pill">Beginner</div><div class="level-pill">Intermediate</div><div class="level-pill">Advanced</div></div>
+      </div>
+      <div class="track-card web">
+        <div class="track-coming">Free</div>
+        <div class="track-icon"></div>
+        <div class="track-label">Track 06</div>
+        <h4>Web Development</h4>
+        <p>HTML, CSS, JavaScript, and your first full website. End-to-end training that takes you from blank page to live site.</p>
+        <div class="track-levels"><div class="level-pill">Beginner</div><div class="level-pill">Intermediate</div><div class="level-pill">Advanced</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WILL WORK -->
+  <div class="sec alt">
+    <span class="sec-tag">How it works</span>
+    <div class="sec-title">Structured learning,<br>real outcomes.</div>
+    <p class="sec-sub">Skills Academy isn't just videos. It's a complete learning pathway built around how young people actually learn.</p>
+    <div class="mentor-steps">
+      <div class="mentor-step">
+        <div class="ms-num">01</div>
+        <div class="ms-icon"></div>
+        <h4>Pick your track</h4>
+        <p>Choose based on your interests or career goals. Not sure? Take our 2-minute quiz and we'll recommend the right starting point.</p>
+      </div>
+      <div class="mentor-step">
+        <div class="ms-num">02</div>
+        <div class="ms-icon"></div>
+        <h4>Follow the curriculum</h4>
+        <p>Short, focused lessons designed around real tasks. No filler. No fluff. Each module builds directly on the last.</p>
+      </div>
+      <div class="mentor-step">
+        <div class="ms-num">03</div>
+        <div class="ms-icon"></div>
+        <h4>Build real projects</h4>
+        <p>Every track ends with a project you can put in your portfolio — something an employer will actually care about.</p>
+      </div>
+      <div class="mentor-step">
+        <div class="ms-num">04</div>
+        <div class="ms-icon"></div>
+        <h4>Get certified &amp; connected</h4>
+        <p>Earn your Centauri certificate and get matched with a mentor to help you take the next step into employment or further study.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM CTA -->
+  <div class="sec" style="text-align:center;padding-bottom:4rem">
+    <span class="sec-tag">Don't miss the launch</span>
+    <div class="sec-title" style="max-width:600px;margin:0 auto 0.75rem">The platform is live.<br>Claim your spot today.</div>
+    <p class="sec-sub" style="max-width:440px;margin:0 auto 1.5rem">Free. Structured. Built for young people with no head start. Skills Academy is coming — and early members get in first.</p>
+    <button class="btn-academy" style="font-size:1rem;padding:0.9rem 2.2rem;" onclick="document.querySelector('.academy-hero').scrollIntoView({behavior:'smooth'})">Start Learning Free &rarr;</button>
+  </div>
+
+</div>
+
+<!-- ===================== STUDENT DASHBOARD ===================== -->
+<div class="page" id="page-dashboard">
+  <div class="sec">
+    <span class="sec-tag">Your Learning Dashboard</span>
+    <div class="sec-title">Welcome back,<br><em>Amara.</em></div>
+    <p class="sec-sub">You are on a 7-day streak. Keep it up — you are 60% through the Web Development Beginner track.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem;">
+      <div class="icard"><div class="inum">1,240</div><div class="ilabel">XP Points</div></div>
+      <div class="icard"><div style="font-family:var(--font-d);font-size:2.6rem;line-height:1;color:#f59e0b;">7</div><div class="ilabel">Day Streak</div></div>
+      <div class="icard"><div style="font-family:var(--font-d);font-size:2.6rem;line-height:1;color:#7c3aed;">4</div><div class="ilabel">Badges Earned</div></div>
+      <div class="icard"><div style="font-family:var(--font-d);font-size:2.6rem;line-height:1;color:#0ea5e9;">60%</div><div class="ilabel">Track Progress</div></div>
+    </div>
+    <div class="two-col" style="gap:1.5rem;">
+      <div style="display:flex;flex-direction:column;gap:1.2rem;">
+        <div class="form-box" style="padding:1.4rem;">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem;">Current Learning Path</div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:40px;height:40px;background:linear-gradient(135deg,#f59e0b,#84cc16);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:0.9rem;color:#fff;letter-spacing:0.05em;">WEB</div>
+            <div><div style="font-size:0.9rem;font-weight:600;color:#000;">Web Development</div><div style="font-size:0.72rem;color:var(--muted);">Beginner Track &middot; Module 3 of 5</div></div>
+          </div>
+          <div style="height:8px;background:var(--off);border-radius:4px;overflow:hidden;margin-bottom:0.4rem;"><div style="height:100%;width:60%;background:linear-gradient(90deg,var(--accent),#0ea5e9);border-radius:4px;"></div></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:1rem;">60% complete &middot; Est. 4 hours remaining</div>
+          <button class="btn-p" style="width:100%;" onclick="openTrackModal('web')">Continue Learning &rarr;</button>
+        </div>
+        <div class="form-box" style="padding:1.4rem;background:var(--accent-light);border-color:rgba(0,184,122,0.25);">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:0.7rem;">Upcoming Mentor Session</div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.7rem;">
+            <div style="width:40px;height:40px;background:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:0.85rem;color:var(--accent);">TH</div>
+            <div><div style="font-size:0.88rem;font-weight:600;color:#000;">Tom Halligan</div><div style="font-size:0.72rem;color:var(--muted);">Engineering Manager &middot; bet365</div></div>
+          </div>
+          <div style="font-size:0.78rem;color:#3a6b55;margin-bottom:0.2rem;font-weight:600;">Thursday 22 May &middot; 4:30pm</div>
+          <div style="font-size:0.73rem;color:#3a6b55;">Portfolio Review &middot; 30 minutes &middot; Video call</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1.2rem;">
+        <div class="form-box" style="padding:1.4rem;">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem;">Recommended Next Lesson</div>
+          <div style="background:var(--off);border-radius:8px;padding:1rem;margin-bottom:0.8rem;">
+            <div style="font-size:0.68rem;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">Web Dev — Lesson 7</div>
+            <div style="font-size:0.88rem;font-weight:600;color:#000;margin-bottom:0.3rem;">JavaScript Fundamentals</div>
+            <div style="font-size:0.73rem;color:var(--muted);">Variables, functions, DOM manipulation. Approx. 45 min &middot; +120 XP</div>
+          </div>
+          <button class="btn-p" style="width:100%;" onclick="openTrackModal('web')">Start Lesson &rarr;</button>
+        </div>
+        <div class="form-box" style="padding:1.4rem;">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem;">Badges Earned</div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <div style="text-align:center;"><div style="width:48px;height:48px;background:var(--accent-light);border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:0.75rem;color:var(--accent-dark);margin:0 auto 0.3rem;">7</div><div style="font-size:0.62rem;color:var(--muted);font-weight:600;">7-Day Streak</div></div>
+            <div style="text-align:center;"><div style="width:48px;height:48px;background:#fff7ed;border:2px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:0.75rem;color:#c2410c;margin:0 auto 0.3rem;">HTML</div><div style="font-size:0.62rem;color:var(--muted);font-weight:600;">HTML Basics</div></div>
+            <div style="text-align:center;"><div style="width:48px;height:48px;background:#eff6ff;border:2px solid #1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:0.75rem;color:#1d4ed8;margin:0 auto 0.3rem;">CSS</div><div style="font-size:0.62rem;color:var(--muted);font-weight:600;">Styled Pro</div></div>
+            <div style="text-align:center;"><div style="width:48px;height:48px;background:#fce7f3;border:2px solid #db2777;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:0.75rem;color:#db2777;margin:0 auto 0.3rem;">1K</div><div style="font-size:0.62rem;color:var(--muted);font-weight:600;">1K XP Club</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK DETAIL MODAL -->
+<div class="modal-overlay" id="track-modal" onclick="if(event.target===this)closeTrackModal()">
+  <div class="modal-box" role="dialog" aria-modal="true" style="max-width:580px;">
+    <div class="modal-img" id="track-modal-header" style="height:110px;position:relative;">
+      <button class="modal-close" onclick="closeTrackModal()" style="background:rgba(255,255,255,0.15);color:#fff;">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-name" id="tm-title"></div>
+      <div class="modal-org" id="tm-subtitle"></div>
+      <div class="modal-section-title">Lessons in this track</div>
+      <div id="tm-lessons" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+      <div class="modal-section-title" style="margin-top:1rem;">Mini Projects</div>
+      <div id="tm-projects" style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem;"></div>
+      <div style="display:flex;align-items:center;gap:1rem;background:var(--off);border-radius:8px;padding:0.85rem;">
+        <div style="text-align:center;"><div style="font-family:var(--font-d);font-size:1.3rem;color:var(--accent);">+500</div><div style="font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">XP Total</div></div>
+        <div style="width:1px;height:36px;background:var(--border);"></div>
+        <div style="text-align:center;"><div style="font-family:var(--font-d);font-size:1.3rem;color:#7c3aed;">1</div><div style="font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">Certificate</div></div>
+        <div style="width:1px;height:36px;background:var(--border);"></div>
+        <div style="text-align:center;"><div style="font-family:var(--font-d);font-size:1.3rem;color:#f59e0b;">Free</div><div style="font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">Always</div></div>
+      </div>
+    </div>
+    <div class="modal-footer" style="flex-direction:column;gap:0.5rem;">
+      <button class="modal-req-btn" onclick="startTrackPreview()">Preview This Track &rarr;</button>
+      <div style="font-size:0.72rem;color:var(--muted);text-align:center;">
+        <a onclick="openAuthModal('signup');closeTrackModal();" style="color:var(--accent);cursor:pointer;font-weight:600;">Create a free account</a> to save progress, earn XP, and get a certificate.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="modal-box" style="max-width:420px;" role="dialog" aria-modal="true">
+    <div style="padding:1.8rem 1.8rem 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.3rem;">
+        <div style="font-family:var(--font-d);font-size:1.5rem;letter-spacing:0.03em;text-transform:uppercase;color:#000;" id="auth-modal-title">Create your account</div>
+        <button onclick="closeAuthModal()" style="background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;">&times;</button>
+      </div>
+      <div id="auth-signup">
+        <div class="fg"><label>First Name</label><input type="text" placeholder="e.g. Amara" /></div>
+        <div class="fg"><label>Email</label><input type="email" placeholder="e.g. amara@email.com" /></div>
+        <div class="fg"><label>Age</label><select><option>16-18</option><option>19-24</option><option>25-30</option></select></div>
+        <div class="fg"><label>Which track interests you most?</label><select><option>Coding</option><option>Web Development</option><option>AI Tools</option><option>Graphic Design</option><option>Marketing</option><option>Video Editing</option></select></div>
+        <div class="fg"><label>Password</label><input type="password" placeholder="Create a password" /></div>
+        <button class="btn-p" style="width:100%;margin-bottom:0.8rem;" onclick="handleSignup()">Create free account &rarr;</button>
+        <div style="font-size:0.75rem;color:var(--muted);text-align:center;margin-bottom:1rem;">Already have an account? <a onclick="switchAuthMode('signin')" style="color:var(--accent);cursor:pointer;font-weight:600;">Sign in</a></div>
+      </div>
+      <div id="auth-signin" style="display:none;">
+        <div class="fg"><label>Email</label><input type="email" placeholder="e.g. amara@email.com" /></div>
+        <div class="fg"><label>Password</label><input type="password" placeholder="Your password" /></div>
+        <button class="btn-p" style="width:100%;margin-bottom:0.8rem;" onclick="handleSignin()">Sign in &rarr;</button>
+        <div style="font-size:0.75rem;color:var(--muted);text-align:center;margin-bottom:1rem;">New to Centauri? <a onclick="switchAuthMode('signup')" style="color:var(--accent);cursor:pointer;font-weight:600;">Create a free account</a></div>
+      </div>
+      <div id="auth-success" style="display:none;text-align:center;padding:1rem 0 0.5rem;">
+        <div style="font-family:var(--font-d);font-size:1.4rem;color:var(--accent-dark);letter-spacing:0.03em;text-transform:uppercase;margin-bottom:0.5rem;">Welcome to Centauri!</div>
+        <p style="font-size:0.83rem;color:var(--muted);line-height:1.55;margin-bottom:1rem;">Your account is ready. Taking you to your dashboard now...</p>
+      </div>
+    </div>
+    <div style="padding:0.75rem 1.8rem 1.4rem;font-size:0.68rem;color:var(--muted);text-align:center;">Free forever. No credit card needed. Secure and private.</div>
+  </div>
+</div>
+
+<!-- MENTOR BOOKING MODAL -->
+<div class="modal-overlay" id="mentor-booking-modal" onclick="if(event.target===this)closeMentorBooking()">
+  <div class="modal-box" style="max-width:500px;" role="dialog" aria-modal="true">
+    <div class="modal-img" style="height:110px;background:#000;flex-direction:column;gap:0.3rem;">
+      <button class="modal-close" onclick="closeMentorBooking()" style="background:rgba(255,255,255,0.1);color:#fff;">&times;</button>
+      <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);">Book a Session</div>
+      <div style="font-family:var(--font-d);font-size:1.3rem;color:#fff;letter-spacing:0.03em;" id="mb-name">Mentor Name</div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.5);" id="mb-role"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section-title">Skills & Specialisms</div>
+      <div id="mb-skills" class="mentor-tags" style="margin-bottom:1rem;"></div>
+      <div id="mb-booking-form">
+        <div class="modal-section-title">Session Type</div>
+        <div class="fg"><select id="mb-type" style="width:100%;background:var(--off);border:1px solid var(--border);border-radius:7px;padding:0.7rem 0.9rem;font-family:var(--font-b);font-size:0.9rem;outline:none;"><option>Career Guidance</option><option>CV Review</option><option>Portfolio Review</option><option>Mock Interview</option><option>Project Feedback</option></select></div>
+        <div class="modal-section-title">Choose a Time Slot</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;" id="mb-slots">
+          <button class="a11y-btn2" onclick="selectSlot(this)">Mon 19 May, 10am</button>
+          <button class="a11y-btn2" onclick="selectSlot(this)">Mon 19 May, 2pm</button>
+          <button class="a11y-btn2" onclick="selectSlot(this)">Tue 20 May, 11am</button>
+          <button class="a11y-btn2" onclick="selectSlot(this)">Tue 20 May, 4pm</button>
+          <button class="a11y-btn2" onclick="selectSlot(this)">Wed 21 May, 9am</button>
+          <button class="a11y-btn2" onclick="selectSlot(this)">Thu 22 May, 4:30pm</button>
+        </div>
+        <div class="fg"><label>Your Name</label><input type="text" placeholder="e.g. Amara Johnson" /></div>
+        <div class="fg"><label>Your Email</label><input type="email" placeholder="e.g. amara@email.com" /></div>
+      </div>
+      <div id="mb-success" style="display:none;text-align:center;padding:1rem 0;">
+        <div style="font-family:var(--font-d);font-size:1.3rem;color:var(--accent-dark);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.5rem;">Session Booked</div>
+        <p style="font-size:0.83rem;color:var(--muted);line-height:1.55;">Your mentor will confirm by email within 24 hours. Check your inbox for a calendar invite.</p>
+      </div>
+    </div>
+    <div class="modal-footer" id="mb-footer">
+      <button class="modal-req-btn" onclick="submitMentorBooking()">Confirm Booking &rarr;</button>
+      <button class="modal-cancel-btn" onclick="closeMentorBooking()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI CHATBOT -->
+<!-- ── Floating controls stack (bottom-right) ── -->
+<div id="chatbot-bubble-wrap">
+  <!-- Accessibility icon button -->
+  <button id="a11y-btn" class="fab" aria-label="Accessibility options" onclick="toggleA11yPanel()">
+    <span class="fab-tooltip">Accessibility</span>
+    <!-- Universal Access / wheelchair icon -->
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="12" cy="3.5" r="1.8" fill="currentColor"/>
+      <path d="M9 8.5h4.5l1.5 3.5H18v2h-4l-1-2.5H9.5C8.67 11.5 8 12.17 8 13v4.5a2.5 2.5 0 005 0V15h2v2.5a4.5 4.5 0 11-9 0V13c0-2.49 2.01-4.5 3-4.5z" fill="currentColor"/>
+    </svg>
+  </button>
+  <!-- AI Mentor chat icon button -->
+  <button id="chatbot-bubble" class="fab" onclick="toggleChatbot()" aria-label="Open AI Mentor chat">
+    <span class="fab-tooltip">AI Mentor</span>
+    <!-- Chat bubble with sparkle dot -->
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7.5L3 22V6a2 2 0 011-1.73A2 2 0 014 4z" fill="currentColor" opacity="0.15"/>
+      <path d="M20 4H4a2 2 0 00-2 2v10a2 2 0 002 2h12.5L21 22V6a2 2 0 00-1-1.73A2 2 0 0020 4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="8.5" cy="11" r="1.2" fill="currentColor"/>
+      <circle cx="12" cy="11" r="1.2" fill="currentColor"/>
+      <circle cx="15.5" cy="11" r="1.2" fill="currentColor"/>
+    </svg>
+  </button>
+</div>
+<div id="chatbot-panel" style="position:fixed;bottom:9rem;right:1.5rem;z-index:9997;width:296px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.12);display:none;flex-direction:column;overflow:hidden;max-height:470px;">
+  <div style="background:#000;padding:0.85rem 1rem;display:flex;align-items:center;justify-content:space-between;">
+    <div><div style="font-family:var(--font-d);font-size:0.85rem;color:var(--accent);letter-spacing:0.05em;">CENTAURI AI MENTOR</div><div style="font-size:0.62rem;color:rgba(255,255,255,0.4);">Ask me anything</div></div>
+    <button onclick="toggleChatbot()" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:1rem;line-height:1;">&times;</button>
+  </div>
+  <div id="chatbot-messages" style="flex:1;overflow-y:auto;padding:0.85rem;display:flex;flex-direction:column;gap:0.65rem;max-height:220px;">
+    <div style="background:var(--off);border-radius:10px 10px 10px 2px;padding:0.65rem 0.8rem;font-size:0.77rem;color:#333;line-height:1.5;align-self:flex-start;max-width:92%;">Hi! I am your Centauri AI Mentor. Ask me anything about courses, careers, or mentors. Or tap a quick option below.</div>
+  </div>
+  <div id="chat-suggestions" style="padding:0.45rem 0.65rem 0.5rem;display:flex;flex-direction:column;gap:0.3rem;border-top:1px solid var(--border);">
+    <button onclick="sendChatSuggestion('I am a complete beginner')" style="text-align:left;background:var(--off);border:1px solid var(--border);border-radius:5px;padding:0.33rem 0.6rem;font-size:0.72rem;color:#333;cursor:pointer;font-family:var(--font-b);">I am a complete beginner</button>
+    <button onclick="sendChatSuggestion('Help me choose a course')" style="text-align:left;background:var(--off);border:1px solid var(--border);border-radius:5px;padding:0.33rem 0.6rem;font-size:0.72rem;color:#333;cursor:pointer;font-family:var(--font-b);">Help me choose a course</button>
+    <button onclick="sendChatSuggestion('I want to find a mentor')" style="text-align:left;background:var(--off);border:1px solid var(--border);border-radius:5px;padding:0.33rem 0.6rem;font-size:0.72rem;color:#333;cursor:pointer;font-family:var(--font-b);">I want to find a mentor</button>
+    <button onclick="sendChatSuggestion('How do I get job ready?')" style="text-align:left;background:var(--off);border:1px solid var(--border);border-radius:5px;padding:0.33rem 0.6rem;font-size:0.72rem;color:#333;cursor:pointer;font-family:var(--font-b);">How do I get job ready?</button>
+  </div>
+  <div style="padding:0.65rem;border-top:1px solid var(--border);display:flex;gap:0.45rem;">
+    <input id="chatbot-input" type="text" placeholder="Ask anything..." style="flex:1;border:1px solid var(--border);border-radius:6px;padding:0.42rem 0.65rem;font-family:var(--font-b);font-size:0.76rem;outline:none;" onkeydown="if(event.key==='Enter')sendChatMessage()">
+    <button onclick="sendChatMessage()" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:0.42rem 0.75rem;font-family:var(--font-b);font-size:0.76rem;font-weight:600;cursor:pointer;">Send</button>
+  </div>
+</div>
+
+
+<footer>
+  <div class="flogo" onclick="goTo('home')">
+    <svg class="flogo-mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:24px;width:24px;" aria-hidden="true">
+      <circle cx="14" cy="14" r="12.5" stroke="#00b87a" stroke-width="1.8" fill="none"/>
+      <ellipse cx="14" cy="14" rx="12.5" ry="5.2" stroke="rgba(0,184,122,0.3)" stroke-width="1" fill="none" transform="rotate(-28 14 14)"/>
+      <circle cx="14" cy="14" r="3.2" fill="#00b87a"/>
+      <circle cx="24" cy="9.5" r="1.8" fill="#00b87a"/>
+    </svg>
+    <span class="flogo-wordmark">Centauri</span>
+    <span class="flogo-tag">Access. Skills.<br>Opportunity.</span>
+  </div>
+  <div class="fcopy">Built for Unihack Innovation Fest 2026 &middot; Birmingham City University</div>
+
+  <div class="fsocial">
+    <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    </a>
+    <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+    </a>
+    <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+  function goTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  document.querySelectorAll('.chip:not([data-group])').forEach(c => c.addEventListener('click', () => c.classList.toggle('on')));
+  document.querySelectorAll('.chip[data-group]').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll(`.chip[data-group="${c.dataset.group}"]`).forEach(x => x.classList.remove('on'));
+      c.classList.add('on');
+    });
+  });
+
+  function toggleFaq(el) {
+    el.parentElement.classList.toggle('open');
+  }
+
+  /* ===== FIND A DEVICE — DATA & LOGIC ===== */
+
+  const orgs = [
+    { name:"Digital Birmingham Trust", badge:"Laptop Available", meta:"Digbeth, Birmingham &middot; 0.8 miles away", desc:"Refurbished laptops (Windows 10/11) for students aged 16–24 in further education or employment training. Devices wiped, tested, and ready to collect.", reason:"Strong match for your area and age group. They currently have <strong>8 laptops available</strong> and prioritise students in tech-related courses." },
+    { name:"Moseley Community Tech Hub", badge:"Laptop + Tablet", meta:"Moseley, Birmingham &middot; 1.4 miles away", desc:"Donated devices from local businesses, matched to young people based on need. Also offers drop-in digital skills sessions every Wednesday.", reason:"Matched because they support <strong>cybersecurity and IT learners</strong> specifically, with resources aligned with your goal." },
+    { name:"Connecting Brum", badge:"Broadband Support", meta:"Citywide Birmingham &middot; Free scheme", desc:"Funded broadband for qualifying households — up to 18 months free connectivity for young people not in employment or education.", reason:"AI flagged this because many device recipients find connectivity a second barrier — <strong>worth applying alongside your device request</strong>." }
+  ];
+
+  // Upgraded findMatches — now also highlights AI scores
+  function findMatches() {
+    const pc = document.getElementById('postcode').value;
+    const age = document.getElementById('age').value;
+    const needs = [...document.querySelectorAll('#page-find .chip.on')].map(c => c.dataset.val).filter(Boolean);
+    const panel = document.getElementById('results');
+    if (!pc || !age) { panel.innerHTML = `<div class="placeholder" style="border-color:rgba(220,50,50,0.3)"><span>Please enter your postcode and age to find matches.</span></div>`; return; }
+    panel.innerHTML = `<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:1.2rem"><div class="ltxt" style="margin-bottom:0.6rem"><span>AI is finding your matches</span><span class="dots"><span>.</span><span>.</span><span>.</span></span></div><div class="lbar" id="lb"></div><div style="font-size:0.75rem;color:var(--muted)">Searching ${pc.toUpperCase()} &middot; ${needs.join(', ') || 'All resources'}</div></div>`;
+    setTimeout(()=>{ const b=document.getElementById('lb'); if(b) b.style.width='60%'; },100);
+    setTimeout(()=>{ const b=document.getElementById('lb'); if(b) b.style.width='100%'; },800);
+    const scores = [94,87,76];
+    setTimeout(()=>{
+      panel.innerHTML = `<div style="font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;font-weight:600;margin-bottom:0.4rem">AI found ${orgs.length} matches near ${pc.toUpperCase()}</div>`;
+      orgs.forEach((o,i)=>{
+        const c = document.createElement('div'); c.className='rcard';
+        c.innerHTML=`<div class="rh"><div class="rn">${o.name}</div><div class="rbadge">${o.badge}</div></div>
+          <div class="rmeta">${o.meta}</div>
+          <div class="rdesc">${o.desc}</div>
+          <div class="ai-box">
+            <div style="width:100%">
+              <div class="ai-score-row">
+                <div class="ai-icon"></div>
+                <span class="ai-score-pct">${scores[i]}% Match</span>
+                <div class="ai-bar-bg"><div class="ai-bar-fill" style="width:${scores[i]}%"></div></div>
+              </div>
+              <div class="ai-txt"><strong>Why this matches you:</strong> ${o.reason}</div>
+            </div>
+          </div>`;
+        panel.appendChild(c);
+        setTimeout(()=>c.classList.add('show'), 100+i*180);
+      });
+    },1600);
+  }
+
+  /* ===== MAP ===== */
+  const mapLocations = [
+    { name:"Digital Birmingham Trust", dist:"0.8 miles away", devices:"8 laptops available", desc:"Refurbished Windows laptops for students in FE or employment training. Wiped and tested." },
+    { name:"Moseley Community Tech Hub", dist:"1.4 miles away", devices:"4 laptops · 3 tablets", desc:"Donated devices from local businesses. Drop-in digital skills every Wednesday." },
+    { name:"Connecting Brum", dist:"Citywide scheme", devices:"Broadband support", desc:"Free broadband for qualifying households — up to 18 months for young people not in work or education." },
+    { name:"Aston Digital Support", dist:"1.1 miles away", devices:"5 smartphones · 2 tablets", desc:"Smartphones and tablets for young people in employment or apprenticeship programmes." }
+  ];
+
+  let mapVisible = true;
+  function toggleMapView() {
+    mapVisible = !mapVisible;
+    document.getElementById('find-map').style.display = mapVisible ? 'block' : 'none';
+    document.querySelector('.find-map-toggle').textContent = mapVisible ? 'Hide map' : 'Show map';
+  }
+
+  function showMapPopup(idx, pinEl) {
+    const loc = mapLocations[idx];
+    const popup = document.getElementById('map-popup');
+    document.getElementById('pp-name').textContent = loc.name;
+    document.getElementById('pp-dist').textContent = ' ' + loc.dist;
+    document.getElementById('pp-devices').textContent = ' ' + loc.devices;
+    document.getElementById('pp-desc').textContent = loc.desc;
+    const map = document.getElementById('find-map');
+    const pinRect = pinEl.getBoundingClientRect();
+    const mapRect = map.getBoundingClientRect();
+    const pinCenterX = pinRect.left - mapRect.left + pinRect.width / 2;
+    const pinTopY = pinRect.top - mapRect.top;
+    popup.style.left = Math.min(Math.max(pinCenterX, 105), mapRect.width - 105) + 'px';
+    popup.style.top = (pinTopY - 10) + 'px';
+    popup.style.transform = 'translateX(-50%) translateY(-100%)';
+    popup.classList.add('visible');
+  }
+
+  function closeMapPopup() {
+    document.getElementById('map-popup').classList.remove('visible');
+  }
+
+  function scrollToDevices() {
+    closeMapPopup();
+    document.getElementById('device-section').scrollIntoView({ behavior:'smooth' });
+  }
+
+  /* ===== DEVICE DATA ===== */
+  const devices = [
+    { id:0, type:'laptop', name:'Lenovo ThinkPad E14', screen:'14"', ram:8, storage:256, condition:'Good', org:'Digital Birmingham Trust', location:'Digbeth · 0.8 mi', status:'available', match:94, added:1, matchReason:'Strong match — 8GB RAM suits coding and cybersecurity courses. Located 0.8 miles from Digbeth, close to your area.', specs:{screen:'14" FHD',ram:'8GB DDR4',storage:'256GB SSD',os:'Windows 11',cpu:'Intel i5',battery:'Good'}, locName:'Digital Birmingham Trust', locMeta:'Unit 4, Digbeth High St, Birmingham B5 · Open Mon–Fri 9am–5pm', eligibility:['Aged 16–30 in Birmingham','Currently in education or employment training','No existing laptop at home','Free to all qualifying applicants'] },
+    { id:1, type:'laptop', name:'Dell Latitude 5490', screen:'14"', ram:16, storage:512, condition:'Very Good', org:'Digital Birmingham Trust', location:'Digbeth · 0.8 mi', status:'available', match:91, added:2, matchReason:'16GB RAM ideal for development work. Fastest available device in your area — highly recommended for tech learners.', specs:{screen:'14" FHD',ram:'16GB DDR4',storage:'512GB SSD',os:'Windows 11 Pro',cpu:'Intel i7',battery:'Excellent'}, locName:'Digital Birmingham Trust', locMeta:'Unit 4, Digbeth High St, Birmingham B5 · Open Mon–Fri 9am–5pm', eligibility:['Aged 16–30 in Birmingham','In FE, HE, or employment training','No home device','Referral from education provider preferred'] },
+    { id:2, type:'laptop', name:'HP ProBook 450', screen:'15.6"', ram:8, storage:128, condition:'Good', org:'Moseley Community Tech Hub', location:'Moseley · 1.4 mi', status:'pending', match:82, added:5, matchReason:'Solid all-round laptop for coursework. Currently has one pending request — may be available soon.', specs:{screen:'15.6" HD',ram:'8GB DDR4',storage:'128GB SSD',os:'Windows 10',cpu:'Intel i5',battery:'Fair'}, locName:'Moseley Community Tech Hub', locMeta:'43 Alcester Rd, Moseley B13 · Open Tue & Thu 10am–4pm, Wed 6–8pm', eligibility:['Aged 16–25','Birmingham resident','In education, training, or seeking work','Self-referral accepted'] },
+    { id:3, type:'tablet', name:'Samsung Galaxy Tab A8', screen:'10.5"', ram:4, storage:64, condition:'Good', org:'Moseley Community Tech Hub', location:'Moseley · 1.4 mi', status:'available', match:78, added:3, matchReason:'Great portable option for accessing learning resources and online courses. 64GB storage fits most learning apps.', specs:{screen:'10.5" TFT',ram:'4GB',storage:'64GB',os:'Android 12',cpu:'Unisoc T618',battery:'Very Good'}, locName:'Moseley Community Tech Hub', locMeta:'43 Alcester Rd, Moseley B13 · Open Tue & Thu 10am–4pm', eligibility:['Aged 16–30','Birmingham resident','No existing device','Self-referral accepted'] },
+    { id:4, type:'tablet', name:'iPad 9th Gen', screen:'10.2"', ram:4, storage:64, condition:'Very Good', org:'Aston Digital Support', location:'Aston · 1.1 mi', status:'reserved', match:74, added:7, matchReason:'Popular choice for creative and digital marketing learners. Currently reserved — check back in 3–5 days.', specs:{screen:'10.2" Retina',ram:'4GB',storage:'64GB',os:'iPadOS 16',cpu:'Apple A13',battery:'Excellent'}, locName:'Aston Digital Support', locMeta:'Aston Community Centre, Witton Lane B6 · Open Mon, Wed, Fri 10am–3pm', eligibility:['Aged 16–24','Aston or North Birmingham postcode','In education or NEET programme','Referred by school/college or self-refer'] },
+    { id:5, type:'smartphone', name:'Samsung Galaxy A53', screen:'6.5"', ram:6, storage:128, condition:'Good', org:'Aston Digital Support', location:'Aston · 1.1 mi', status:'available', match:71, added:1, matchReason:'Keeps you connected while job searching. Unlocked and compatible with all UK networks. Ready for immediate collection.', specs:{screen:'6.5" Super AMOLED',ram:'6GB',storage:'128GB',os:'Android 13',cpu:'Exynos 1280',battery:'Good'}, locName:'Aston Digital Support', locMeta:'Aston Community Centre, Witton Lane B6 · Open Mon, Wed, Fri 10am–3pm', eligibility:['Aged 16–30','No existing smartphone','In employment, training, or job seeking','Birmingham resident'] },
+    { id:6, type:'smartphone', name:'iPhone SE (2022)', screen:'4.7"', ram:4, storage:64, condition:'Good', org:'Connecting Brum', location:'City Centre · 0.4 mi', status:'available', match:68, added:4, matchReason:'Compact and reliable. Good for accessing job boards and course portals. Unlocked, SIM-free.', specs:{screen:'4.7" Retina',ram:'4GB',storage:'64GB',os:'iOS 16',cpu:'Apple A15',battery:'Good'}, locName:'Connecting Brum Hub', locMeta:'5 Colmore Row, Birmingham B3 · Open Mon–Fri 8:30am–4:30pm', eligibility:['Aged 16–25','Birmingham city postcode','Not currently employed full-time','Self-referral form required'] },
+    { id:7, type:'laptop', name:'Acer Aspire 5', screen:'15.6"', ram:8, storage:256, condition:'Fair', org:'Connecting Brum', location:'City Centre · 0.4 mi', status:'available', match:65, added:9, matchReason:'Good entry-level laptop for general study. Slight cosmetic wear but fully functional. Available for immediate collection.', specs:{screen:'15.6" FHD',ram:'8GB DDR4',storage:'256GB SSD',os:'Windows 11',cpu:'AMD Ryzen 5',battery:'Fair'}, locName:'Connecting Brum Hub', locMeta:'5 Colmore Row, Birmingham B3 · Open Mon–Fri 8:30am–4:30pm', eligibility:['Aged 16–30','Birmingham resident','In education or employment training','No existing device at home'] },
+    { id:8, type:'tablet', name:'Lenovo Tab M10 Plus', screen:'10.3"', ram:4, storage:128, condition:'Good', org:'Digital Birmingham Trust', location:'Digbeth · 0.8 mi', status:'out', match:60, added:12, matchReason:'128GB storage makes this one of the best-value tablets available. Currently out of stock — added to waitlist automatically on request.', specs:{screen:'10.3" FHD',ram:'4GB',storage:'128GB',os:'Android 12',cpu:'MediaTek Helio P22T',battery:'Good'}, locName:'Digital Birmingham Trust', locMeta:'Unit 4, Digbeth High St, Birmingham B5 · Open Mon–Fri 9am–5pm', eligibility:['Aged 16–30','Birmingham resident','In education or training','No existing tablet or laptop at home'] }
+  ];
+
+  let filterAvailOnly = false;
+  let currentModalDevice = null;
+
+  function deviceSVG(type) {
+    if (type === 'laptop') return `<svg viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="6" width="64" height="40" rx="4" fill="#e2e8e2" stroke="#c8d4c8" stroke-width="2"/><rect x="14" y="12" width="52" height="28" rx="2" fill="#c8d8c8"/><rect x="2" y="48" width="76" height="5" rx="2.5" fill="#d4dcd4"/><rect x="28" y="49" width="24" height="3" rx="1.5" fill="#c0ccc0"/></svg>`;
+    if (type === 'tablet') return `<svg viewBox="0 0 52 72" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="44" height="64" rx="6" fill="#e2e8e2" stroke="#c8d4c8" stroke-width="2"/><rect x="10" y="12" width="32" height="44" rx="2" fill="#c8d8c8"/><circle cx="26" cy="62" r="3" fill="#c0ccc0"/></svg>`;
+    return `<svg viewBox="0 0 36 68" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="30" height="62" rx="7" fill="#e2e8e2" stroke="#c8d4c8" stroke-width="2"/><rect x="8" y="12" width="20" height="38" rx="2" fill="#c8d8c8"/><circle cx="18" cy="57" r="3" fill="#c0ccc0"/><rect x="13" y="7" width="10" height="3" rx="1.5" fill="#c0ccc0"/></svg>`;
+  }
+
+  function statusPillHTML(status) {
+    const map = { available:['pill-available','Available'], pending:['pill-pending','Pending'], reserved:['pill-reserved','Reserved'], out:['pill-out','Out of Stock'] };
+    const [cls,lbl] = map[status] || ['pill-out','Unknown'];
+    return `<span class="device-status-pill ${cls}">${lbl}</span>`;
+  }
+
+  function renderDeviceCard(d) {
+    const isUnavail = d.status === 'out';
+    const reqDisabled = (d.status !== 'available') ? 'disabled' : '';
+    const reqLabel = d.status === 'available' ? 'Request' : d.status === 'pending' ? 'Pending' : d.status === 'reserved' ? 'Reserved' : 'Notify Me';
+    return `
+      <div class="device-card${isUnavail?' unavailable':''}" onclick="openModal(${d.id})">
+        <div class="device-card-img">
+          ${deviceSVG(d.type)}
+          ${statusPillHTML(d.status)}
+          <div class="device-org-badge">${d.org}</div>
+        </div>
+        <div class="device-card-body">
+          <div class="device-card-name">${d.name}</div>
+          <div class="device-card-location"> ${d.location}</div>
+          <div class="device-specs">
+            <div class="device-spec">Screen: <strong>${d.screen}</strong></div>
+            <div class="device-spec">RAM: <strong>${d.ram}GB</strong></div>
+            <div class="device-spec">Storage: <strong>${d.storage}GB</strong></div>
+            <div class="device-spec">Condition: <strong>${d.condition}</strong></div>
+          </div>
+          <div class="ai-match-row">
+            <span class="ai-match-pct"> ${d.match}% Match</span>
+            <div class="ai-match-bar-bg"><div class="ai-match-bar-fill" style="width:0%" data-width="${d.match}%"></div></div>
+          </div>
+          <div class="ai-match-text">${d.matchReason}</div>
+          <div class="device-card-actions">
+            <button class="btn-device-req" ${reqDisabled} onclick="event.stopPropagation();handleRequest(${d.id})">${reqLabel}</button>
+            <button class="btn-device-det" onclick="event.stopPropagation();openModal(${d.id})">Details</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function applyFilters() {
+    const type = document.getElementById('f-type').value;
+    const ram = parseInt(document.getElementById('f-ram').value) || 0;
+    const storage = parseInt(document.getElementById('f-storage').value) || 0;
+    const sort = document.getElementById('f-sort').value;
+    let filtered = devices.filter(d => {
+      if (type && d.type !== type) return false;
+      if (ram && d.ram < ram) return false;
+      if (storage && d.storage < storage) return false;
+      if (filterAvailOnly && d.status !== 'available') return false;
+      return true;
+    });
+    if (sort === 'distance') filtered.sort((a,b) => parseFloat(a.location) - parseFloat(b.location));
+    else if (sort === 'specs') filtered.sort((a,b) => (b.ram + b.storage/32) - (a.ram + a.storage/32));
+    else if (sort === 'new') filtered.sort((a,b) => a.added - b.added);
+    else filtered.sort((a,b) => b.match - a.match);
+    const grid = document.getElementById('device-grid');
+    grid.innerHTML = filtered.length === 0
+      ? `<div class="no-results" style="grid-column:1/-1">No devices match your current filters. <a href="#" onclick="resetFilters();return false;" style="color:var(--accent);font-weight:600;">Reset filters</a></div>`
+      : filtered.map(renderDeviceCard).join('');
+    document.getElementById('f-count').innerHTML = `<strong>${filtered.length}</strong> device${filtered.length!==1?'s':''} shown`;
+    // Animate match bars after render
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('.ai-match-bar-fill').forEach(el => {
+        el.style.width = el.dataset.width || '0%';
+      });
+    });
+  }
+
+  function toggleAvailFilter() {
+    filterAvailOnly = !filterAvailOnly;
+    const lbl = document.getElementById('f-avail-label');
+    const ico = document.getElementById('f-avail-icon');
+    lbl.classList.toggle('on', filterAvailOnly);
+    ico.textContent = filterAvailOnly ? '' : '';
+    applyFilters();
+  }
+
+  function resetFilters() {
+    document.getElementById('f-type').value = '';
+    document.getElementById('f-ram').value = '';
+    document.getElementById('f-storage').value = '';
+    document.getElementById('f-sort').value = 'match';
+    filterAvailOnly = false;
+    document.getElementById('f-avail-label').classList.remove('on');
+    document.getElementById('f-avail-icon').textContent = '';
+    applyFilters();
+  }
+
+  /* ===== MODAL ===== */
+  function openModal(id) {
+    const d = devices.find(x => x.id === id);
+    if (!d) return;
+    currentModalDevice = d;
+    // Image
+    const imgEl = document.getElementById('modal-img');
+    imgEl.innerHTML = `${deviceSVG(d.type)}<div class="modal-status-pill ${d.status==='available'?'pill-available':d.status==='pending'?'pill-pending':d.status==='reserved'?'pill-reserved':'pill-out'}">${d.status==='available'?'Available':d.status==='pending'?'Pending':d.status==='reserved'?'Reserved':'Out of Stock'}</div><button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>`;
+    document.getElementById('modal-name').textContent = d.name;
+    document.getElementById('modal-org').textContent = d.org + ' · ' + d.location;
+    // Specs
+    const specKeys = Object.entries(d.specs);
+    document.getElementById('modal-specs').innerHTML = specKeys.map(([k,v])=>`<div class="modal-spec-item"><div class="modal-spec-label">${k}</div><div class="modal-spec-val">${v}</div></div>`).join('');
+    document.getElementById('modal-loc-name').textContent = d.locName;
+    document.getElementById('modal-loc-meta').textContent = d.locMeta;
+    document.getElementById('modal-eligibility').innerHTML = d.eligibility.map(e=>`<li>${e}</li>`).join('');
+    document.getElementById('modal-ai-pct').textContent = ` ${d.match}% Match`;
+    document.getElementById('modal-ai-bar').style.width = d.match + '%';
+    document.getElementById('modal-ai-reason').textContent = d.matchReason.replace(/<[^>]+>/g,'');
+    const reqBtn = document.getElementById('modal-req-btn');
+    if (d.status === 'available') { reqBtn.textContent = 'Request This Device →'; reqBtn.disabled = false; }
+    else if (d.status === 'out') { reqBtn.textContent = 'Join Waitlist'; reqBtn.disabled = false; }
+    else { reqBtn.textContent = d.status === 'pending' ? 'Currently Pending' : 'Currently Reserved'; reqBtn.disabled = true; }
+    document.getElementById('device-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('device-modal').classList.remove('open');
+    document.body.style.overflow = '';
+    currentModalDevice = null;
+  }
+
+  function handleModalClick(e) {
+    if (e.target === document.getElementById('device-modal')) closeModal();
+  }
+
+  function handleRequest(id) {
+    const d = devices.find(x => x.id === id);
+    if (!d) return;
+    if (d.status === 'out') { alert('You\'ve been added to the waitlist for ' + d.name + '. We\'ll contact you when it becomes available.'); return; }
+    alert('Request submitted for ' + d.name + '. ' + d.org + ' will be in touch within 2 working days.');
+  }
+
+  function requestDevice() {
+    if (!currentModalDevice) return;
+    closeModal();
+    handleRequest(currentModalDevice.id);
+  }
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Initialise device grid when Find page is shown
+  const _origGoTo = typeof goTo === 'function' ? goTo : null;
+  function initDeviceGrid() {
+    const grid = document.getElementById('device-grid');
+    if (grid && grid.children.length === 0) applyFilters();
+  }
+
+  // Observe page visibility to init grid
+  const _findPageObserver = new MutationObserver(()=>{ if(document.getElementById('page-find').classList.contains('active')) initDeviceGrid(); });
+  _findPageObserver.observe(document.getElementById('page-find'), {attributes:true, attributeFilter:['class']});
+
+  function submitDonation() {
+    const name = document.getElementById('d-name').value;
+    const email = document.getElementById('d-email').value;
+    const postcode = document.getElementById('d-postcode').value;
+    const type = document.getElementById('d-type').value;
+    if (!name || !email || !postcode || !type) { alert('Please fill in your name, email, postcode, and device type.'); return; }
+    document.getElementById('donate-form-box').style.display = 'none';
+    document.getElementById('donate-success').style.display = 'block';
+  }
+
+  function submitMentorRequest() {
+    const name = document.getElementById('m-name').value;
+    const email = document.getElementById('m-email').value;
+    const age = document.getElementById('m-age').value;
+    const area = document.getElementById('m-area').value;
+    if (!name || !email || !age || !area) { alert('Please fill in your name, email, age, and area of interest.'); return; }
+    document.getElementById('mentor-form-box').style.display = 'none';
+    document.getElementById('mentor-success').style.display = 'block';
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.involve-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.involve-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function submitMentorApply() {
+    const name = document.getElementById('am-name').value;
+    const email = document.getElementById('am-email').value;
+    const title = document.getElementById('am-title').value;
+    const company = document.getElementById('am-company').value;
+    const area = document.getElementById('am-area').value;
+    if (!name || !email || !title || !company || !area) { alert('Please fill in your name, email, job title, company, and area of expertise.'); return; }
+    document.getElementById('apply-mentor-form-box').style.display = 'none';
+    document.getElementById('apply-mentor-success').style.display = 'block';
+  }
+
+  function submitBizPartner() {
+    const name = document.getElementById('biz-name').value;
+    const contact = document.getElementById('biz-contact').value;
+    const email = document.getElementById('biz-email').value;
+    const size = document.getElementById('biz-size').value;
+    const sector = document.getElementById('biz-sector').value;
+    if (!name || !contact || !email || !size || !sector) { alert('Please fill in your organisation name, contact details, size, and sector.'); return; }
+    document.getElementById('biz-form-box').style.display = 'none';
+    document.getElementById('biz-success').style.display = 'block';
+  }
+
+  function submitAcademySignup() {
+    const name = document.getElementById('acad-name').value;
+    const email = document.getElementById('acad-email').value;
+    if (!name || !email) { alert('Please enter your name and email address.'); return; }
+    document.getElementById('academy-signup-form').style.display = 'none';
+    document.getElementById('academy-confirmed-email').textContent = email;
+    document.getElementById('academy-success').style.display = 'block';
+  }
+  /* ===== ACCESSIBILITY ===== */
+  let a11yFontSize = 0;
+  let speechActive = false;
+
+  function toggleA11yPanel() {
+    const panel = document.getElementById('a11y-panel');
+    panel.classList.toggle('open');
+  }
+
+  function changeFontSize(dir) {
+    a11yFontSize = Math.max(-3, Math.min(5, a11yFontSize + dir));
+    document.body.style.fontSize = (15 + a11yFontSize) + 'px';
+  }
+
+  function toggleHighContrast() {
+    const on = document.body.classList.toggle('hc-mode');
+    const btn = document.getElementById('a11y-hc');
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on);
+  }
+
+  function toggleDyslexia() {
+    const on = document.body.classList.toggle('dyslexia-mode');
+    const btn = document.getElementById('a11y-dyslexia');
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on);
+  }
+
+  function toggleFocusMode() {
+    const on = document.body.classList.toggle('focus-mode');
+    const btn = document.getElementById('a11y-focus');
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on);
+  }
+
+  function startSpeech() {
+    if (!window.speechSynthesis) { alert('Sorry, your browser does not support text-to-speech.'); return; }
+    stopSpeech();
+    const activePage = document.querySelector('.page.active');
+    const text = activePage ? activePage.innerText.replace(/\s+/g,' ').trim() : document.body.innerText;
+    const utter = new SpeechSynthesisUtterance(text.substring(0, 5000));
+    utter.rate = 0.95;
+    utter.pitch = 1;
+    window.speechSynthesis.speak(utter);
+    speechActive = true;
+  }
+
+  function stopSpeech() {
+    if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+    speechActive = false;
+  }
+
+  // Close a11y panel when clicking outside
+  document.addEventListener('click', function(e) {
+    const panel = document.getElementById('a11y-panel');
+    const btn = document.getElementById('a11y-btn');
+    if (panel && panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn) {
+      panel.classList.remove('open');
+    }
+  });
+  function startTrackPreview() {
+    // Modal already open — just scroll to lesson list as "preview mode"
+    document.getElementById('tm-lessons').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ===== TRACK DATA & MODAL ===== */
+  const trackData = {
+    coding:{ title:'Coding', subtitle:'Beginner to Advanced · Python · JavaScript · 3 Levels', gradient:'linear-gradient(135deg,#7c3aed,#a855f7)', lessons:['HTML & CSS Basics — 20 min · +60 XP','JavaScript Fundamentals — 35 min · +90 XP','Build Your First Website — 50 min · +120 XP','Python Introduction — 30 min · +80 XP','Functions & Logic — 40 min · +100 XP','APIs & Data — 45 min · +110 XP'], projects:['Personal Webpage','JS Calculator App','Python Data Dashboard'] },
+    web:{ title:'Web Development', subtitle:'Beginner to Advanced · HTML · CSS · JavaScript · 3 Levels', gradient:'linear-gradient(135deg,#f59e0b,#84cc16)', lessons:['HTML Structure & Semantics — 25 min · +65 XP','CSS Layouts & Flexbox — 30 min · +80 XP','Responsive Design — 35 min · +90 XP','JavaScript DOM — 40 min · +100 XP','Forms & Validation — 30 min · +80 XP','Deploy Your First Site — 20 min · +60 XP'], projects:['Portfolio Landing Page','Responsive Blog','Full Business Website'] },
+    ai:{ title:'AI Tools', subtitle:'Beginner to Advanced · Prompt Engineering · AI Productivity · 3 Levels', gradient:'linear-gradient(135deg,#00b87a,#0ea5e9)', lessons:['Prompt Engineering Basics — 20 min · +60 XP','AI for Writing & Research — 25 min · +70 XP','AI for Productivity — 30 min · +80 XP','Building with AI APIs — 45 min · +110 XP','AI Website Builders — 35 min · +90 XP','AI Ethics & Career Use — 20 min · +60 XP'], projects:['Prompt Library Project','AI-Powered Content Tool','AI Business Pitch Deck'] },
+    design:{ title:'Graphic Design', subtitle:'Beginner to Intermediate · Figma · Typography · Branding · 2 Levels', gradient:'linear-gradient(135deg,#ec4899,#f97316)', lessons:['Design Principles — 20 min · +55 XP','Figma Fundamentals — 35 min · +90 XP','Typography & Colour — 30 min · +80 XP','Logo Design — 40 min · +100 XP','Social Media Graphics — 35 min · +85 XP','Portfolio Presentation — 25 min · +70 XP'], projects:['Personal Brand Kit','Social Media Pack','UX App Prototype'] },
+    marketing:{ title:'Marketing', subtitle:'Beginner to Intermediate · Social · SEO · Brand · 2 Levels', gradient:'linear-gradient(135deg,#0ea5e9,#06b6d4)', lessons:['Social Media Strategy — 25 min · +65 XP','TikTok Campaign Basics — 30 min · +80 XP','Brand Storytelling — 35 min · +90 XP','SEO Fundamentals — 30 min · +80 XP','Email Marketing — 25 min · +65 XP','Analytics & Reporting — 30 min · +80 XP'], projects:['Social Media Campaign','Brand Story Deck','Growth Strategy Report'] },
+    video:{ title:'Video Editing', subtitle:'Beginner to Intermediate · CapCut · Short-form · Portfolio · 2 Levels', gradient:'linear-gradient(135deg,#ef4444,#f97316)', lessons:['CapCut Basics — 20 min · +55 XP','Cutting & Pacing — 25 min · +70 XP','Short-form Editing — 30 min · +80 XP','Music & Sound Design — 25 min · +70 XP','Colour Grading — 30 min · +80 XP','Portfolio Project — 60 min · +150 XP'], projects:['YouTube Short','Brand Video Ad','Video Portfolio Reel'] }
+  };
+
+  function openTrackModal(key) {
+    const d = trackData[key]; if (!d) return;
+    document.getElementById('tm-title').textContent = d.title;
+    document.getElementById('tm-subtitle').textContent = d.subtitle;
+    document.getElementById('track-modal-header').style.background = d.gradient;
+    document.getElementById('tm-lessons').innerHTML = d.lessons.map((l,i)=>`<div style="display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.75rem;background:var(--off);border-radius:7px;"><div style="width:19px;height:19px;border-radius:50%;background:var(--accent-light);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:var(--accent-dark);flex-shrink:0;">${i+1}</div><div style="font-size:0.77rem;color:#333;">${l}</div></div>`).join('');
+    document.getElementById('tm-projects').innerHTML = d.projects.map(p=>`<div style="display:flex;align-items:center;gap:0.55rem;font-size:0.77rem;color:#333;"><div style="width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>${p}</div>`).join('');
+    document.getElementById('track-modal').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+
+  function closeTrackModal() { document.getElementById('track-modal').classList.remove('open'); document.body.style.overflow=''; }
+
+  // Hook track cards to modal
+  document.querySelectorAll('.track-card').forEach(card => {
+    const trackMap = { code:'coding', design:'design', marketing:'marketing', video:'video', ai:'ai', web:'web' };
+    card.style.cursor='pointer';
+    card.addEventListener('click', () => {
+      const key = Object.keys(trackMap).find(k=>card.classList.contains(k));
+      if (key) openTrackModal(trackMap[key]);
+    });
+  });
+
+  /* ===== AUTH MODAL ===== */
+  function openAuthModal(mode) { switchAuthMode(mode); document.getElementById('auth-modal').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeAuthModal() { document.getElementById('auth-modal').classList.remove('open'); document.body.style.overflow=''; }
+  function switchAuthMode(mode) {
+    document.getElementById('auth-signup').style.display = mode==='signup'?'block':'none';
+    document.getElementById('auth-signin').style.display = mode==='signin'?'block':'none';
+    document.getElementById('auth-success').style.display = 'none';
+    document.getElementById('auth-modal-title').textContent = mode==='signup'?'Create your account':'Welcome back';
+  }
+  /* ===== MOCK AUTH ===== */
+  let isLoggedIn = false;
+
+  function showToast(msg, delay) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    setTimeout(() => {
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }, delay || 0);
+  }
+
+  function setLoggedInState() {
+    isLoggedIn = true;
+    const nr = document.getElementById('nav-right');
+    if (nr) nr.innerHTML = '<button class="nav-cta" onclick="goTo(\'dashboard\')">Dashboard</button>';
+  }
+
+  function handleSignup() {
+    document.getElementById('auth-signup').style.display = 'none';
+    document.getElementById('auth-success').style.display = 'block';
+    document.getElementById('auth-modal-title').textContent = 'Account created';
+    setTimeout(() => {
+      closeAuthModal();
+      setLoggedInState();
+      goTo('dashboard');
+      showToast('Welcome to <span>Centauri</span>. Your account is ready.', 300);
+    }, 1200);
+  }
+
+  function handleSignin() {
+    document.getElementById('auth-signin').style.display = 'none';
+    document.getElementById('auth-success').style.display = 'block';
+    document.getElementById('auth-modal-title').textContent = 'Signed in';
+    setTimeout(() => {
+      closeAuthModal();
+      setLoggedInState();
+      goTo('dashboard');
+      showToast('Welcome back to <span>Centauri</span>.', 300);
+    }, 1000);
+  }
+
+  /* ===== MENTOR BOOKING ===== */
+  const mentorProfiles = [
+    { name:'Aisha Osei', role:'Software Engineer', company:'HSBC Tech', skills:['Python','Backend','Careers'] },
+    { name:'Jordan Blake', role:'CTO & Co-Founder', company:'Launchpad BHX', skills:['Startups','Fundraising','Product'] },
+    { name:'Priya Sharma', role:'Data Scientist', company:'NHS Digital', skills:['ML/AI','SQL','Health Tech'] },
+    { name:'Kofi Mensah', role:'Senior UX Designer', company:'BJSS', skills:['Figma','Research','Portfolio'] },
+    { name:'Fatima Al-Rashid', role:'Cybersecurity Analyst', company:'PwC', skills:['SecOps','Certifications','Apprenticeships'] },
+    { name:'Tom Halligan', role:'Engineering Manager', company:'bet365', skills:['JavaScript','React','CV Review'] }
+  ];
+
+  function openMentorBooking(idx) {
+    const m = mentorProfiles[idx]; if(!m) return;
+    document.getElementById('mb-name').textContent = m.name;
+    document.getElementById('mb-role').textContent = m.role + ' · ' + m.company;
+    document.getElementById('mb-skills').innerHTML = m.skills.map(s=>`<div class="mentor-tag-pill">${s}</div>`).join('');
+    document.getElementById('mb-booking-form').style.display='block';
+    document.getElementById('mb-success').style.display='none';
+    document.getElementById('mb-footer').style.display='flex';
+    document.getElementById('mentor-booking-modal').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeMentorBooking() { document.getElementById('mentor-booking-modal').classList.remove('open'); document.body.style.overflow=''; }
+  function selectSlot(btn) { document.querySelectorAll('#mb-slots button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+  function submitMentorBooking() {
+    document.getElementById('mb-booking-form').style.display='none';
+    document.getElementById('mb-success').style.display='block';
+    document.getElementById('mb-footer').style.display='none';
+    showToast('Session booked. You will receive a confirmation email shortly.', 400);
+  }
+
+  // Hook mentor cards
+  document.querySelectorAll('.mentor-card').forEach((card, idx) => {
+    card.style.cursor='pointer';
+    card.addEventListener('click', () => openMentorBooking(idx));
+  });
+
+  /* ===== ACADEMY ENTRY ===== */
+  function handleAcademyStart() {
+    goTo('academy');
+  }
+
+  /* ===== AI CHATBOT ===== */
+  const chatResponses = [
+    { kw:['web','website','html','css','front'], r:"Start with the Web Development Beginner track. You will go from blank page to a live site. Complete HTML & CSS Basics first — most learners have something online within the first week." },
+    { kw:['code','coding','python','javascript','programming'], r:"The Coding track covers HTML, CSS, JavaScript and Python from scratch. Start with the Beginner module — 30 minutes a day gets you through it in two weeks. Great for getting into software or data roles." },
+    { kw:['design','graphic','figma','ui','ux','brand'], r:"Graphic Design on Centauri starts with the fundamentals — colour, typography, layout — then moves into Figma. By Module 4 you will have a brand kit and your first portfolio piece." },
+    { kw:['ai','prompt','artificial','machine','gpt'], r:"AI Tools is one of our most in-demand tracks right now. Prompt Engineering Basics is the starting point — you will be using AI to speed up real work tasks within the first two lessons." },
+    { kw:['market','social','tiktok','seo','content','instagram'], r:"The Marketing track is practical and fast. You will cover social strategy, TikTok campaign basics, brand storytelling, and SEO fundamentals. Many learners pick up freelance or part-time work within a month of completing it." },
+    { kw:['video','edit','capcut','youtube','film','reel'], r:"Video Editing is a great skill for brand, social, and content work. Start with CapCut Basics — you will be editing your first short-form video in the first session. The portfolio project at the end gives you a real showreel." },
+    { kw:['mentor','book','guidance','advice'], r:"Booking a mentor is free. Head to the Mentorship section, pick someone whose skills match your goals, and choose a session type — Career Guidance, Portfolio Review, CV Review, or Mock Interview. It takes under 2 minutes to request." },
+    { kw:['career','job','employ','work','hire'], r:"The fastest route to employment on Centauri is: complete a track, build a portfolio project, then book a Portfolio Review with a mentor. Our learners have an 89% placement rate within 6 months. Start with whichever track matches your interest." },
+    { kw:['dashboard','xp','streak','badge','progress'], r:"Your Dashboard shows XP points, your daily streak, badges, and how far through your current track you are. Hit a 7-day streak to earn the Streak badge. Every completed lesson adds XP — 500 XP per level." },
+    { kw:['free','cost','price','pay','money'], r:"Everything on Centauri is free. No subscriptions, no paywalls, no credit card. Courses, mentors, certificates — all free for young people aged 16 to 30. It is funded by our partner organisations." },
+    { kw:['beginner','start','new','zero','no experience','never'], r:"You are in exactly the right place. Every Centauri track starts from absolute zero — no assumptions, no jargon to begin with. The Web Development track is the most popular starting point. You can preview any track without creating an account." },
+    { kw:['certificate','cert','qualification','cv','linkedin'], r:"Every completed track earns you a Centauri certificate you can add to your CV and LinkedIn profile. Our certs are recognised by 40+ partner employers across the UK, including businesses in Birmingham, Manchester, and London." },
+    { kw:['choose','which','what','recommend','unsure','not sure'], r:"Tell me a bit more and I can narrow it down. Are you more interested in creative work (design, video), technical work (coding, web dev), or business-focused work (marketing, AI tools)? Or I can walk you through all six tracks." },
+    { kw:['help','stuck','confused','lost','do not know'], r:"No problem at all. The simplest starting point is the Web Development Beginner track — it is the most universally useful and gives you something you can show employers quickly. You can also book a free Career Guidance session with a Centauri mentor if you want a more personal recommendation." }
+  ];
+
+  const fallbackResponses = [
+    "Browse the Skills Academy to see all six tracks. Each one is free and starts from zero. If you tell me what kind of work interests you, I can point you in the right direction.",
+    "Good question. The best place to start is exploring our six tracks in the Skills Academy. Coding, Web Dev, AI Tools, Design, Marketing, and Video Editing are all available free. Which sounds closest to what you want to do?",
+    "I am not sure I caught that. Could you rephrase? For example, try 'I want to work in tech' or 'I want to do something creative' and I will give you a specific recommendation.",
+    "Every track on Centauri is free and starts from beginner level. If you are not sure where to begin, try Web Development — it is the most versatile and leads to the widest range of jobs. Want to know more about it?"
+  ];
+  let fallbackIndex = 0;
+
+  function toggleChatbot() {
+    const p = document.getElementById('chatbot-panel');
+    const isOpen = p.style.display === 'flex';
+    p.style.display = isOpen ? 'none' : 'flex';
+    if (!isOpen) document.getElementById('chatbot-input').focus();
+  }
+
+  function sendChatSuggestion(text) {
+    document.getElementById('chatbot-input').value = text;
+    sendChatMessage();
+  }
+
+  function sendChatMessage() {
+    const inp = document.getElementById('chatbot-input');
+    const text = inp.value.trim();
+    if (!text) return;
+    const msgs = document.getElementById('chatbot-messages');
+
+    const addMsg = (txt, isUser) => {
+      const d = document.createElement('div');
+      d.style.cssText = [
+        'border-radius:' + (isUser ? '10px 10px 2px 10px' : '10px 10px 10px 2px'),
+        'padding:0.65rem 0.8rem',
+        'font-size:0.77rem',
+        'line-height:1.5',
+        'max-width:92%',
+        'align-self:' + (isUser ? 'flex-end' : 'flex-start'),
+        'background:' + (isUser ? 'var(--accent)' : 'var(--off)'),
+        'color:' + (isUser ? '#fff' : '#333')
+      ].join(';');
+      d.textContent = txt;
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+    };
+
+    addMsg(text, true);
+    inp.value = '';
+    // Hide suggestion chips after first message
+    const chips = document.getElementById('chat-suggestions');
+    if (chips) chips.style.display = 'none';
+
+    const lower = text.toLowerCase();
+    let reply = null;
+    for (const r of chatResponses) {
+      if (r.kw.some(k => lower.includes(k))) { reply = r.r; break; }
+    }
+    if (!reply) {
+      reply = fallbackResponses[fallbackIndex % fallbackResponses.length];
+      fallbackIndex++;
+    }
+    setTimeout(() => addMsg(reply, false), 750);
+  }
+
+  // Escape key closes all modals
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){
+      closeModal && closeModal();
+      closeTrackModal();
+      closeAuthModal();
+      closeMentorBooking();
+    }
+  });
+
+</script>
