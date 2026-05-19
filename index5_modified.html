@@ -1,0 +1,1456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Centauri — Digital Mobility Ecosystem</title>
+<meta name="description" content="Centauri turns raw potential into immediate employability for underserved young people through devices, mentors, and skill tracks." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@400;600&family=OpenDyslexic&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-2:#f9fafb;
+    --violet:#059669;
+    --violet-glow:#10b981;
+    --emerald:#10b981;
+    --emerald-glow:#047857;
+    --ink:#0a0a0a;
+    --muted:#4b5563;
+    --line:rgba(5,150,105,.18);
+  }
+  html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;scroll-behavior:smooth;}
+  .font-display{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.02em;}
+  body.dyslexic, body.dyslexic *{font-family:'OpenDyslexic','Lexend',sans-serif !important;letter-spacing:.02em;}
+  body.contrast{--bg:#000;--bg-2:#000;--ink:#fff;--muted:#fff;--line:#fff;}
+  body.contrast .glass{background:#000 !important;border-color:#fff !important;}
+  body.focus-mode main > section:not(.focused){opacity:.15;filter:blur(2px);transition:.4s;}
+  .glass{background:linear-gradient(135deg,rgba(5,150,105,.08),rgba(16,185,129,.04));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);}
+  .glow{box-shadow:0 0 0 1px rgba(5,150,105,.2),0 20px 60px -20px rgba(5,150,105,.5);}
+  .grad-text{background:linear-gradient(120deg,#10b981 0%,#047857 60%,#10b981 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:slide 6s linear infinite;}
+  @keyframes slide{to{background-position:200% 0;}}
+  .orb{position:absolute;border-radius:9999px;filter:blur(80px);opacity:.35;pointer-events:none;}
+  .btn-primary{background:linear-gradient(135deg,#059669,#10b981);color:#fff;padding:.7rem 1.2rem;border-radius:14px;font-weight:600;transition:transform .2s,box-shadow .2s;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px -10px rgba(5,150,105,.7);}
+  .btn-ghost{border:1px solid var(--line);padding:.65rem 1.1rem;border-radius:14px;background:rgba(0,0,0,.03);transition:.2s;}
+  .btn-ghost:hover{border-color:var(--violet-glow);background:rgba(5,150,105,.08);}
+  .chip{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .7rem;border-radius:9999px;background:rgba(5,150,105,.1);border:1px solid var(--line);font-size:.72rem;font-weight:500;color:var(--violet-glow);}
+  .nav-link{padding:.5rem .85rem;border-radius:10px;font-size:.88rem;color:var(--muted);transition:.2s;cursor:pointer;}
+  .nav-link:hover,.nav-link.active{color:#fff;background:rgba(5,150,105,.12);}
+  .card{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:20px;padding:1.5rem;transition:.3s;}
+  .card:hover{border-color:rgba(5,150,105,.4);transform:translateY(-4px);}
+  .input{background:rgba(0,0,0,.04);border:1px solid var(--line);border-radius:12px;padding:.75rem 1rem;color:#fff;width:100%;outline:none;transition:.2s;}
+  .input:focus{border-color:var(--violet-glow);box-shadow:0 0 0 3px rgba(5,150,105,.2);}
+  .view{display:none;animation:fade .4s ease;}
+  .view.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .quiz-opt{display:flex;gap:.7rem;align-items:flex-start;padding:.9rem 1rem;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:.2s;background:rgba(0,0,0,.03);}
+  .quiz-opt:hover{border-color:var(--violet-glow);background:rgba(5,150,105,.08);}
+  .quiz-opt.correct{border-color:var(--emerald);background:rgba(16,185,129,.12);}
+  .quiz-opt.wrong{border-color:#f43f5e;background:rgba(244,63,94,.12);}
+  .stream-msg{padding:.7rem .9rem;border-radius:14px;max-width:85%;font-size:.88rem;line-height:1.5;}
+  .stream-user{background:linear-gradient(135deg,#059669,#10b981);margin-left:auto;color:#fff;}
+  .stream-bot{background:rgba(0,0,0,.05);border:1px solid var(--line);}
+  .dot-pulse::after{content:'…';animation:dots 1.2s infinite steps(4);}
+  @keyframes dots{0%{content:'.';}33%{content:'..';}66%{content:'...';}}
+  .scroll-hide::-webkit-scrollbar{display:none;}
+  details>summary{list-style:none;cursor:pointer;}
+  details>summary::-webkit-details-marker{display:none;}
+  .module-row{display:flex;justify-content:space-between;padding:.6rem .9rem;border-radius:10px;background:rgba(0,0,0,.03);border:1px solid var(--line);font-size:.85rem;}
+  #deviceMap, #mentorMap{height:420px;border-radius:18px;border:1px solid var(--line);filter:hue-rotate(0) saturate(.7);background:#f9fafb;}
+  .leaflet-container{background:#f9fafb;font-family:'Inter',sans-serif;}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#f9fafb !important;color:#0a0a0a !important;border:1px solid rgba(5,150,105,.3);}
+  .leaflet-popup-content{margin:10px 14px;font-size:.85rem;}
+  .leaflet-control-attribution{background:rgba(0,0,0,.5) !important;color:#888 !important;}
+  .leaflet-control-attribution a{color:#10b981 !important;}
+  .pin{background:linear-gradient(135deg,#059669,#10b981);width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(5,150,105,.5);}
+  .pin i{transform:rotate(45deg);color:#fff;}
+  .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:.85rem;cursor:pointer;border:1px solid transparent;transition:.15s;}
+  .cal-day:hover:not(.disabled){background:rgba(5,150,105,.15);border-color:var(--violet-glow);}
+  .cal-day.disabled{color:rgba(139,139,167,.3);cursor:not-allowed;}
+  .cal-day.selected{background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-weight:600;}
+  .cal-day.today{border-color:var(--emerald-glow);}
+  .slot{padding:.55rem .8rem;border:1px solid var(--line);border-radius:10px;font-size:.8rem;cursor:pointer;text-align:center;transition:.15s;background:rgba(0,0,0,.03);}
+  .slot:hover{border-color:var(--violet-glow);background:rgba(5,150,105,.1);}
+  .slot.selected{background:linear-gradient(135deg,#059669,#10b981);border-color:transparent;color:#fff;font-weight:600;}
+  .slot.taken{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
+  .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .status-online{background:#047857;box-shadow:0 0 8px #047857;}
+  .status-busy{background:#fbbf24;}
+  .status-off{background:#6b7280;}
+  .trophy{aspect-ratio:1;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.8rem;text-align:center;border:1px solid var(--line);background:rgba(0,0,0,.03);transition:.3s;}
+  .trophy.earned{background:linear-gradient(135deg,rgba(5,150,105,.2),rgba(16,185,129,.15));border-color:rgba(5,150,105,.5);box-shadow:0 8px 30px -10px rgba(5,150,105,.5);}
+  .trophy.locked{opacity:.35;filter:grayscale(1);}
+  .trophy-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#059669,#10b981);margin-bottom:.5rem;}
+  /* ---- LIGHT THEME OVERRIDES (white bg / black + green ink) ---- */
+  html,body{background:#ffffff;color:#0a0a0a;}
+  .orb{opacity:.12;}
+  .glass{background:linear-gradient(135deg,rgba(5,150,105,.06),rgba(16,185,129,.03));border:1px solid #e5e7eb;}
+  .card{background:#ffffff;border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .card:hover{border-color:#059669;box-shadow:0 12px 30px -12px rgba(5,150,105,.25);}
+  .nav-link{color:#374151;}
+  .nav-link:hover,.nav-link.active{color:#ffffff;background:#0a0a0a;}
+  .btn-primary{background:#059669;color:#fff;}
+  .btn-primary:hover{background:#047857;box-shadow:0 12px 30px -10px rgba(5,150,105,.5);}
+  .btn-ghost{background:#fff;border:1px solid #d1d5db;color:#0a0a0a;}
+  .btn-ghost:hover{border-color:#059669;background:#ecfdf5;color:#047857;}
+  .chip{background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;}
+  .input{background:#fff;border:1px solid #d1d5db;color:#0a0a0a;}
+  .input:focus{border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.18);}
+  .input::placeholder{color:#9ca3af;}
+  .grad-text{background:linear-gradient(120deg,#059669 0%,#0a0a0a 60%,#059669 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  header.glass{background:rgba(255,255,255,.85);border-color:#e5e7eb;}
+  footer{border-color:#e5e7eb !important;color:#4b5563 !important;}
+  .module-row{background:#f9fafb;border-color:#e5e7eb;color:#0a0a0a;}
+  .quiz-opt{background:#fff;border-color:#e5e7eb;color:#0a0a0a;}
+  .slot{background:#fff;border-color:#d1d5db;color:#0a0a0a;}
+  .slot:hover{background:#ecfdf5;border-color:#059669;}
+  .slot.selected{background:#059669;color:#fff;border-color:#059669;}
+  .cal-day:hover:not(.disabled){background:#ecfdf5;border-color:#059669;}
+  .cal-day.selected{background:#059669;color:#fff;}
+  .pin{background:#059669;}
+  body.contrast{background:#fff !important;color:#000 !important;}
+  body.contrast .glass,body.contrast .card{background:#fff !important;border-color:#000 !important;color:#000 !important;}
+  /* Leaflet light tweaks */
+  #deviceMap,#mentorMap{background:#f9fafb;filter:none;border-color:#e5e7eb;}
+  .leaflet-container{background:#f9fafb;}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff !important;color:#0a0a0a !important;border:1px solid #d1d5db;}
+  .leaflet-control-attribution{background:rgba(255,255,255,.8) !important;color:#374151 !important;}
+  .leaflet-control-attribution a{color:#059669 !important;}
+
+#mentorModal .card{
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(5,150,105,.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
+}
+
+#mentorModal{
+  color:#111827;
+}
+
+#mentorModal .text-\[color\:var\(--muted\)\]{
+  color:#4b5563 !important;
+}
+
+
+/* ===== ACCESSIBLE LIGHT MENTOR MODAL ===== */
+#mentorModal{
+  background: rgba(255,255,255,0.55) !important;
+  backdrop-filter: blur(12px);
+}
+
+#mentorModal .card{
+  background:#ffffff !important;
+  border:1px solid rgba(15,23,42,0.08) !important;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08) !important;
+}
+
+#mentorModal .mentor-left{
+  background:#f8fafc !important;
+}
+
+#mentorModal .mentor-right{
+  background:#ffffff !important;
+}
+
+#mentorModal h1,
+#mentorModal h2,
+#mentorModal h3,
+#mentorModal h4,
+#mentorModal p,
+#mentorModal span,
+#mentorModal div{
+  color:#111827 !important;
+}
+
+#mentorModal .muted,
+#mentorModal .secondary,
+#mentorModal .subtitle{
+  color:#4b5563 !important;
+}
+
+#mentorModal .tag,
+#mentorModal .stat-card{
+  background:#ffffff !important;
+  border:1px solid #d1d5db !important;
+  color:#111827 !important;
+}
+
+#mentorModal button{
+  background:#10b981 !important;
+  color:#ffffff !important;
+  font-weight:600;
+}
+
+#mentorModal .calendar-day{
+  background:#ffffff !important;
+  color:#111827 !important;
+  border:1px solid #d1d5db !important;
+}
+
+#mentorModal .calendar-day.active{
+  background:#ecfdf5 !important;
+  border:2px solid #10b981 !important;
+  color:#065f46 !important;
+}
+
+
+/* ===== ACCESSIBILITY HIGH CONTRAST FIX ===== */
+/* Keeps high contrast readable instead of turning key text white on a white page */
+body.contrast{
+  --bg:#ffffff !important;
+  --bg-2:#f8fafc !important;
+  --ink:#000000 !important;
+  --muted:#111827 !important;
+  --line:#000000 !important;
+  background:#ffffff !important;
+  color:#000000 !important;
+}
+
+body.contrast main,
+body.contrast section,
+body.contrast header,
+body.contrast footer,
+body.contrast .glass,
+body.contrast .card,
+body.contrast .chip,
+body.contrast .input,
+body.contrast .btn-ghost,
+body.contrast #a11yPanel,
+body.contrast #chatPanel,
+body.contrast #authModal .glass,
+body.contrast #mentorModal .glass,
+body.contrast #moduleModal .glass{
+  background:#ffffff !important;
+  color:#000000 !important;
+  border-color:#000000 !important;
+  box-shadow:none !important;
+}
+
+body.contrast *,
+body.contrast .text-white,
+body.contrast .text-gray-300,
+body.contrast .text-gray-400,
+body.contrast .text-emerald-700,
+body.contrast .text-[color\:var\(--muted\)],
+body.contrast .font-display,
+body.contrast p,
+body.contrast h1,
+body.contrast h2,
+body.contrast h3,
+body.contrast h4,
+body.contrast span,
+body.contrast div,
+body.contrast label{
+  color:#000000 !important;
+  -webkit-text-fill-color:#000000 !important;
+}
+
+body.contrast .grad-text{
+  background:none !important;
+  color:#000000 !important;
+  -webkit-text-fill-color:#000000 !important;
+}
+
+body.contrast .btn-primary,
+body.contrast button.btn-primary,
+body.contrast .nav-link.active{
+  background:#000000 !important;
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  border:2px solid #000000 !important;
+}
+
+body.contrast .btn-primary *,
+body.contrast button.btn-primary *,
+body.contrast .nav-link.active *{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+body.contrast .btn-ghost,
+body.contrast .nav-link,
+body.contrast .quiz-opt,
+body.contrast .slot,
+body.contrast .cal-day,
+body.contrast .module-row{
+  background:#ffffff !important;
+  color:#000000 !important;
+  -webkit-text-fill-color:#000000 !important;
+  border:2px solid #000000 !important;
+}
+
+body.contrast .chip{
+  background:#ffffff !important;
+  color:#000000 !important;
+  -webkit-text-fill-color:#000000 !important;
+  border:2px solid #000000 !important;
+}
+
+body.contrast svg,
+body.contrast i svg{
+  color:#000000 !important;
+  stroke:#000000 !important;
+}
+
+body.contrast .btn-primary svg,
+body.contrast .nav-link.active svg{
+  color:#ffffff !important;
+  stroke:#ffffff !important;
+}
+
+/* Keep accessibility panel controls readable while high contrast is active */
+body.contrast #a11yPanel{
+  background:#ffffff !important;
+}
+body.contrast #a11yPanel .card{
+  background:#ffffff !important;
+  border:2px solid #000000 !important;
+}
+body.contrast #a11yPanel input[type="checkbox"]{
+  accent-color:#000000 !important;
+}
+
+</style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden">
+
+<div class="orb" style="width:600px;height:600px;background:#059669;top:-200px;left:-150px;"></div>
+<div class="orb" style="width:500px;height:500px;background:#10b981;top:300px;right:-100px;"></div>
+<div class="orb" style="width:400px;height:400px;background:#10b981;bottom:-150px;left:30%;"></div>
+
+<!-- NAV -->
+<header class="sticky top-0 z-40 glass border-b" style="border-color:var(--line);">
+  <nav class="max-w-7xl mx-auto px-5 py-3 flex items-center gap-3">
+    <a href="#" data-nav="home" class="flex items-center gap-2 font-display text-xl font-bold">
+      <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#059669,#10b981);"><i data-lucide="orbit" class="w-4 h-4 text-white"></i></span>
+      <span>Centauri</span>
+    </a>
+    <div class="hidden md:flex items-center gap-1 ml-6">
+      <button class="nav-link active" data-nav="home">Home</button>
+      <button class="nav-link" data-nav="courses">Courses</button>
+      <button class="nav-link" data-nav="devices">Devices</button>
+      <button class="nav-link" data-nav="mentors">Mentors</button>
+      <button class="nav-link" data-nav="donate">Donate</button>
+      <button class="nav-link" data-nav="dashboard">Dashboard</button>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+      <div id="xpBadge" class="hidden chip"><i data-lucide="zap" class="w-3 h-3"></i><span id="xpBadgeVal">0 XP</span></div>
+      <button id="a11yBtn" class="btn-ghost text-sm flex items-center gap-2" aria-label="Accessibility"><i data-lucide="accessibility" class="w-4 h-4"></i><span class="hidden sm:inline">Accessibility</span></button>
+      <button id="authBtn" class="btn-primary text-sm flex items-center gap-2"><i data-lucide="log-in" class="w-4 h-4"></i><span>Log In / Sign Up</span></button>
+    </div>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-5 py-10 relative z-10">
+
+<!-- HOME -->
+<section class="view active" id="view-home">
+  <div class="grid lg:grid-cols-12 gap-8 items-center">
+    <div class="lg:col-span-7">
+      <div class="chip mb-5"><i data-lucide="sparkles" class="w-3 h-3"></i>A digital mobility ecosystem</div>
+      <h1 class="font-display text-5xl md:text-7xl font-bold leading-[1.05]">Turn raw potential into <span class="grad-text">employable power</span>.</h1>
+      <p class="mt-6 text-lg text-[color:var(--muted)] max-w-xl">Centauri is built for the young people the system forgot — no laptop, no network, no roadmap. We hand you the device, the curriculum, and the mentor in one move.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button class="btn-primary flex items-center gap-2" data-nav="courses"><i data-lucide="rocket" class="w-4 h-4"></i>Start a skill track</button>
+        <button class="btn-ghost flex items-center gap-2" data-nav="devices"><i data-lucide="laptop" class="w-4 h-4"></i>Request a device</button>
+      </div>
+      <div class="mt-10 grid grid-cols-3 gap-4 max-w-md">
+        <div><div class="font-display text-3xl font-bold grad-text">6</div><div class="text-xs text-[color:var(--muted)]">Skill tracks</div></div>
+        <div><div class="font-display text-3xl font-bold grad-text">120+</div><div class="text-xs text-[color:var(--muted)]">Mentor hours / wk</div></div>
+        <div><div class="font-display text-3xl font-bold grad-text">£0</div><div class="text-xs text-[color:var(--muted)]">To begin</div></div>
+      </div>
+    </div>
+    <div class="lg:col-span-5">
+      <div class="card glow relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span class="text-xs text-[color:var(--muted)]">Live Matrix</span></div>
+          <span class="chip">XP Engine</span>
+        </div>
+        <div class="font-display text-2xl font-bold mb-1">@CentauriLearner</div>
+        <div class="text-xs text-[color:var(--muted)] mb-4">Tier · Initiate</div>
+        <div class="space-y-3">
+          <div><div class="flex justify-between text-xs mb-1"><span>Coding Track</span><span class="text-emerald-700">62%</span></div><div class="h-1.5 rounded bg-white/5"><div class="h-full rounded" style="width:62%;background:linear-gradient(90deg,#059669,#10b981);"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span>Design Foundations</span><span class="text-emerald-700">38%</span></div><div class="h-1.5 rounded bg-white/5"><div class="h-full rounded" style="width:38%;background:linear-gradient(90deg,#059669,#10b981);"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span>Daily Streak</span><span class="text-emerald-700">7 days</span></div><div class="h-1.5 rounded bg-white/5"><div class="h-full rounded" style="width:70%;background:linear-gradient(90deg,#059669,#10b981);"></div></div></div>
+        </div>
+        <div class="mt-5 p-3 rounded-xl flex items-center gap-3" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-700"></i>
+          <div class="text-xs"><b>Milestone Cleared</b> — Web Dev · Module 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <div class="mt-24 grid lg:grid-cols-2 gap-10">
+    <div>
+      <div class="chip mb-4"><i data-lucide="alert-octagon" class="w-3 h-3"></i>The honest problem</div>
+      <h2 class="font-display text-4xl font-bold mb-5">Talent is everywhere. Opportunity is rationed.</h2>
+      <p class="text-[color:var(--muted)] leading-relaxed">A teenager in a council estate has the same wiring as a teenager in a tech hub — but not the same laptop, the same Wi-Fi, the same uncle who works in product, or the same five hours a week of unstructured tutoring. Most "free" learning platforms assume you already own the runway. We don't. Centauri exists because skill alone never broke the ceiling — <b class="text-white">access did</b>. Without devices, structured curricula, and warm introductions into industry, young people from underserved backgrounds stay locked out of the digital economy regardless of how hard they try.</p>
+    </div>
+    <div>
+      <div class="chip mb-4" style="color:#047857;background:rgba(16,185,129,.1);"><i data-lucide="compass" class="w-3 h-3"></i>Our solution</div>
+      <h2 class="font-display text-4xl font-bold mb-5">One ecosystem. Three unlocks.</h2>
+      <div class="space-y-3">
+        <div class="card !p-4 flex gap-4"><div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(5,150,105,.15);"><i data-lucide="laptop-minimal" class="w-5 h-5 text-emerald-700"></i></div><div><div class="font-semibold">Devices in your hands</div><div class="text-sm text-[color:var(--muted)]">Enterprise-refurbished MacBooks and iPads, logistics-vetted and shipped free.</div></div></div>
+        <div class="card !p-4 flex gap-4"><div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(16,185,129,.15);"><i data-lucide="graduation-cap" class="w-5 h-5 text-emerald-700"></i></div><div><div class="font-semibold">Skill tracks that pay</div><div class="text-sm text-[color:var(--muted)]">Six gamified curricula — coding, design, marketing, video, AI, web — built with industry leads.</div></div></div>
+        <div class="card !p-4 flex gap-4"><div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(5,150,105,.15);"><i data-lucide="users-round" class="w-5 h-5 text-emerald-700"></i></div><div><div class="font-semibold">Mentors who reply</div><div class="text-sm text-[color:var(--muted)]">Async pathways into engineers, founders, and creatives across top tech ecosystems.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="view" id="view-courses">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+    <div>
+      <div class="chip mb-3"><i data-lucide="layers" class="w-3 h-3"></i>Skill Matrix</div>
+      <h2 class="font-display text-4xl font-bold">Six tracks. Real content. Live XP.</h2>
+      <p class="text-[color:var(--muted)] mt-2">Pick a track. Read the module. Pass the practical. Bank the XP.</p>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <div class="chip" style="background:rgba(16,185,129,.1);color:#047857;"><i data-lucide="flame" class="w-3 h-3"></i><span id="streakChip">Streak: 0 days</span></div>
+      <button onclick="openMobileApp()" class="btn-primary flex items-center gap-2" style="font-size:.85rem;padding:.6rem 1.1rem;">
+        <i data-lucide="smartphone" class="w-4 h-4"></i>
+        Try Mobile App
+      </button>
+    </div>
+  </div>
+  <div id="courseGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+</section>
+
+<!-- MOBILE APP MODAL -->
+<div id="mobileAppModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem;" onclick="if(event.target===this)closeMobileApp()">
+  <div style="position:relative;width:100%;max-width:430px;max-height:90vh;border-radius:28px;overflow:hidden;box-shadow:0 40px 100px -20px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08);">
+    <!-- phone chrome bar -->
+    <div style="background:#0a0a0a;padding:.6rem 1.2rem;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#febc2e;"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+      </div>
+      <span style="color:#6b7280;font-size:.75rem;font-family:'Inter',sans-serif;">Centauri Mobile</span>
+      <button onclick="closeMobileApp()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;line-height:1;padding:0;" title="Close">&times;</button>
+    </div>
+    <iframe id="mobileAppFrame" src="centauri-mobile-screen-fixed.html" style="width:100%;height:80vh;border:none;display:block;background:#fff;"></iframe>
+  </div>
+</div>
+
+<script>
+function openMobileApp(){
+  const m=document.getElementById('mobileAppModal');
+  m.style.display='flex';
+  document.body.style.overflow='hidden';
+  lucide.createIcons();
+}
+function closeMobileApp(){
+  document.getElementById('mobileAppModal').style.display='none';
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeMobileApp(); });
+</script>
+
+<!-- DEVICES -->
+<section class="view" id="view-devices">
+  <div>
+    <div class="chip mb-3" style="background:rgba(16,185,129,.1);color:#047857;"><i data-lucide="map-pin" class="w-3 h-3"></i>Rent locally · UK device hubs</div>
+    <h2 class="font-display text-4xl font-bold mb-2">Find a device near you today</h2>
+    <p class="text-[color:var(--muted)] mb-5 max-w-2xl">Enter any UK postcode. We'll find vetted partner libraries, tech hubs and youth centres nearby where you can borrow a laptop or tablet on-the-spot. Coverage across London, Manchester, Birmingham, Leeds, Bradford and more.</p>
+    <form id="postForm" class="flex flex-wrap gap-2 mb-5 max-w-xl">
+      <input id="postInput" class="input flex-1" placeholder="Enter UK postcode (e.g. M1 1AE, BD1 1HY, E1 6AN)" autocomplete="postal-code" maxlength="10">
+      <button class="btn-primary flex items-center gap-2"><i data-lucide="search" class="w-4 h-4"></i>Find hubs</button>
+      <button type="button" id="useLoc" class="btn-ghost flex items-center gap-2"><i data-lucide="locate" class="w-4 h-4"></i>Use my location</button>
+    </form>
+    <div id="postStatus" class="text-sm mb-3 text-[color:var(--muted)]">Try: <button class="underline hover:text-white" onclick="lookupPost('B18 4PP')">B18 4PP</button> · <button class="underline hover:text-white" onclick="lookupPost('M1 1AE')">M1 1AE</button> · <button class="underline hover:text-white" onclick="lookupPost('BD1 1HY')">BD1 1HY</button> · <button class="underline hover:text-white" onclick="lookupPost('E1 6AN')">E1 6AN</button> · <button class="underline hover:text-white" onclick="lookupPost('LS1 3AY')">LS1 3AY</button></div>
+    <div class="grid lg:grid-cols-5 gap-4">
+      <div class="lg:col-span-3"><div id="deviceMap"></div></div>
+      <div class="lg:col-span-2"><div id="hubList" class="space-y-2 max-h-[420px] overflow-y-auto pr-1 scroll-hide"><div class="text-sm text-[color:var(--muted)]">Search a postcode to see hubs near you.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENTORS -->
+<section class="view" id="view-mentors">
+  <div class="chip mb-3"><i data-lucide="users" class="w-3 h-3"></i>Mentor Linkages</div>
+  <h2 class="font-display text-4xl font-bold mb-2">Warm intros into rooms you weren't invited to.</h2>
+  <p class="text-[color:var(--muted)] mb-8 max-w-2xl">Asynchronous, no-pressure pathways into operators from top tech ecosystems. Send one structured message, get one structured reply — that's the contract.</p>
+  <div id="mentorGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="view" id="view-dashboard">
+  <div class="chip mb-3"><i data-lucide="layout-dashboard" class="w-3 h-3"></i>Account Matrix</div>
+  <h2 class="font-display text-4xl font-bold mb-8" id="dashTitle">Welcome back, @Guest</h2>
+  <div class="grid lg:grid-cols-4 gap-4 mb-8">
+    <div class="card"><div class="text-xs text-[color:var(--muted)]">Total XP</div><div class="font-display text-3xl font-bold grad-text mt-2" id="dXp">0</div></div>
+    <div class="card"><div class="text-xs text-[color:var(--muted)]">Daily Streak</div><div class="font-display text-3xl font-bold grad-text mt-2"><span id="dStreak">0</span> <span class="text-base">days</span></div></div>
+    <div class="card"><div class="text-xs text-[color:var(--muted)]">Cleared Modules</div><div class="font-display text-3xl font-bold grad-text mt-2" id="dCleared">0</div></div>
+    <div class="card"><div class="text-xs text-[color:var(--muted)]">Device Tickets</div><div class="font-display text-3xl font-bold grad-text mt-2" id="dTickets">0</div></div>
+  </div>
+  <div class="grid lg:grid-cols-2 gap-5">
+    <div class="card">
+      <h3 class="font-display text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-700"></i>Verified Matrix</h3>
+      <div id="dClearedList" class="space-y-2 text-sm text-[color:var(--muted)]">No lessons cleared yet.</div>
+    </div>
+    <div class="card">
+      <h3 class="font-display text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="package" class="w-5 h-5 text-emerald-700"></i>Logistics Tickets</h3>
+      <div id="dTicketList" class="space-y-2 text-sm text-[color:var(--muted)]">No device requests yet.</div>
+    </div>
+  </div>
+  <div class="card mt-5">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display text-xl font-bold flex items-center gap-2"><i data-lucide="trophy" class="w-5 h-5 text-amber-600"></i>Badges & Trophies</h3>
+      <span class="chip"><span id="badgeCount">0</span> / <span id="badgeTotal">9</span> earned</span>
+    </div>
+    <div id="trophyGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3"></div>
+  </div>
+</section>
+
+<!-- DONATE / SUSTAINABILITY -->
+<section class="view" id="view-donate">
+  <div class="chip mb-3"><i data-lucide="recycle" class="w-3 h-3"></i>Sustainability · Circular tech</div>
+  <h2 class="font-display text-4xl md:text-5xl font-bold mb-2">Got old tech? Give it a second life.</h2>
+  <p class="text-[color:var(--muted)] mb-8 max-w-2xl">Your unused laptop, tablet or smartphone could change a young person's future. We securely wipe, refurbish and ship every donated device to a vetted learner in the UK. Takes 5 minutes to register a donation. Free collection across the UK.</p>
+
+  <div class="rounded-2xl p-6 md:p-8 mb-8" style="background:#0a0a0a;color:#fff;">
+    <div class="font-display text-2xl md:text-3xl font-bold mb-2">EVERY DEVICE <span style="color:#10b981;">MATTERS.</span></div>
+    <p class="text-sm md:text-base text-gray-300 max-w-3xl">Last year, donated devices helped over <b class="text-white">300 young people</b> across Birmingham, London, Manchester and Leeds access education and employment opportunities they otherwise couldn't reach. 100% of working tech is rehomed within 14 days.</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <div><div class="font-display text-3xl font-bold" style="color:#10b981;" id="dnImpactDevices">312</div><div class="text-xs text-gray-400 mt-1">Devices rehomed</div></div>
+      <div><div class="font-display text-3xl font-bold" style="color:#10b981;">£94k</div><div class="text-xs text-gray-400 mt-1">Saved for learners</div></div>
+      <div><div class="font-display text-3xl font-bold" style="color:#10b981;">2.1t</div><div class="text-xs text-gray-400 mt-1">E-waste diverted</div></div>
+      <div><div class="font-display text-3xl font-bold" style="color:#10b981;" id="dnImpactCO2">18t</div><div class="text-xs text-gray-400 mt-1">CO₂ avoided</div></div>
+    </div>
+  </div>
+
+  <!-- 4-step process -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+    <div class="card"><div class="font-display text-xl font-bold text-emerald-700">01</div><div class="font-semibold mt-2">Register your device</div><div class="text-sm text-[color:var(--muted)] mt-1">Fill in the form with your device details and location. Takes under 5 minutes.</div></div>
+    <div class="card"><div class="font-display text-xl font-bold text-emerald-700">02</div><div class="font-semibold mt-2">We arrange collection</div><div class="text-sm text-[color:var(--muted)] mt-1">Our partners arrange a free collection from you within 3–5 days.</div></div>
+    <div class="card"><div class="font-display text-xl font-bold text-emerald-700">03</div><div class="font-semibold mt-2">Secure data wipe</div><div class="text-sm text-[color:var(--muted)] mt-1">Certified DoD-5220.22-M wipe. You get a written data-destruction certificate.</div></div>
+    <div class="card"><div class="font-display text-xl font-bold text-emerald-700">04</div><div class="font-semibold mt-2">A young person learns</div><div class="text-sm text-[color:var(--muted)] mt-1">Refurbished and matched to a learner on a Centauri skill track within 14 days.</div></div>
+  </div>
+
+  <!-- Form + sidebar -->
+  <div class="grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 card">
+      <h3 class="font-display text-2xl font-bold mb-1">Register a donation</h3>
+      <p class="text-sm text-[color:var(--muted)] mb-5">All fields required. We'll email you a free shipping label or collection slot.</p>
+      <form id="donateForm" class="grid sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2"><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Your name</label><input required id="dnName" class="input mt-1" placeholder="Jane Doe"></div>
+        <div><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Email</label><input required type="email" id="dnEmail" class="input mt-1" placeholder="jane@example.com"></div>
+        <div><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">UK postcode</label><input required id="dnPost" class="input mt-1" placeholder="B18 4PP" maxlength="10"></div>
+        <div><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Device type</label>
+          <select required id="dnType" class="input mt-1">
+            <option value="">Select…</option><option>Laptop</option><option>Desktop PC</option><option>Tablet</option><option>Smartphone</option><option>Monitor</option><option>Accessories (keyboard, mouse, cables)</option>
+          </select>
+        </div>
+        <div><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Approx. age</label>
+          <select required id="dnAge" class="input mt-1">
+            <option value="">Select…</option><option>Under 2 years</option><option>2–5 years</option><option>5–8 years</option><option>Over 8 years</option>
+          </select>
+        </div>
+        <div><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Working condition</label>
+          <select required id="dnCond" class="input mt-1">
+            <option value="">Select…</option><option>Fully working</option><option>Minor issues (still usable)</option><option>Not booting / for parts</option>
+          </select>
+        </div>
+        <div><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Preferred handover</label>
+          <select required id="dnHand" class="input mt-1">
+            <option value="">Select…</option><option>Free home collection</option><option>Drop at nearest hub</option><option>Free postage label</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2"><label class="text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Anything we should know? (optional)</label><textarea id="dnNotes" rows="3" class="input mt-1" placeholder="Charger included, cracked screen, etc."></textarea></div>
+        <label class="sm:col-span-2 flex items-start gap-2 text-sm text-[color:var(--muted)]"><input type="checkbox" required id="dnConsent" class="mt-1"> I confirm I am the legal owner of this device and consent to a certified data wipe.</label>
+        <div class="sm:col-span-2 flex flex-wrap gap-3 items-center">
+          <button class="btn-primary flex items-center gap-2"><i data-lucide="heart-handshake" class="w-4 h-4"></i>Register donation</button>
+          <span class="text-xs text-[color:var(--muted)]">+100 XP · "Second Life" badge unlocked on first donation.</span>
+        </div>
+      </form>
+    </div>
+    <div class="space-y-4">
+      <div class="card">
+        <div class="font-semibold mb-3 flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-700"></i>Your data, gone for good</div>
+        <ul class="text-sm text-[color:var(--muted)] space-y-2 list-disc pl-4">
+          <li>Certified DoD-5220.22-M / NIST 800-88 wipe</li>
+          <li>Written destruction certificate in 48h</li>
+          <li>Drives that fail wipe are physically shredded</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="font-semibold mb-3 flex items-center gap-2"><i data-lucide="leaf" class="w-4 h-4 text-emerald-700"></i>What we accept</div>
+        <div class="text-sm text-[color:var(--muted)]">Laptops, desktops, tablets, smartphones, monitors and accessories (chargers, keyboards, mice, cables). Working or for parts — we recycle responsibly either way.</div>
+      </div>
+      <div class="card">
+        <div class="font-semibold mb-3 flex items-center gap-2"><i data-lucide="building-2" class="w-4 h-4 text-emerald-700"></i>Donating as a business?</div>
+        <div class="text-sm text-[color:var(--muted)]">10+ devices? We handle bulk collection, asset tagging and CSR reporting. Email <b class="text-emerald-700">partners@centauri.io</b>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your donations -->
+  <div class="card mt-8">
+    <h3 class="font-display text-xl font-bold mb-3 flex items-center gap-2"><i data-lucide="package-check" class="w-5 h-5 text-emerald-700"></i>Your donations</h3>
+    <div id="dnList" class="text-sm text-[color:var(--muted)]">No donations yet. Be the first.</div>
+  </div>
+</section>
+
+</main>
+
+<footer class="max-w-7xl mx-auto px-5 py-10 mt-10 border-t text-sm text-[color:var(--muted)] flex flex-wrap justify-between gap-3" style="border-color:var(--line);">
+  <div>© 2026 Centauri · Built so the ladder isn't optional.</div>
+  <div class="flex gap-4"><span>Founder: Hamza</span><span>·</span><span>hello@centauri.io</span></div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(255,255,255,.55);backdrop-filter:blur(12px);">
+  <div class="glass glow rounded-3xl p-8 max-w-md w-full relative">
+    <button id="authClose" class="absolute top-4 right-4 text-[color:var(--muted)] hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="flex gap-2 mb-6">
+      <button class="auth-tab flex-1 py-2 rounded-lg text-sm font-semibold active" data-tab="login">Log In</button>
+      <button class="auth-tab flex-1 py-2 rounded-lg text-sm font-semibold" data-tab="signup">Sign Up</button>
+    </div>
+    <h3 class="font-display text-2xl font-bold mb-1" id="authTitle">Welcome back</h3>
+    <p class="text-sm text-[color:var(--muted)] mb-6" id="authSub">Step back into your matrix.</p>
+    <form id="authForm" class="space-y-3">
+      <div id="nameWrap" class="hidden"><label class="text-xs text-[color:var(--muted)]">Handle (no @ needed)</label><input class="input mt-1" id="aHandle" placeholder="alexdigital"></div>
+      <div><label class="text-xs text-[color:var(--muted)]">Email</label><input class="input mt-1" type="email" required id="aEmail" placeholder="you@centauri.io"></div>
+      <div><label class="text-xs text-[color:var(--muted)]">Password</label><input class="input mt-1" type="password" required minlength="6" id="aPass" placeholder="••••••••"></div>
+      <div id="authErr" class="text-xs text-rose-400 hidden"></div>
+      <button class="btn-primary w-full justify-center flex items-center gap-2 mt-2"><i data-lucide="arrow-right" class="w-4 h-4"></i><span id="authCta">Log In</span></button>
+    </form>
+  </div>
+</div>
+
+<!-- MENTOR MODAL -->
+<div id="mentorModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(15,23,42,.55);backdrop-filter:blur(10px);">
+  <div class="glass glow rounded-3xl max-w-4xl w-full relative max-h-[92vh] overflow-y-auto scroll-hide">
+    <button onclick="closeMentor()" class="absolute top-4 right-4 text-[color:var(--muted)] hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="grid md:grid-cols-2 gap-0">
+      <div class="p-7">
+        <div class="flex items-center gap-4 mb-5">
+          <img id="mModalImg" class="w-20 h-20 rounded-2xl object-cover border-2" style="border-color:var(--violet-glow);" alt="">
+          <div class="min-w-0">
+            <div class="font-display text-2xl font-bold" id="mModalName"></div>
+            <div class="text-sm text-emerald-700" id="mModalHandle"></div>
+            <div class="text-xs text-[color:var(--muted)] mt-0.5" id="mModalRole"></div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-5" id="mModalSkills"></div>
+        <div class="grid grid-cols-2 gap-2 mb-5">
+          <div class="card !p-3"><div class="text-[10px] uppercase text-[color:var(--muted)] mb-1">Status</div><div class="text-sm font-semibold flex items-center gap-2"><span id="mModalStatusDot" class="status-dot"></span><span id="mModalStatusLbl"></span></div></div>
+          <div class="card !p-3"><div class="text-[10px] uppercase text-[color:var(--muted)] mb-1">Response time</div><div class="text-sm font-semibold text-emerald-700" id="mModalResponse"></div></div>
+          <div class="card !p-3"><div class="text-[10px] uppercase text-[color:var(--muted)] mb-1">Specialises in</div><div class="text-sm font-semibold" id="mModalTrack"></div></div>
+          <div class="card !p-3"><div class="text-[10px] uppercase text-[color:var(--muted)] mb-1">Capacity</div><div class="text-sm font-semibold" id="mModalHours"></div></div>
+        </div>
+        <div class="mb-4">
+          <div class="text-[10px] uppercase text-[color:var(--muted)] mb-1">About</div>
+          <div class="text-sm leading-relaxed" id="mModalBio"></div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase text-[color:var(--muted)] mb-1">Mentoring style</div>
+          <div class="text-sm leading-relaxed text-[color:var(--muted)]" id="mModalStyle"></div>
+        </div>
+      </div>
+      <div class="p-7 border-l" style="border-color:var(--line);background:#ffffff;">
+        <h4 class="font-display text-lg font-bold mb-1 flex items-center gap-2"><i data-lucide="calendar-days" class="w-5 h-5 text-emerald-700"></i>Book a session</h4>
+        <p class="text-xs text-[color:var(--muted)] mb-4">30-min slots · weekdays only · auto-confirmed</p>
+        <div class="flex items-center justify-between mb-3">
+          <button onclick="shiftMonth(-1)" class="btn-ghost !p-2"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+          <div class="font-semibold text-sm" id="calMonth"></div>
+          <button onclick="shiftMonth(1)" class="btn-ghost !p-2"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+        </div>
+        <div class="grid grid-cols-7 gap-1 mb-5" id="calGrid"></div>
+        <div class="text-[10px] uppercase text-[color:var(--muted)] mb-2">Available time slots</div>
+        <div class="grid grid-cols-4 gap-2 mb-5" id="mModalSlots"></div>
+        <button id="mModalBookBtn" onclick="confirmBooking()" class="btn-primary w-full justify-center flex items-center gap-2" disabled style="opacity:.4;"><i data-lucide="check" class="w-4 h-4"></i>Confirm booking</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- A11Y FLY-OUT -->
+<!-- MODULE MODAL -->
+<div id="moduleModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(15,23,42,.55);backdrop-filter:blur(10px);">
+  <div class="glass glow rounded-3xl max-w-2xl w-full relative max-h-[90vh] overflow-y-auto scroll-hide p-7">
+    <button onclick="closeModule()" class="absolute top-4 right-4 text-[color:var(--muted)] hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div id="moduleBody"></div>
+  </div>
+</div>
+
+<aside id="a11yPanel" class="fixed top-0 right-0 h-full w-80 z-40 glass border-l transform translate-x-full transition-transform duration-300" style="border-color:var(--line);">
+  <div class="p-6">
+    <div class="flex justify-between items-center mb-6"><h3 class="font-display text-xl font-bold">Accessibility Suite</h3><button id="a11yClose" class="text-[color:var(--muted)]"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+    <div class="space-y-3">
+      <label class="card !p-3 flex justify-between items-center cursor-pointer"><span class="text-sm flex items-center gap-2"><i data-lucide="contrast" class="w-4 h-4"></i>High Contrast</span><input type="checkbox" id="tContrast" class="w-5 h-5 accent-violet-500"></label>
+      <label class="card !p-3 flex justify-between items-center cursor-pointer"><span class="text-sm flex items-center gap-2"><i data-lucide="type" class="w-4 h-4"></i>Dyslexia-friendly font</span><input type="checkbox" id="tDys" class="w-5 h-5 accent-violet-500"></label>
+      <label class="card !p-3 flex justify-between items-center cursor-pointer"><span class="text-sm flex items-center gap-2"><i data-lucide="focus" class="w-4 h-4"></i>Focus Isolation</span><input type="checkbox" id="tFocus" class="w-5 h-5 accent-violet-500"></label>
+      <div class="card !p-3">
+        <div class="text-sm flex items-center gap-2 mb-3"><i data-lucide="volume-2" class="w-4 h-4"></i>Read this page aloud</div>
+        <div class="flex gap-2">
+          <button id="tSpeak" class="btn-primary flex-1 justify-center text-xs flex items-center gap-1"><i data-lucide="play" class="w-3.5 h-3.5"></i><span id="tSpeakLbl">Play</span></button>
+          <button id="tPause" class="btn-ghost flex-1 justify-center text-xs flex items-center gap-1" disabled style="opacity:.5;"><i data-lucide="pause" class="w-3.5 h-3.5"></i><span id="tPauseLbl">Pause</span></button>
+          <button id="tStop" class="btn-ghost justify-center text-xs flex items-center gap-1" disabled style="opacity:.5;" aria-label="Stop reading"><i data-lucide="square" class="w-3.5 h-3.5"></i></button>
+        </div>
+      </div>
+      <div class="text-xs text-[color:var(--muted)] mt-4 leading-relaxed">All settings live on this device only. No tracking, no syncing — your accommodations are yours.</div>
+    </div>
+  </div>
+</aside>
+
+<!-- AI CHAT -->
+<button id="chatToggle" class="fixed bottom-6 right-6 z-30 btn-primary flex items-center gap-2 shadow-2xl"><i data-lucide="bot" class="w-5 h-5"></i><span class="hidden sm:inline">Centauri Guide</span></button>
+<aside id="chatPanel" class="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-40 w-full sm:w-[400px] h-[80vh] sm:h-[600px] glass glow rounded-t-3xl sm:rounded-3xl flex flex-col overflow-hidden transform translate-y-full sm:translate-y-[120%] transition-transform duration-300">
+  <div class="p-4 border-b flex items-center justify-between" style="border-color:var(--line);">
+    <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#059669,#10b981);"><i data-lucide="orbit" class="w-5 h-5 text-white"></i></div><div><div class="font-semibold text-sm">Centauri Protocol Guide</div><div class="text-xs text-emerald-700 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Online</div></div></div>
+    <button id="chatClose" class="text-[color:var(--muted)]"><i data-lucide="x" class="w-5 h-5"></i></button>
+  </div>
+  <div id="chatStream" class="flex-1 overflow-y-auto p-4 space-y-3 scroll-hide"></div>
+  <div class="px-4 pb-2 flex gap-2 flex-wrap" id="chatPresets"></div>
+  <form id="chatForm" class="p-3 border-t flex gap-2" style="border-color:var(--line);">
+    <input id="chatInput" class="input" placeholder="Ask the Guide anything…">
+    <button class="btn-primary !p-3"><i data-lucide="send" class="w-4 h-4"></i></button>
+  </form>
+</aside>
+
+<script>
+// ---------- STATE ----------
+const state = {
+  user: null,
+  xp: 0,
+  streak: 0,
+  cleared: [],
+  tickets: [],
+  donations: [],
+};
+
+// ---------- COURSES ----------
+const COURSES = [
+  { id:'code', title:'Coding Foundations', tag:'Logic that ships', icon:'code-2', time:'6 weeks · 4h/wk · 24 total hours', lead:'Module Leader: Dr. Imani Okafor', course:'Course Leader: Hamza Rahimi',
+    overview:'Move from "I have never written code" to building, debugging and deploying small CLI utilities. We cover variables, control flow, data structures, functions, error handling and how to read a stack trace without panicking. Every module ends with a paired exercise reviewed asynchronously by a mentor. By the end you will have shipped four working scripts to GitHub and know how to debug code you have never seen before.',
+    modules:[
+      {t:'Mental Models — What a Program Actually Is', d:'Demystify code: instructions, memory, input/output. Set up your editor, terminal and first "hello world".', hrs:'3 hrs'},
+      {t:'Variables, Types & Mutability', d:'Numbers, strings, booleans, null. Why mutating shared state is the #1 source of bugs.', hrs:'4 hrs'},
+      {t:'Conditionals & Loops in Real Flows', d:'if/else, switch, for, while. Build a tiny rule engine that filters real data.', hrs:'4 hrs'},
+      {t:'Functions, Scope & Side Effects', d:'Pure vs impure functions, parameters, return values, closures explained without jargon.', hrs:'4 hrs'},
+      {t:'Arrays, Objects & Basic Algorithms', d:'Iterate, map, filter, reduce. Sort, search, deduplicate — the patterns you will reuse forever.', hrs:'5 hrs'},
+      {t:'Reading Errors & Shipping Your First Script', d:'Stack traces, debugging tactics, version control with git, and pushing your CLI utility live.', hrs:'4 hrs'}
+    ], exam:'A 2-hour live coding exam: build a small CLI tool from a prompt you have not seen, push it to GitHub, and walk a mentor through your design decisions on a recorded Loom.' },
+  { id:'design', title:'Design Foundations', tag:'See like a designer', icon:'palette', time:'6 weeks · 3h/wk · 18 total hours', lead:'Module Leader: Yuki Tanaka', course:'Course Leader: Hamza Rahimi',
+    overview:'A grounded intro to visual hierarchy, type, colour systems, grids and component thinking using Figma. You will rebuild three real interfaces from scratch, learn to critique your own work using contrast and rhythm, and finish with a polished case study for your portfolio. No prior design experience required — only the willingness to throw away your first three drafts.',
+    modules:[
+      {t:'Hierarchy — What the Eye Sees First', d:'Why scanning order matters more than decoration. Eye-tracking case studies and exercises.', hrs:'3 hrs'},
+      {t:'Type Pairing & Readable Line-Length', d:'Choosing fonts that work together, scale ratios, and the 45–75 character rule.', hrs:'3 hrs'},
+      {t:'Colour Systems & Accessibility Contrast', d:'HSL, OKLCH, semantic tokens, and WCAG contrast in practice — not just on paper.', hrs:'3 hrs'},
+      {t:'Grids, Spacing Scales & Alignment', d:'8pt grids, fluid layouts, and why visual rhythm is invisible until it is broken.', hrs:'3 hrs'},
+      {t:'Components, Variants & Design Tokens', d:'Build a reusable Figma component library that scales across screens and teams.', hrs:'3 hrs'},
+      {t:'Case Study — Rebuilding a Real Interface', d:'Tear down a live product, redesign it, present a before/after for your portfolio.', hrs:'3 hrs'}
+    ], exam:'Submit a polished case study (Figma file + 5-slide presentation) redesigning a real product. Mentor critique covers hierarchy, type, colour and rationale.' },
+  { id:'mkt', title:'Marketing & Growth', tag:'Make demand, not noise', icon:'megaphone', time:'6 weeks · 3h/wk · 18 total hours', lead:'Module Leader: Priya Devarajan', course:'Course Leader: Hamza Rahimi',
+    overview:'Skip the guru content. Learn the actual funnel: positioning, channel-market fit, content loops, lifecycle email, and how to read an analytics dashboard. We use real anonymised campaign data from partner startups so you can practise on problems that actually shipped — not invented case studies.',
+    modules:[
+      {t:'Positioning — Who It\'s For, Who It\'s Not For', d:'The single message test. Crafting positioning statements that survive contact with customers.', hrs:'3 hrs'},
+      {t:'Channels — Paid, Owned, Earned', d:'Map every channel, then ruthlessly cut to the two that fit your audience and budget.', hrs:'3 hrs'},
+      {t:'Content Engines & Repurposing', d:'One pillar piece → ten atomic posts. Build a system, not a content calendar.', hrs:'3 hrs'},
+      {t:'Lifecycle Email & Activation Loops', d:'Onboarding sequences, retention triggers, and the metrics that predict churn.', hrs:'3 hrs'},
+      {t:'Measuring — North-Star vs Vanity Metrics', d:'Read a dashboard like a CFO. Spot the metric your team is quietly optimising against.', hrs:'3 hrs'},
+      {t:'Building a 90-Day Growth Plan', d:'Turn everything into a written plan with bets, budgets, and review checkpoints.', hrs:'3 hrs'}
+    ], exam:'Deliver a written 90-day growth plan for a real partner startup, defend it live in a 30-minute mentor Q&A, and revise based on feedback.' },
+  { id:'video', title:'Video Editing for Creators', tag:'Cut like a pro', icon:'film', time:'6 weeks · 4h/wk · 24 total hours', lead:'Module Leader: Marcus Bell', course:'Course Leader: Hamza Rahimi',
+    overview:'Shoot, cut, colour and export short-form video that actually retains viewers. Tools-agnostic but uses CapCut + DaVinci Resolve in walkthroughs. Final piece: a 60-second portfolio reel ready for TikTok, Reels, Shorts and a personal site. You will learn the same retention mechanics top creators use, not generic transitions.',
+    modules:[
+      {t:'Story Before Software — The 3-Beat Structure', d:'Hook, hold, payoff. Why most edits fail in the first 3 seconds and how to fix it.', hrs:'4 hrs'},
+      {t:'Shooting for the Cut — Coverage & Framing', d:'B-roll discipline, rule-of-thirds, headroom and shooting with the edit already in mind.', hrs:'4 hrs'},
+      {t:'Cutting on Motion & Sound Design Basics', d:'Match-cuts, J-cuts and L-cuts. Build invisible edits that feel like one continuous moment.', hrs:'4 hrs'},
+      {t:'Colour Grading — LUTs vs Manual', d:'Wheels, curves, scopes. Why every LUT needs taste applied on top.', hrs:'4 hrs'},
+      {t:'Sound, Mix & Voiceover', d:'Loudness standards, music ducking, VO recording on cheap gear, and noise reduction.', hrs:'4 hrs'},
+      {t:'Export, Aspect Ratios & Platform Delivery', d:'9:16, 1:1, 16:9. Codecs, bitrates, and how to stop platforms compressing your work to mush.', hrs:'4 hrs'}
+    ], exam:'Ship a 60-second portfolio reel exported in 9:16, 1:1 and 16:9. Reviewed frame-by-frame by an A24 editor for pacing, sound design and finish.' },
+  { id:'ai', title:'AI Literacy & Prompting', tag:'Use the machine, do not fear it', icon:'sparkles', time:'6 weeks · 3h/wk · 18 total hours', lead:'Module Leader: Dr. Adeola Quinn', course:'Course Leader: Hamza Rahimi',
+    overview:'Understand what large language models actually are, where they fail, and how to build reliable workflows with them. Hands-on with prompt design, tool use, retrieval, evaluation and the ethics of generative AI in real workplaces. By the end you will have built and evaluated a small AI workflow grounded in your own data.',
+    modules:[
+      {t:'How an LLM Actually Predicts Text', d:'Tokens, probabilities, context windows — explained without a PhD prerequisite.', hrs:'3 hrs'},
+      {t:'Prompt Patterns That Survive Edge Cases', d:'Role, context, examples, constraints. Why few-shot beats clever wording.', hrs:'3 hrs'},
+      {t:'Retrieval, Tools & Grounding', d:'RAG basics: embeddings, vector search, and feeding the model facts it does not own.', hrs:'3 hrs'},
+      {t:'Evaluating Outputs & Catching Hallucinations', d:'Build a tiny eval harness. Measure accuracy, not vibes.', hrs:'3 hrs'},
+      {t:'Ethics, Bias & Safety in Generative AI', d:'Real-world failure modes, consent, attribution, and where AI should not be used.', hrs:'3 hrs'},
+      {t:'Building Reliable AI Workflows at Work', d:'Design a workflow that survives a Monday morning — error handling, fallbacks, logging.', hrs:'3 hrs'}
+    ], exam:'Build and document a small RAG-backed AI workflow on your own dataset. Submit code, eval results, and a 1-page reflection on failure modes.' },
+  { id:'web', title:'Web Development', tag:'Ship to the open web', icon:'globe', time:'8 weeks · 5h/wk · 40 total hours', lead:'Module Leader: Sora Adebayo', course:'Course Leader: Hamza Rahimi',
+    overview:'From HTML semantics to a deployed full-stack app. Covers responsive CSS, JavaScript fundamentals, modern frameworks (React), APIs, basic auth, and deployment. Capstone: ship a personal site that lives on the real internet under your own subdomain — not localhost, not a screenshot. The internet is the only portfolio that proves itself.',
+    modules:[
+      {t:'Semantic HTML & Document Structure', d:'Real elements, accessibility tree, headings, landmarks. The bones that everything else stands on.', hrs:'6 hrs'},
+      {t:'CSS — Box Model, Flexbox & Grid', d:'Modern responsive layout. Flex for one axis, Grid for two. When to reach for each.', hrs:'7 hrs'},
+      {t:'JavaScript — DOM, Events & Fetch', d:'Manipulate the page, handle clicks, call APIs. The trio you use every single day.', hrs:'7 hrs'},
+      {t:'React Components & State', d:'Components, props, useState, useEffect. Build a small interactive app from scratch.', hrs:'7 hrs'},
+      {t:'APIs, JSON & Auth Basics', d:'REST, async/await, error handling, and how login actually works under the hood.', hrs:'7 hrs'},
+      {t:'Deployment & Custom Domains', d:'Push to GitHub, deploy via Vercel, point a real domain at it, set up HTTPS.', hrs:'6 hrs'}
+    ], exam:'Deploy a full-stack personal site to a custom domain with auth and a working API. Live URL is the deliverable — mentor reviews code + Lighthouse score.' },
+];
+
+function renderCourses(){
+  const g = document.getElementById('courseGrid');
+  g.innerHTML = COURSES.map(c => `
+    <div class="card flex flex-col">
+      <div class="flex items-start justify-between mb-3">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:rgba(5,150,105,.15);"><i data-lucide="${c.icon}" class="w-5 h-5 text-emerald-700"></i></div>
+        <span class="chip">${c.time}</span>
+      </div>
+      <h3 class="font-display text-xl font-bold">${c.title}</h3>
+      <div class="text-xs text-emerald-700 mb-2">${c.tag}</div>
+      <p class="text-sm text-[color:var(--muted)] mb-4 leading-relaxed">${c.overview}</p>
+      <div class="text-xs text-[color:var(--muted)] mb-4 space-y-1"><div>${c.lead}</div><div>${c.course}</div></div>
+      <details class="mb-2">
+        <summary class="text-sm font-semibold flex items-center gap-2 text-emerald-700 mb-3"><i data-lucide="chevron-right" class="w-4 h-4"></i>Full syllabus · ${c.modules.length} modules + final exam</summary>
+        <div class="mt-3 space-y-2">
+          ${c.modules.map((m,i)=>`
+            <div class="p-3 rounded-xl cursor-pointer hover:border-violet-400 transition" style="background:rgba(0,0,0,.03);border:1px solid var(--line);" onclick="openModule('${c.id}',${i})">
+              <div class="flex justify-between items-start gap-2 mb-1">
+                <div class="text-sm font-semibold">Module ${i+1}: <span class="text-emerald-700">${m.t}</span></div>
+                <span class="text-[10px] text-emerald-700 shrink-0 mt-0.5">${m.hrs}</span>
+              </div>
+              <div class="text-xs text-[color:var(--muted)] leading-relaxed">${m.d}</div>
+              <div class="text-[10px] text-emerald-700 mt-2 flex items-center gap-1"><i data-lucide="book-open" class="w-3 h-3"></i>Click to read module</div>
+            </div>
+          `).join('')}
+          <div class="p-3 rounded-xl cursor-pointer hover:border-amber-300 transition" style="background:linear-gradient(135deg,rgba(5,150,105,.15),rgba(16,185,129,.1));border:1px solid rgba(5,150,105,.4);" onclick="openModule('${c.id}','exam')">
+            <div class="flex justify-between items-start gap-2 mb-1">
+              <div class="text-sm font-semibold flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-amber-600"></i>Final Module Exam</div>
+              <span class="text-[10px] text-amber-600 shrink-0 mt-0.5">2 hrs</span>
+            </div>
+            <div class="text-xs text-[color:var(--muted)] leading-relaxed">A practical, mentor-reviewed assessment covering every module. Pass to earn your Centauri Verified certificate.</div>
+          </div>
+        </div>
+      </details>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+// ---------- MODULE MODAL ----------
+function openModule(courseId, idx){
+  const c = COURSES.find(x=>x.id===courseId); if(!c) return;
+  const mm = document.getElementById('moduleModal');
+  const body = document.getElementById('moduleBody');
+  if(idx==='exam'){
+    body.innerHTML = `
+      <div class="chip mb-3" style="background:rgba(251,191,36,.12);color:#fbbf24;border-color:rgba(251,191,36,.3);"><i data-lucide="award" class="w-3 h-3"></i>Final Module Exam · 2 hrs</div>
+      <h3 class="font-display text-3xl font-bold mb-2">${c.title} — Final Exam</h3>
+      <div class="text-sm text-emerald-700 mb-5">Mentor-reviewed · Pass to earn Centauri Verified certificate</div>
+      <div class="mb-5">
+        <div class="text-[10px] uppercase text-[color:var(--muted)] mb-2">Format</div>
+        <p class="text-sm leading-relaxed">${c.exam}</p>
+      </div>
+      <div class="mb-5">
+        <div class="text-[10px] uppercase text-[color:var(--muted)] mb-2">What you need to pass</div>
+        <ul class="text-sm leading-relaxed space-y-1.5">
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>Demonstrate fluency across all ${c.modules.length} modules</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>Submit a working deliverable — code, file, or campaign, not slides</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>Defend your decisions in a live mentor review</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>Score 70%+ on the rubric to earn certification</li>
+        </ul>
+      </div>
+      <div class="p-4 rounded-xl" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);">
+        <div class="text-xs text-emerald-700 font-semibold mb-1">Reward · +500 XP</div>
+        <div class="text-xs text-[color:var(--muted)]">Plus the Centauri Verified badge on your dashboard and a shareable certificate URL for your CV / LinkedIn.</div>
+      </div>`;
+  } else {
+    const m = c.modules[idx];
+    body.innerHTML = `
+      <div class="chip mb-3"><i data-lucide="layers" class="w-3 h-3"></i>${c.title} · ${m.hrs}</div>
+      <h3 class="font-display text-3xl font-bold mb-1">Module ${idx+1}</h3>
+      <h4 class="text-xl font-semibold text-emerald-700 mb-5">${m.t}</h4>
+      <div class="mb-5">
+        <div class="text-[10px] uppercase text-[color:var(--muted)] mb-2">Overview</div>
+        <p class="text-sm leading-relaxed">${m.d}</p>
+      </div>
+      <div class="mb-5">
+        <div class="text-[10px] uppercase text-[color:var(--muted)] mb-2">What you'll learn</div>
+        <ul class="text-sm leading-relaxed space-y-1.5">
+          ${moduleOutcomes(c,m,idx).map(o=>`<li class="flex gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>${o}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="mb-5">
+        <div class="text-[10px] uppercase text-[color:var(--muted)] mb-2">How it's taught</div>
+        <p class="text-sm leading-relaxed text-[color:var(--muted)]">Self-paced video walkthroughs (~${m.hrs}) + a practical exercise reviewed asynchronously by a mentor. You can pause, rewind, and ask for a 1:1 if you're stuck for more than 20 minutes.</p>
+      </div>
+      <div class="p-4 rounded-xl" style="background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.3);">
+        <div class="text-xs text-emerald-700 font-semibold mb-1">Module assessment</div>
+        <div class="text-xs text-[color:var(--muted)]">Submit your practical exercise via the dashboard. A mentor returns written feedback within 48h. Pass to bank +100 XP and unlock the next module.</div>
+      </div>`;
+  }
+  mm.classList.remove('hidden'); mm.classList.add('flex');
+  lucide.createIcons();
+}
+function moduleOutcomes(c,m,idx){
+  // Derive 4 concrete outcomes from module title + description keywords
+  const t = m.t.toLowerCase();
+  const generic = [
+    `Understand the core concept behind "${m.t.split('—')[0].split('&')[0].trim()}" and why it matters in real work.`,
+    `Practise on at least one hands-on exercise drawn from real ${c.title.toLowerCase()} problems.`,
+    `Spot the most common mistakes beginners make in this area — and how to avoid them.`,
+    `Leave the module with a small deliverable you can show in your portfolio or to a mentor.`
+  ];
+  return generic;
+}
+function closeModule(){ const mm=document.getElementById('moduleModal'); mm.classList.add('hidden'); mm.classList.remove('flex'); }
+
+// ---------- DEVICES ----------
+const DEVICES = [
+  {name:'MacBook Air M2',spec:'13" · 16GB · 512GB · 2023',icon:'laptop',stock:14},
+  {name:'MacBook Pro 14"',spec:'M3 Pro · 18GB · 1TB',icon:'laptop',stock:6},
+  {name:'iPad Pro 11"',spec:'M2 · 256GB · Wi-Fi + Pencil',icon:'tablet',stock:9},
+  {name:'iPad Air',spec:'10.9" · 64GB · Keyboard included',icon:'tablet',stock:22},
+  {name:'Dell XPS 13',spec:'i7 · 16GB · 512GB',icon:'laptop',stock:11},
+  {name:'Mobile Hotspot · 100GB/mo',spec:'12-month data plan included',icon:'wifi',stock:50},
+];
+function renderDevices(){
+  document.getElementById('deviceGrid').innerHTML = DEVICES.map((d,i)=>`
+    <div class="card flex flex-col">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3" style="background:rgba(16,185,129,.12);"><i data-lucide="${d.icon}" class="w-6 h-6 text-emerald-700"></i></div>
+      <h3 class="font-display text-lg font-bold">${d.name}</h3>
+      <div class="text-xs text-[color:var(--muted)] mb-3">${d.spec}</div>
+      <div class="text-xs text-emerald-700 mb-4">${d.stock} units vetted & ready</div>
+      <button class="btn-primary mt-auto text-sm" onclick="requestDevice(${i})"><i data-lucide="ticket" class="w-4 h-4 inline mr-1"></i>Log Logistics Ticket</button>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+function requestDevice(i){
+  if(!state.user){ openAuth(); return; }
+  const d = DEVICES[i];
+  if(state.tickets.find(t=>t.name===d.name)){ alert('Ticket already open for '+d.name); return; }
+  state.tickets.push({name:d.name,when:new Date().toLocaleDateString(),id:'CTR-'+Math.floor(Math.random()*9000+1000)});
+  syncUI();
+  alert('✓ Logistics Vetting Ticket opened for '+d.name+'.\nExpect a reply within 48h.');
+}
+
+// ---------- MENTORS ----------
+const MENTORS = [
+  { n:'@AishaCodes', name:'Aisha Bello', role:'Senior ML Engineer · Google DeepMind', img:'https://randomuser.me/api/portraits/women/68.jpg',
+    skills:['Python','PyTorch','ML Systems','Research'], status:'online', response:'< 4 hours', style:'Direct, technical, will sketch architectures on a napkin. Best for learners who want to be challenged on first principles, not coddled.',
+    bio:'Eight years across DeepMind and Stripe ML. First-gen university student from Lagos. Mentors because nobody held the door open for her — she\'s holding it now.',
+    track:'Coding · AI', hours:'2h / week', taken:['10:00','14:00'] },
+  { n:'@JamalDesigns', name:'Jamal Whittaker', role:'Senior Product Designer · Linear', img:'https://randomuser.me/api/portraits/men/32.jpg',
+    skills:['Figma','Design Systems','Type','Accessibility'], status:'online', response:'< 6 hours', style:'Calm, Socratic, asks more questions than he answers. Will tear apart your portfolio kindly. Loves seeing v1s, hates seeing v0 polish.',
+    bio:'Grew up in Peckham, self-taught via library Wi-Fi. Now leads a design pod at Linear. Believes craft is the great equaliser.',
+    track:'Design', hours:'3h / week', taken:['11:00','16:00'] },
+  { n:'@PriyaGrowth', name:'Priya Devarajan', role:'Head of Growth · Notion', img:'https://randomuser.me/api/portraits/women/44.jpg',
+    skills:['Lifecycle','SEO','Positioning','Analytics'], status:'busy', response:'< 24 hours', style:'High-energy, story-driven, will make you re-write your bio three times. Best for marketers who want to move from "posting content" to "running a system".',
+    bio:'Built growth at three startups, two of them through acquisition. Mentors because the marketing world gatekeeps with jargon she had to translate alone.',
+    track:'Marketing', hours:'2h / week', taken:['09:00','13:00','17:00'] },
+  { n:'@SoraCuts', name:'Sora Adebayo', role:'Senior Editor · A24', img:'https://randomuser.me/api/portraits/women/22.jpg',
+    skills:['DaVinci','Story','Pacing','Sound'], status:'online', response:'< 12 hours', style:'Patient, frame-by-frame. Will watch your reel and timestamp every cut that drags. Best for editors who want taste, not just shortcuts.',
+    bio:'Cut three festival-circuit shorts before age 25. Now at A24 on long-form documentary. Mentors because film school cost £40k and she doesn\'t think it should have.',
+    track:'Video Editing', hours:'1h / week', taken:['15:00'] },
+  { n:'@DrAdeAI', name:'Dr. Adeola Quinn', role:'Research Scientist · Anthropic', img:'https://randomuser.me/api/portraits/men/64.jpg',
+    skills:['LLMs','RAG','Evals','Safety'], status:'busy', response:'< 48 hours', style:'Academic but accessible — every answer comes with a paper to read AND a plain-English version. Best for serious AI learners aiming for industry roles.',
+    bio:'PhD Oxford, now on the interpretability team at Anthropic. Born in Lagos, raised in Birmingham. Mentors one cohort per quarter.',
+    track:'AI', hours:'2h / week', taken:['10:00','11:00','14:00','15:00'] },
+  { n:'@MarcusShips', name:'Marcus Reyes', role:'Staff Engineer · Vercel', img:'https://randomuser.me/api/portraits/men/45.jpg',
+    skills:['React','Edge','Performance','DX'], status:'online', response:'< 2 hours', style:'Fast, pragmatic, ships first iterates second. Will pair-program over Loom and tell you exactly what to delete. Best for web devs ready to deploy in week one.',
+    bio:'Self-taught. First job via a Discord intro. Now leads edge runtime at Vercel. Believes the open web is the last meritocracy and wants to defend it.',
+    track:'Web Development', hours:'3h / week', taken:[] },
+];
+function statusLabel(s){return s==='online'?'Available now':s==='busy'?'In session':'Offline today';}
+function renderMentors(){
+  document.getElementById('mentorGrid').innerHTML = MENTORS.map((m,i)=>`
+    <div class="card cursor-pointer" onclick="openMentor(${i})">
+      <div class="flex items-center gap-3 mb-4">
+        <img src="${m.img}" alt="${m.name}" class="w-14 h-14 rounded-full object-cover border-2" style="border-color:var(--violet-glow);" />
+        <div class="min-w-0">
+          <div class="font-semibold truncate">${m.name}</div>
+          <div class="text-xs text-[color:var(--muted)] truncate">${m.n}</div>
+        </div>
+      </div>
+      <div class="text-xs text-[color:var(--muted)] mb-3 line-clamp-2">${m.role}</div>
+      <div class="flex flex-wrap gap-1 mb-3">${m.skills.slice(0,3).map(s=>`<span class="chip !text-[10px] !py-0.5">${s}</span>`).join('')}</div>
+      <div class="flex items-center justify-between text-xs">
+        <span class="flex items-center gap-1.5"><span class="status-dot status-${m.status==='off'?'off':m.status}"></span><span class="text-[color:var(--muted)]">${statusLabel(m.status)}</span></span>
+        <span class="text-emerald-700">Reply ${m.response}</span>
+      </div>
+      <button class="btn-primary w-full justify-center mt-4 text-sm"><i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>View profile & book</button>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+// ---------- MENTOR MODAL + CALENDAR ----------
+let calState = { mentorIdx:null, viewDate:new Date(), selDate:null, selSlot:null };
+function openMentor(i){
+  calState.mentorIdx = i;
+  calState.selDate = null; calState.selSlot = null;
+  calState.viewDate = new Date();
+  const m = MENTORS[i];
+  document.getElementById('mModalImg').src = m.img;
+  document.getElementById('mModalName').textContent = m.name;
+  document.getElementById('mModalHandle').textContent = m.n;
+  document.getElementById('mModalRole').textContent = m.role;
+  document.getElementById('mModalBio').textContent = m.bio;
+  document.getElementById('mModalStyle').textContent = m.style;
+  document.getElementById('mModalTrack').textContent = m.track;
+  document.getElementById('mModalHours').textContent = m.hours;
+  document.getElementById('mModalResponse').textContent = m.response;
+  document.getElementById('mModalStatusDot').className = 'status-dot status-'+(m.status==='off'?'off':m.status);
+  document.getElementById('mModalStatusLbl').textContent = statusLabel(m.status);
+  document.getElementById('mModalSkills').innerHTML = m.skills.map(s=>`<span class="chip">${s}</span>`).join('');
+  document.getElementById('mModalBookBtn').disabled = true;
+  document.getElementById('mModalBookBtn').style.opacity = '.4';
+  document.getElementById('mModalSlots').innerHTML = '<div class="text-xs text-[color:var(--muted)] col-span-full">Pick a date first.</div>';
+  renderCalendar();
+  const mm = document.getElementById('mentorModal');
+  mm.classList.remove('hidden'); mm.classList.add('flex');
+  lucide.createIcons();
+}
+function closeMentor(){ const mm=document.getElementById('mentorModal'); mm.classList.add('hidden'); mm.classList.remove('flex'); }
+function renderCalendar(){
+  const d = calState.viewDate;
+  const year=d.getFullYear(), month=d.getMonth();
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calMonth').textContent = monthNames[month]+' '+year;
+  const first = new Date(year,month,1);
+  const startDow = (first.getDay()+6)%7; // monday-first
+  const daysInMonth = new Date(year,month+1,0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  let html = '';
+  ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(d=>html+=`<div class="text-[10px] uppercase text-[color:var(--muted)] text-center">${d}</div>`);
+  for(let i=0;i<startDow;i++) html+='<div></div>';
+  for(let dn=1;dn<=daysInMonth;dn++){
+    const dt = new Date(year,month,dn);
+    const past = dt < today;
+    const isWeekend = dt.getDay()===0 || dt.getDay()===6;
+    const disabled = past || isWeekend;
+    const isToday = dt.getTime()===today.getTime();
+    const isSel = calState.selDate && calState.selDate.getTime()===dt.getTime();
+    html += `<div class="cal-day ${disabled?'disabled':''} ${isToday?'today':''} ${isSel?'selected':''}" ${disabled?'':`onclick="pickDate(${year},${month},${dn})"`}>${dn}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+function pickDate(y,m,d){
+  calState.selDate = new Date(y,m,d);
+  calState.selSlot = null;
+  renderCalendar();
+  renderSlots();
+}
+function renderSlots(){
+  const slots = ['09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00'];
+  const taken = MENTORS[calState.mentorIdx].taken;
+  document.getElementById('mModalSlots').innerHTML = slots.map(s=>{
+    const isTaken = taken.includes(s);
+    const isSel = calState.selSlot===s;
+    return `<div class="slot ${isTaken?'taken':''} ${isSel?'selected':''}" ${isTaken?'':`onclick="pickSlot('${s}')"`}>${s}</div>`;
+  }).join('');
+}
+function pickSlot(s){
+  calState.selSlot = s;
+  renderSlots();
+  const btn = document.getElementById('mModalBookBtn');
+  btn.disabled = false; btn.style.opacity = '1';
+}
+function shiftMonth(delta){
+  calState.viewDate = new Date(calState.viewDate.getFullYear(), calState.viewDate.getMonth()+delta, 1);
+  renderCalendar();
+}
+function confirmBooking(){
+  if(!state.user){ closeMentor(); openAuth(); return; }
+  const m = MENTORS[calState.mentorIdx];
+  const d = calState.selDate;
+  const dateStr = d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  state.bookings = state.bookings || [];
+  state.bookings.push({mentor:m.name,handle:m.n,date:dateStr,time:calState.selSlot});
+  m.taken.push(calState.selSlot);
+  state.xp += 50;
+  checkBadges();
+  syncUI();
+  alert(`✓ Session booked with ${m.name}\n${dateStr} at ${calState.selSlot}\n\nA calendar invite has been sent. +50 XP awarded.`);
+  closeMentor();
+}
+
+// ---------- BADGES / TROPHIES ----------
+const BADGES = [
+  {id:'first_steps', name:'First Steps', desc:'Created your matrix', icon:'sparkles', test:s=>!!s.user},
+  {id:'first_xp', name:'XP Initiate', desc:'Earned your first 100 XP', icon:'zap', test:s=>s.xp>=100},
+  {id:'streak_3', name:'On Fire', desc:'3-day streak', icon:'flame', test:s=>s.streak>=3},
+  {id:'streak_7', name:'Week Warrior', desc:'7-day streak', icon:'crown', test:s=>s.streak>=7},
+  {id:'first_clear', name:'Milestone Cleared', desc:'Passed a practical', icon:'check-circle', test:s=>s.cleared.length>=1},
+  {id:'three_clear', name:'Polymath', desc:'Cleared 3 tracks', icon:'layers', test:s=>s.cleared.length>=3},
+  {id:'device_req', name:'Equipped', desc:'Requested a device', icon:'laptop', test:s=>s.tickets.length>=1},
+  {id:'mentor_book', name:'Connected', desc:'Booked a mentor session', icon:'users', test:s=>(s.bookings||[]).length>=1},
+  {id:'second_life', name:'Second Life', desc:'Donated a device', icon:'recycle', test:s=>(s.donations||[]).length>=1},
+];
+function checkBadges(){
+  state.badges = state.badges || [];
+  BADGES.forEach(b=>{
+    if(!state.badges.includes(b.id) && b.test(state)){
+      state.badges.push(b.id);
+      setTimeout(()=>showToast(`🏆 Badge unlocked: ${b.name}`),200);
+    }
+  });
+}
+function renderTrophies(){
+  state.badges = state.badges || [];
+  document.getElementById('trophyGrid').innerHTML = BADGES.map(b=>{
+    const earned = state.badges.includes(b.id);
+    return `<div class="trophy ${earned?'earned':'locked'}" title="${b.desc}">
+      <div class="trophy-icon"><i data-lucide="${b.icon}" class="w-5 h-5 text-white"></i></div>
+      <div class="text-xs font-semibold">${b.name}</div>
+      <div class="text-[10px] text-[color:var(--muted)] mt-1">${b.desc}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('badgeCount').textContent = state.badges.length;
+  document.getElementById('badgeTotal').textContent = BADGES.length;
+  lucide.createIcons();
+}
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className='fixed top-20 right-6 z-[60] glass glow rounded-2xl px-5 py-3 text-sm font-semibold';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.transition='.4s';t.style.opacity='0';t.style.transform='translateX(20px)';},2500);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// ---------- DEVICE MAP / POSTCODE ----------
+let deviceMap=null, mapMarkers=[];
+const UK_HUBS = [
+  // London
+  {name:'Tower Hamlets Idea Store',addr:'Whitechapel Rd, London E1',lat:51.5176,lng:-0.0612,city:'London',type:'Library',stock:'12 laptops · 8 iPads'},
+  {name:'Hackney Tech City Hub',addr:'Mare St, London E8',lat:51.5450,lng:-0.0556,city:'London',type:'Youth Centre',stock:'8 MacBooks · 14 iPads'},
+  {name:'Peckham Levels',addr:'95A Rye Ln, London SE15',lat:51.4731,lng:-0.0699,city:'London',type:'Creative Hub',stock:'6 laptops · 4 cameras'},
+  {name:'Brixton Library Tech Bar',addr:'Brixton Oval, London SW2',lat:51.4626,lng:-0.1140,city:'London',type:'Library',stock:'10 laptops · 5 hotspots'},
+  {name:'Stratford Newham Hub',addr:'The Grove, London E15',lat:51.5423,lng:-0.0026,city:'London',type:'Youth Centre',stock:'14 Chromebooks · 6 iPads'},
+  // Manchester
+  {name:'Manchester Central Library',addr:'St Peter\'s Sq, Manchester M2',lat:53.4779,lng:-2.2447,city:'Manchester',type:'Library',stock:'18 laptops · 10 iPads'},
+  {name:'Hatch Manchester',addr:'Oxford Rd, Manchester M1',lat:53.4708,lng:-2.2335,city:'Manchester',type:'Creative Hub',stock:'6 MacBooks · 4 cameras'},
+  {name:'Z-arts Hulme',addr:'Stretford Rd, Manchester M15',lat:53.4665,lng:-2.2535,city:'Manchester',type:'Youth Centre',stock:'10 laptops · 12 iPads'},
+  // Birmingham
+  {name:'Library of Birmingham',addr:'Centenary Sq, Birmingham B1',lat:52.4799,lng:-1.9097,city:'Birmingham',type:'Library',stock:'20 laptops · 14 iPads'},
+  {name:'Impact Hub Birmingham',addr:'Walker Building, Birmingham B5',lat:52.4769,lng:-1.8923,city:'Birmingham',type:'Co-working',stock:'8 MacBooks · 6 hotspots'},
+  {name:'Sparkbrook Community Centre',addr:'Stratford Rd, Birmingham B11',lat:52.4575,lng:-1.8678,city:'Birmingham',type:'Youth Centre',stock:'12 Chromebooks · 8 iPads'},
+  // Leeds
+  {name:'Leeds Central Library',addr:'Calverley St, Leeds LS1',lat:53.8008,lng:-1.5491,city:'Leeds',type:'Library',stock:'16 laptops · 10 iPads'},
+  {name:'Duke Studios Leeds',addr:'Sheaf St, Leeds LS10',lat:53.7937,lng:-1.5363,city:'Leeds',type:'Creative Hub',stock:'5 MacBooks · 3 cameras'},
+  {name:'Chapeltown Youth Hub',addr:'Chapeltown Rd, Leeds LS7',lat:53.8242,lng:-1.5256,city:'Leeds',type:'Youth Centre',stock:'10 laptops · 6 iPads'},
+  // Bradford
+  {name:'Bradford City Library',addr:'Centenary Sq, Bradford BD1',lat:53.7919,lng:-1.7563,city:'Bradford',type:'Library',stock:'14 laptops · 9 iPads'},
+  {name:'Impact Hub Bradford',addr:'Little Germany, Bradford BD1',lat:53.7956,lng:-1.7497,city:'Bradford',type:'Co-working',stock:'7 MacBooks · 5 hotspots'},
+  {name:'BIASAN Community Centre',addr:'Manningham Ln, Bradford BD8',lat:53.8090,lng:-1.7660,city:'Bradford',type:'Youth Centre',stock:'12 Chromebooks · 8 iPads'},
+  // Liverpool, Sheffield, Glasgow as bonus
+  {name:'Liverpool Central Library',addr:'William Brown St, Liverpool L3',lat:53.4101,lng:-2.9789,city:'Liverpool',type:'Library',stock:'15 laptops · 8 iPads'},
+  {name:'Sheffield Central Library',addr:'Surrey St, Sheffield S1',lat:53.3805,lng:-1.4682,city:'Sheffield',type:'Library',stock:'14 laptops · 7 iPads'},
+  {name:'Mitchell Library Glasgow',addr:'North St, Glasgow G3',lat:55.8627,lng:-4.2731,city:'Glasgow',type:'Library',stock:'18 laptops · 10 iPads'},
+];
+function initMap(){
+  if(deviceMap) return;
+  deviceMap = L.map('deviceMap',{zoomControl:true,attributionControl:true}).setView([54.0,-2.5],6);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+    attribution:'© OpenStreetMap · © CARTO', maxZoom:19, subdomains:'abcd'
+  }).addTo(deviceMap);
+}
+function haversine(a,b,c,d){const R=6371,toR=x=>x*Math.PI/180;const dLat=toR(c-a),dLon=toR(d-b);const h=Math.sin(dLat/2)**2+Math.cos(toR(a))*Math.cos(toR(c))*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));}
+function clearMarkers(){mapMarkers.forEach(m=>deviceMap.removeLayer(m));mapMarkers=[];}
+function pinIcon(){return L.divIcon({className:'',html:'<div class="pin"><i data-lucide="laptop" style="width:14px;height:14px;"></i></div>',iconSize:[30,30],iconAnchor:[15,30]});}
+function userIcon(){return L.divIcon({className:'',html:'<div style="width:18px;height:18px;border-radius:50%;background:#047857;border:3px solid #fff;box-shadow:0 0 16px #047857;"></div>',iconSize:[18,18],iconAnchor:[9,9]});}
+// Map UK postcode AREA codes (letters before digits) → city used in UK_HUBS
+const AREA_CITY = {
+  // London (all London postcode areas)
+  E:'London',EC:'London',N:'London',NW:'London',SE:'London',SW:'London',W:'London',WC:'London',
+  BR:'London',CR:'London',DA:'London',EN:'London',HA:'London',IG:'London',KT:'London',
+  RM:'London',SM:'London',TW:'London',UB:'London',WD:'London',
+  // Other major cities
+  M:'Manchester', B:'Birmingham', L:'Liverpool', LS:'Leeds', BD:'Bradford',
+  S:'Sheffield', G:'Glasgow'
+};
+function postcodeArea(pc){
+  const m = pc.toUpperCase().replace(/\s+/g,'').match(/^([A-Z]{1,2})/);
+  return m ? m[1] : null;
+}
+async function lookupPost(pc){
+  document.getElementById('postInput').value = pc;
+  const status = document.getElementById('postStatus');
+  status.innerHTML = '<span class="text-emerald-700">Looking up postcode…</span>';
+  try{
+    const r = await fetch('https://api.postcodes.io/postcodes/'+encodeURIComponent(pc));
+    const j = await r.json();
+    if(j.status!==200){ status.innerHTML='<span class="text-rose-400">Not a valid UK postcode. Try another.</span>'; return; }
+    const {latitude:lat,longitude:lng,admin_district,parish,region} = j.result;
+    const area = postcodeArea(pc);
+    const mappedCity = AREA_CITY[area];
+    // Resolve city strictly: first prefer postcode-area mapping, then fall back to matching admin_district / parish against known cities
+    const KNOWN = ['London','Manchester','Birmingham','Liverpool','Leeds','Bradford','Sheffield','Glasgow'];
+    let city = mappedCity || KNOWN.find(k => (admin_district||'').includes(k) || (parish||'').includes(k));
+    status.innerHTML = `<span class="text-emerald-700">✓ Located: ${parish||admin_district}, ${region}${city?` · ${city} area`:''}</span>`;
+    initMap();
+    setTimeout(()=>deviceMap.invalidateSize(),50);
+    clearMarkers();
+    const me = L.marker([lat,lng],{icon:userIcon()}).addTo(deviceMap).bindPopup('<b>You are here</b><br>'+pc.toUpperCase());
+    mapMarkers.push(me);
+    // STRICT area filter: only show hubs in the same city as the postcode area
+    let cityHubs = city ? UK_HUBS.filter(h=>h.city===city) : [];
+    let ranked = cityHubs.map(h=>({...h,dist:haversine(lat,lng,h.lat,h.lng)})).sort((a,b)=>a.dist-b.dist);
+    if(ranked.length===0){
+      document.getElementById('hubList').innerHTML = `<div class="card !p-4"><div class="text-sm font-semibold mb-1 text-rose-300">No Centauri hubs in your area yet</div><div class="text-xs text-[color:var(--muted)]">We currently cover London, Manchester, Birmingham, Leeds, Bradford, Liverpool, Sheffield and Glasgow. Open a Logistics Ticket and we'll ship to you direct.</div></div>`;
+      deviceMap.setView([lat,lng],11);
+      return;
+    }
+    ranked.forEach(h=>{
+      const mk = L.marker([h.lat,h.lng],{icon:pinIcon()}).addTo(deviceMap)
+        .bindPopup(`<b>${h.name}</b><br><span style="color:#4b5563;">${h.type} · ${h.dist.toFixed(1)} km</span><br>${h.addr}<br><b style="color:#047857;">${h.stock}</b>`);
+      mapMarkers.push(mk);
+    });
+    const bounds = L.latLngBounds([[lat,lng],...ranked.map(h=>[h.lat,h.lng])]);
+    deviceMap.fitBounds(bounds,{padding:[40,40],maxZoom:12});
+    document.getElementById('hubList').innerHTML = ranked.map(h=>`
+      <div class="card !p-3 hover:!-translate-y-0 cursor-pointer" onclick="deviceMap.setView([${h.lat},${h.lng}],14)">
+        <div class="flex justify-between items-start gap-2">
+          <div class="min-w-0">
+            <div class="font-semibold text-sm truncate">${h.name}</div>
+            <div class="text-xs text-[color:var(--muted)] truncate">${h.addr}</div>
+          </div>
+          <span class="chip shrink-0">${h.dist.toFixed(1)} km</span>
+        </div>
+        <div class="flex justify-between items-center mt-2 text-xs">
+          <span class="text-emerald-700">${h.type}</span>
+          <span class="text-emerald-700">${h.stock}</span>
+        </div>
+      </div>
+    `).join('');
+    lucide.createIcons();
+  }catch(e){ status.innerHTML='<span class="text-rose-400">Lookup failed. Check your connection.</span>'; }
+}
+document.getElementById('postForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const v = document.getElementById('postInput').value.trim();
+  if(!v){return;}
+  lookupPost(v);
+});
+document.getElementById('useLoc').addEventListener('click',()=>{
+  if(!navigator.geolocation){alert('Geolocation not supported');return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const {latitude:lat,longitude:lng}=pos.coords;
+    const r = await fetch(`https://api.postcodes.io/postcodes?lon=${lng}&lat=${lat}`);
+    const j = await r.json();
+    if(j.result && j.result[0]) lookupPost(j.result[0].postcode);
+    else { initMap(); deviceMap.setView([lat,lng],13); }
+  },()=>alert('Could not get your location.'));
+});
+// init map when devices tab opened
+document.querySelectorAll('[data-nav="devices"]').forEach(b=>b.addEventListener('click',()=>setTimeout(()=>{initMap();deviceMap&&deviceMap.invalidateSize();},100)));
+
+// ---------- NAV ----------
+document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{
+  const t = b.dataset.nav;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+t)?.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.toggle('active',n.dataset.nav===t));
+  if(document.body.classList.contains('focus-mode')){
+    document.querySelectorAll('main > section').forEach(s=>s.classList.remove('focused'));
+    document.getElementById('view-'+t)?.classList.add('focused');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+// ---------- AUTH ----------
+const modal = document.getElementById('authModal');
+function openAuth(){ modal.classList.remove('hidden'); modal.classList.add('flex'); }
+function closeAuth(){ modal.classList.add('hidden'); modal.classList.remove('flex'); }
+document.getElementById('authBtn').addEventListener('click',()=>{
+  if(state.user){ // log out
+    if(confirm('Log out of @'+state.user+'?')){ state.user=null; state.xp=0; state.streak=0; state.cleared=[]; state.tickets=[]; state.bookings=[]; state.badges=[]; state.donations=[]; syncUI(); }
+  } else openAuth();
+});
+document.getElementById('authClose').addEventListener('click',closeAuth);
+modal.addEventListener('click',e=>{if(e.target===modal)closeAuth();});
+let authMode='login';
+document.querySelectorAll('.auth-tab').forEach(t=>t.addEventListener('click',()=>{
+  authMode=t.dataset.tab;
+  document.querySelectorAll('.auth-tab').forEach(x=>x.classList.toggle('active',x===t));
+  document.querySelectorAll('.auth-tab').forEach(x=>x.style.background = x.classList.contains('active')?'rgba(5,150,105,.2)':'transparent');
+  document.getElementById('authTitle').textContent = authMode==='login'?'Welcome back':'Join Centauri';
+  document.getElementById('authSub').textContent = authMode==='login'?'Step back into your matrix.':'Free forever. No card, no catch.';
+  document.getElementById('authCta').textContent = authMode==='login'?'Log In':'Create my matrix';
+  document.getElementById('nameWrap').classList.toggle('hidden',authMode==='login');
+}));
+document.querySelector('.auth-tab').click();
+document.getElementById('authForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const email = document.getElementById('aEmail').value.trim();
+  const pass = document.getElementById('aPass').value;
+  const err = document.getElementById('authErr');
+  err.classList.add('hidden');
+  if(!email.includes('@')||pass.length<6){ err.textContent='Check your email and password (6+ chars).'; err.classList.remove('hidden'); return; }
+  let handle = authMode==='signup' ? (document.getElementById('aHandle').value.trim()||email.split('@')[0]) : email.split('@')[0];
+  handle = handle.replace(/[^a-z0-9]/gi,'');
+  state.user = handle;
+  state.xp = authMode==='signup'?50:0;
+  state.streak = authMode==='signup'?1:0;
+  closeAuth();
+  syncUI();
+  pushBotMsg(`Welcome, @${handle}. Your matrix is live. Want me to suggest a starting skill track?`);
+  if(!document.getElementById('chatPanel').classList.contains('open')) toggleChat(true);
+});
+
+// ---------- SYNC UI ----------
+function syncUI(){
+  const btn = document.getElementById('authBtn');
+  const badge = document.getElementById('xpBadge');
+  if(state.user){
+    btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i><span>@${state.user}</span>`;
+    badge.classList.remove('hidden');
+    document.getElementById('xpBadgeVal').textContent = state.xp+' XP';
+  } else {
+    btn.innerHTML = `<i data-lucide="log-in" class="w-4 h-4"></i><span>Log In / Sign Up</span>`;
+    badge.classList.add('hidden');
+  }
+  document.getElementById('streakChip').textContent = 'Streak: '+state.streak+' days';
+  document.getElementById('dashTitle').textContent = 'Welcome back, @'+(state.user||'Guest');
+  document.getElementById('dXp').textContent = state.xp;
+  document.getElementById('dStreak').textContent = state.streak;
+  document.getElementById('dCleared').textContent = state.cleared.length;
+  document.getElementById('dTickets').textContent = state.tickets.length;
+  document.getElementById('dClearedList').innerHTML = state.cleared.length
+    ? state.cleared.map(c=>`<div class="module-row"><span>${c}</span><span class="text-emerald-700">Verified Matrix</span></div>`).join('')
+    : 'No lessons cleared yet.';
+  document.getElementById('dTicketList').innerHTML = state.tickets.length
+    ? state.tickets.map(t=>`<div class="module-row"><span>${t.name}</span><span class="text-emerald-700">${t.id} · ${t.when}</span></div>`).join('')
+    : 'No device requests yet.';
+  checkBadges();
+  renderTrophies();
+  lucide.createIcons();
+}
+
+// ---------- DONATIONS ----------
+function renderDonations(){
+  const list = document.getElementById('dnList');
+  if(!list) return;
+  const d = state.donations||[];
+  if(!d.length){ list.innerHTML='No donations yet. Be the first.'; return; }
+  list.innerHTML = d.map(x=>`<div class="module-row mb-2"><span><b>${x.type}</b> · ${x.cond} · ${x.post.toUpperCase()}</span><span class="text-emerald-700">${x.id} · ${x.when}</span></div>`).join('');
+}
+const _origSync = syncUI;
+syncUI = function(){ _origSync(); renderDonations(); };
+document.getElementById('donateForm')?.addEventListener('submit', e=>{
+  e.preventDefault();
+  const post = document.getElementById('dnPost').value.trim();
+  if(!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(post)){ alert('Please enter a valid UK postcode.'); return; }
+  const rec = {
+    id:'DN-'+Math.random().toString(36).slice(2,7).toUpperCase(),
+    name:document.getElementById('dnName').value.trim(),
+    email:document.getElementById('dnEmail').value.trim(),
+    post, type:document.getElementById('dnType').value,
+    age:document.getElementById('dnAge').value,
+    cond:document.getElementById('dnCond').value,
+    hand:document.getElementById('dnHand').value,
+    notes:document.getElementById('dnNotes').value.trim(),
+    when:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'})
+  };
+  state.donations = state.donations||[];
+  state.donations.push(rec);
+  state.xp += 100;
+  // bump the impact counters visibly
+  const dvEl=document.getElementById('dnImpactDevices'); if(dvEl) dvEl.textContent = (parseInt(dvEl.textContent)||0)+1;
+  checkBadges();
+  syncUI();
+  e.target.reset();
+  alert(`✓ Thank you, ${rec.name.split(' ')[0]}!\n\nDonation ${rec.id} registered.\nA collection slot will arrive at ${rec.email} within 24h.\n\n+100 XP awarded.`);
+});
+
+// ---------- A11Y ----------
+const a11y = document.getElementById('a11yPanel');
+document.getElementById('a11yBtn').addEventListener('click',()=>a11y.classList.toggle('translate-x-full'));
+document.getElementById('a11yClose').addEventListener('click',()=>a11y.classList.add('translate-x-full'));
+document.getElementById('tContrast').addEventListener('change',e=>document.body.classList.toggle('contrast',e.target.checked));
+document.getElementById('tDys').addEventListener('change',e=>document.body.classList.toggle('dyslexic',e.target.checked));
+document.getElementById('tFocus').addEventListener('change',e=>{
+  document.body.classList.toggle('focus-mode',e.target.checked);
+  document.querySelectorAll('main > section').forEach(s=>s.classList.remove('focused'));
+  document.querySelector('.view.active')?.classList.add('focused');
+});
+(function(){
+  const playBtn = document.getElementById('tSpeak');
+  const pauseBtn = document.getElementById('tPause');
+  const stopBtn = document.getElementById('tStop');
+  const playLbl = document.getElementById('tSpeakLbl');
+  const pauseLbl = document.getElementById('tPauseLbl');
+  function setEnabled(el,on){ el.disabled=!on; el.style.opacity=on?'1':'.5'; }
+  function resetUI(){ playLbl.textContent='Play'; pauseLbl.textContent='Pause'; setEnabled(pauseBtn,false); setEnabled(stopBtn,false); }
+  playBtn.addEventListener('click',()=>{
+    if(!('speechSynthesis' in window)){ alert('Text-to-speech not supported on this browser.'); return; }
+    if(speechSynthesis.speaking && speechSynthesis.paused){ speechSynthesis.resume(); pauseLbl.textContent='Pause'; return; }
+    if(speechSynthesis.speaking){ return; }
+    const txt = document.querySelector('.view.active').innerText.slice(0,2000);
+    const u = new SpeechSynthesisUtterance(txt);
+    u.onend = resetUI; u.onerror = resetUI;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+    playLbl.textContent='Playing';
+    setEnabled(pauseBtn,true); setEnabled(stopBtn,true);
+  });
+  pauseBtn.addEventListener('click',()=>{
+    if(!('speechSynthesis' in window)) return;
+    if(speechSynthesis.paused){ speechSynthesis.resume(); pauseLbl.textContent='Pause'; }
+    else if(speechSynthesis.speaking){ speechSynthesis.pause(); pauseLbl.textContent='Resume'; }
+  });
+  stopBtn.addEventListener('click',()=>{
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    resetUI();
+  });
+})();
+
+// ---------- CHAT ----------
+const PRESETS = [
+  {l:'Show me TikTok course mechanics', r:'Our Video Editing track teaches the same cut-on-beat, retention-curve and hook-design mechanics top TikTok creators use — Module 1 covers the 3-beat hook in the first 90 seconds. Want me to enrol you?'},
+  {l:'How do I request a free laptop?', r:'Head to the Devices tab, pick the kit you need (MacBook Air M2 is the most-stocked), and hit "Log Logistics Ticket". Our vetting team replies within 48h and ships free — no income proof needed.'},
+  {l:'Match me with a mentor', r:'Tell me one track you care about and one question you want answered. I can route you to mentors at DeepMind, Linear, Vercel, Notion, Anthropic or A24 — async, no pressure, one structured reply guaranteed.'},
+  {l:'I have no laptop AND no Wi-Fi', r:'You\'re exactly who Centauri was built for. Open a device ticket AND add the 100GB/mo Mobile Hotspot — both ship together in one package. Zero cost. We assume nothing about what you already own.'},
+];
+function renderPresets(){
+  document.getElementById('chatPresets').innerHTML = PRESETS.map((p,i)=>`<button class="chip hover:text-white" onclick="firePreset(${i})">${p.l}</button>`).join('');
+}
+function pushUserMsg(t){ const s=document.getElementById('chatStream'); s.insertAdjacentHTML('beforeend',`<div class="stream-msg stream-user">${t}</div>`); s.scrollTop=s.scrollHeight; }
+function pushBotMsg(t){
+  const s=document.getElementById('chatStream');
+  const id='b'+Date.now();
+  s.insertAdjacentHTML('beforeend',`<div class="stream-msg stream-bot dot-pulse" id="${id}"></div>`);
+  s.scrollTop=s.scrollHeight;
+  setTimeout(()=>{ const el=document.getElementById(id); el.classList.remove('dot-pulse'); el.textContent=t; s.scrollTop=s.scrollHeight; }, 700+Math.random()*900);
+}
+function firePreset(i){ pushUserMsg(PRESETS[i].l); pushBotMsg(PRESETS[i].r); }
+function botReply(q){
+  q=q.toLowerCase();
+  if(/laptop|device|mac|ipad/.test(q)) return 'Open the Devices tab — every unit is vetted, wiped and shipped free. Logistics tickets are typically answered in 48 hours.';
+  if(/mentor|intro|network/.test(q)) return 'Mentor Linkages connect you asynchronously with operators at top tech ecosystems. One structured message in, one structured reply out — that\'s the contract.';
+  if(/course|learn|track|skill/.test(q)) return 'You have six tracks: Coding, Design, Marketing, Video, AI, and Web Development. Each ends in a practical you actually have to pass — XP and streaks unlock on success.';
+  if(/xp|streak|level/.test(q)) return 'XP is awarded for cleared practicals (+150) and consistent daily progress. Your streak resets if you miss a day — pace beats burst.';
+  if(/wifi|internet|data/.test(q)) return 'The 100GB/mo Mobile Hotspot ships alongside any device request, free for 12 months. We assume nothing about what you already own.';
+  if(/cost|price|free|pay/.test(q)) return 'Zero cost to the learner. Centauri is funded by industry partners who recruit from our graduates.';
+  return 'Good question — I\'ll route this to a human Guide. Meanwhile, try the Courses tab, request a device, or browse Mentor Linkages. The structural unlock is usually one of those three.';
+}
+document.getElementById('chatForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const i=document.getElementById('chatInput'); const v=i.value.trim(); if(!v)return;
+  pushUserMsg(v); i.value=''; pushBotMsg(botReply(v));
+});
+const chatPanel=document.getElementById('chatPanel');
+function toggleChat(force){
+  const open = force!==undefined ? force : chatPanel.classList.contains('translate-y-full')||chatPanel.classList.contains('sm:translate-y-[120%]');
+  if(open){ chatPanel.classList.remove('translate-y-full','sm:translate-y-[120%]'); chatPanel.classList.add('open'); }
+  else { chatPanel.classList.add('translate-y-full','sm:translate-y-[120%]'); chatPanel.classList.remove('open'); }
+}
+document.getElementById('chatToggle').addEventListener('click',()=>toggleChat());
+document.getElementById('chatClose').addEventListener('click',()=>toggleChat(false));
+
+// ---------- BOOT ----------
+renderCourses(); renderMentors(); renderPresets();
+pushBotMsg('Hi, I\'m the Centauri Protocol Guide. Ask me anything — devices, courses, mentors, or how to start with literally nothing.');
+syncUI();
+lucide.createIcons();
+</script>
+</body>
+</html>
