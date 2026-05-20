@@ -1,0 +1,1403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Centauri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0d0b;
+  --bg2: #121712;
+  --bg3: #1a211a;
+  --g: #00e87a;
+  --g2: #00c464;
+  --g3: #009e50;
+  --ink: #edf5ef;
+  --muted: #6b8870;
+  --line: rgba(0,232,122,.11);
+  --line2: rgba(0,232,122,.06);
+  --amber: #f5b731;
+  --red: #ff5f5f;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  color:var(--ink);
+  display:flex;flex-direction:column;
+  max-width:430px;margin:0 auto;
+  position:relative;
+  overscroll-behavior:none;
+}
+
+/* ── STATUS BAR ── */
+.statusbar{
+  height:44px;background:rgba(10,13,11,.9);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;flex-shrink:0;
+  font-size:12px;font-weight:500;letter-spacing:.02em;
+  backdrop-filter:blur(10px);
+}
+.statusbar-time{font-family:'DM Mono',monospace;color:var(--ink);}
+.statusbar-icons{display:flex;align-items:center;gap:5px;color:var(--ink);}
+.sb-icon{font-size:13px;}
+
+/* ── SCREEN SYSTEM ── */
+.screens{flex:1;overflow:hidden;position:relative;}
+.screen{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transform:translateX(100%);
+  transition:transform .32s cubic-bezier(.32,.72,0,1);
+}
+.screen.active{transform:translateX(0);}
+.screen.exit{transform:translateX(-30%);}
+
+/* ── SCROLL AREA ── */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(86px + var(--safe-bottom));}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* ── TOP BAR ── */
+.topbar{
+  padding:14px 18px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+  background:rgba(10,13,11,.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:10;
+}
+.topbar-logo{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;color:var(--ink);
+}
+.logo-hex{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--g);display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#000;font-weight:700;
+}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.xp-chip{
+  background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.2);
+  border-radius:20px;padding:4px 10px;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--g);font-weight:500;
+}
+.streak-chip{
+  background:rgba(245,183,49,.1);border:1px solid rgba(245,183,49,.2);
+  border-radius:20px;padding:4px 10px;
+  font-size:11px;color:var(--amber);font-weight:500;
+}
+.back-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;color:var(--ink);
+  border:none;
+}
+
+/* ── BOTTOM NAV ── */
+.bottomnav{
+  display:flex;
+  background:rgba(12,17,12,.95);
+  border-top:1px solid var(--line);
+  backdrop-filter:blur(20px);
+  padding-bottom:calc(var(--safe-bottom) + 6px);
+  flex-shrink:0;
+}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:3px;padding:10px 0;cursor:pointer;
+  border:none;background:none;color:var(--muted);
+  font-family:'DM Sans',sans-serif;transition:color .2s;
+}
+.bnav-item.active{color:var(--g);}
+.bnav-icon{font-size:20px;line-height:1;}
+.bnav-label{font-size:9px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;}
+
+/* ── HOME SCREEN ── */
+.home-hero{
+  margin:18px 16px 14px;
+  background:linear-gradient(135deg,rgba(0,232,122,.1) 0%,rgba(0,158,80,.05) 100%);
+  border:1px solid rgba(0,232,122,.18);border-radius:20px;
+  padding:20px;position:relative;overflow:hidden;
+}
+.home-hero::before{
+  content:'⬡';position:absolute;right:-10px;top:-10px;
+  font-size:90px;color:rgba(0,232,122,.04);line-height:1;
+}
+.hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--g);margin-bottom:6px;}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.03em;margin-bottom:2px;}
+.hero-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.hero-stats{display:flex;gap:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+.hstat{flex:1;text-align:center;padding:10px 6px;background:rgba(0,0,0,.2);}
+.hstat:not(:last-child){border-right:1px solid var(--line);}
+.hstat-num{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--g);}
+.hstat-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+.section-head{
+  padding:16px 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.04em;}
+.section-link{font-size:11px;color:var(--g);font-weight:500;}
+
+/* continue card */
+.continue-card{
+  margin:0 16px 16px;
+  background:var(--bg2);border:1px solid var(--line);border-radius:16px;
+  padding:14px;display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:border-color .2s;
+  position:relative;overflow:hidden;
+}
+.continue-card:active{opacity:.85;}
+.cc-icon{width:44px;height:44px;border-radius:12px;background:rgba(0,232,122,.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.cc-info{flex:1;min-width:0;}
+.cc-label{font-size:10px;color:var(--g);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px;}
+.cc-title{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cc-prog{font-size:11px;color:var(--muted);margin-top:3px;}
+.cc-arrow{color:var(--muted);font-size:18px;flex-shrink:0;}
+.prog-bar{height:3px;background:rgba(255,255,255,.06);border-radius:3px;margin-top:6px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:var(--g);}
+
+/* quick stats row */
+.quick-stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin:0 16px 20px;
+}
+.qs-card{
+  background:var(--bg2);border:1px solid var(--line);border-radius:14px;
+  padding:14px;
+}
+.qs-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+.qs-val{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--g);}
+.qs-val.amber{color:var(--amber);}
+
+/* ── COURSES SCREEN ── */
+.filter-scroll{
+  display:flex;gap:7px;overflow-x:auto;padding:10px 16px 12px;flex-shrink:0;
+}
+.filter-scroll::-webkit-scrollbar{display:none;}
+.ftag{
+  white-space:nowrap;padding:6px 14px;border-radius:20px;
+  font-size:12px;font-weight:500;border:1px solid var(--line);
+  background:transparent;color:var(--muted);cursor:pointer;
+  transition:all .18s;font-family:'DM Sans',sans-serif;flex-shrink:0;
+}
+.ftag.active{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.08);}
+
+.course-list{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;}
+.course-card{
+  background:var(--bg2);border:1px solid var(--line);border-radius:18px;
+  padding:16px;cursor:pointer;transition:border-color .2s;
+  position:relative;overflow:hidden;
+}
+.course-card:active{opacity:.85;}
+.course-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,232,122,.05),transparent);
+  opacity:0;transition:opacity .2s;
+}
+.course-card:hover::after{opacity:1;}
+.cc-row1{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.cc-ico{width:42px;height:42px;border-radius:12px;background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.15);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cc-badge-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.level-badge{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:6px;}
+.level-beginner{background:rgba(0,232,122,.12);color:var(--g);}
+.level-intermediate{background:rgba(245,183,49,.1);color:var(--amber);}
+.level-advanced{background:rgba(255,95,95,.1);color:var(--red);}
+.time-badge{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);}
+.cc-title-main{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.03em;margin-bottom:1px;}
+.cc-tagline{font-size:11px;color:var(--g);font-style:italic;font-weight:300;margin-bottom:8px;}
+.cc-overview{font-size:12px;color:var(--muted);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px;}
+.cc-bottom{display:flex;align-items:center;justify-content:space-between;}
+.cc-mods{font-size:10px;color:var(--muted);}
+.cc-enroll-btn{
+  padding:6px 14px;border-radius:10px;font-size:11px;font-weight:600;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;
+}
+.cc-enroll-btn.enroll{background:var(--g);color:#000;}
+.cc-enroll-btn.enrolled{background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25);color:var(--g);}
+.cc-prog-wrap{margin-top:10px;}
+.cc-prog-row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px;}
+
+/* ── COURSE DETAIL SCREEN ── */
+.detail-hero{
+  padding:20px 16px 16px;
+  background:linear-gradient(180deg,rgba(0,232,122,.07) 0%,transparent 100%);
+}
+.detail-icon-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.detail-icon{width:52px;height:52px;border-radius:14px;background:rgba(0,232,122,.12);border:1px solid rgba(0,232,122,.2);display:flex;align-items:center;justify-content:center;font-size:24px;}
+.detail-badges{display:flex;flex-direction:column;gap:4px;}
+.detail-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.03em;margin-bottom:2px;}
+.detail-tag{font-size:12px;color:var(--g);font-style:italic;font-weight:300;margin-bottom:12px;}
+.detail-overview{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.detail-meta{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--line);margin-bottom:16px;}
+.dmeta{flex:1;text-align:center;padding:8px 4px;background:rgba(0,0,0,.2);}
+.dmeta:not(:last-child){border-right:1px solid var(--line);}
+.dmeta-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--ink);}
+.dmeta-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+.enroll-main{
+  width:100%;padding:13px;border-radius:14px;font-size:14px;font-weight:600;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.enroll-main.cta{background:var(--g);color:#000;}
+.enroll-main.done{background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.3);color:var(--g);}
+
+.tabs-row{display:flex;border-bottom:1px solid var(--line);flex-shrink:0;}
+.tab{flex:1;padding:12px 8px;text-align:center;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.tab.active{color:var(--g);border-bottom-color:var(--g);}
+
+/* modules */
+.modules-list{padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
+.mod-item{
+  background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  transition:border-color .2s;
+}
+.mod-item.completed{border-color:rgba(0,232,122,.3);}
+.mod-head{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;
+}
+.mod-num{
+  width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:10px;color:var(--g);
+}
+.mod-num.done{background:rgba(0,232,122,.2);border-color:rgba(0,232,122,.4);}
+.mod-info{flex:1;min-width:0;}
+.mod-title{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mod-hrs{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);flex-shrink:0;}
+.mod-expand{display:none;padding:0 14px 14px 50px;}
+.mod-item.open .mod-expand{display:block;animation:fd .2s ease;}
+@keyframes fd{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+.mod-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:10px;}
+.outcomes{list-style:none;margin-bottom:10px;}
+.outcomes li{font-size:11px;color:var(--muted);padding:4px 0;display:flex;gap:6px;border-bottom:1px solid var(--line2);}
+.outcomes li:last-child{border:none;}
+.check{color:var(--g);flex-shrink:0;font-size:10px;margin-top:1px;}
+.btn-complete{
+  width:100%;padding:9px;border-radius:10px;font-size:12px;font-weight:600;
+  background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.2);
+  color:var(--g);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;
+}
+.btn-complete.done{background:rgba(0,232,122,.18);border-color:rgba(0,232,122,.4);}
+
+/* exam block */
+.exam-block{
+  margin:0 16px 16px;
+  border:1px solid rgba(245,183,49,.25);border-radius:14px;
+  background:rgba(245,183,49,.04);padding:14px;
+}
+.exam-eyebrow{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:6px;}
+.exam-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.03em;margin-bottom:6px;}
+.exam-desc{font-size:11px;color:var(--muted);line-height:1.55;margin-bottom:10px;}
+.exam-reqs{list-style:none;margin-bottom:10px;}
+.exam-reqs li{font-size:11px;color:var(--muted);padding:3px 0;display:flex;gap:6px;}
+.a-check{color:var(--amber);flex-shrink:0;}
+.xp-reward{
+  background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.2);
+  border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;
+}
+.xp-big{font-family:'DM Mono',monospace;font-weight:500;font-size:16px;color:var(--g);}
+.xp-note{font-size:10px;color:var(--muted);line-height:1.4;}
+
+/* quiz */
+.quiz-wrap{padding:16px;}
+.quiz-header{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.03em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.quiz-q{font-size:14px;font-weight:500;line-height:1.5;margin-bottom:14px;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+  background:rgba(255,255,255,.02);font-size:12px;cursor:pointer;transition:all .2s;
+  text-align:left;font-family:'DM Sans',sans-serif;color:var(--ink);
+}
+.quiz-opt:active:not(:disabled){transform:scale(.98);}
+.quiz-opt.correct{border-color:var(--g);background:rgba(0,232,122,.1);color:var(--g);}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(255,95,95,.08);color:var(--red);}
+.quiz-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:11px;line-height:1.5;}
+.quiz-feedback.pass{background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.2);color:var(--g);}
+.quiz-feedback.fail{background:rgba(255,95,95,.07);border:1px solid rgba(255,95,95,.2);color:var(--red);}
+.btn-next{
+  width:100%;margin-top:10px;padding:11px;border-radius:12px;
+  border:1px solid var(--line);background:transparent;color:var(--muted);
+  font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.quiz-done{text-align:center;padding:30px 16px;}
+.quiz-done-icon{font-size:48px;margin-bottom:12px;}
+.quiz-done-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.03em;margin-bottom:6px;}
+.quiz-done-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.btn-retry{
+  padding:11px 28px;border-radius:12px;border:none;
+  background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25);
+  color:var(--g);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;
+}
+
+/* ── PROGRESS SCREEN ── */
+.progress-wrap{padding:16px;}
+.prog-course-card{
+  background:var(--bg2);border:1px solid var(--line);border-radius:16px;
+  padding:14px;margin-bottom:10px;cursor:pointer;
+}
+.prog-course-card:active{opacity:.85;}
+.pcc-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.pcc-icon{width:38px;height:38px;border-radius:10px;background:rgba(0,232,122,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.pcc-title{font-size:14px;font-weight:500;}
+.pcc-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.pcc-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--g);margin-left:auto;}
+.empty-prog{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:500;color:var(--ink);margin-bottom:6px;}
+.empty-sub{font-size:12px;line-height:1.55;}
+.btn-goto{
+  margin-top:16px;display:inline-block;padding:10px 24px;border-radius:12px;
+  background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25);
+  color:var(--g);font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;border:none;
+}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:calc(72px + var(--safe-bottom) + 10px);left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:rgba(18,23,18,.96);border:1px solid rgba(0,232,122,.3);
+  border-radius:20px;padding:8px 16px;
+  font-size:12px;color:var(--ink);
+  display:flex;align-items:center;gap:6px;
+  opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;
+  z-index:999;backdrop-filter:blur(12px);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast-g{color:var(--g);}
+
+/* ── XP POP ── */
+.xp-pop{
+  position:fixed;z-index:999;
+  font-family:'DM Mono',monospace;font-weight:500;font-size:16px;color:var(--g);
+  pointer-events:none;
+  animation:xpFloat 1.4s ease forwards;
+}
+@keyframes xpFloat{from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(-50px) scale(1.2);}}
+
+/* ── ANIMATIONS ── */
+.screen{will-change:transform;}
+@media (prefers-reduced-motion:reduce){.screen{transition:none;}}
+
+/* ── COURSE CARD OVERLAP FIX ── */
+#screen-courses .scroll{
+  padding-bottom:calc(92px + var(--safe-bottom));
+}
+
+.course-list{
+  gap:14px;
+  padding-bottom:calc(100px + var(--safe-bottom));
+}
+
+.course-card{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  height:auto;
+  overflow:visible;
+  isolation:isolate;
+}
+
+.course-card > *{
+  position:relative;
+  z-index:2;
+}
+
+.course-card::after{
+  pointer-events:none;
+  z-index:0;
+}
+
+.cc-overview{
+  margin-bottom:12px;
+}
+
+.cc-prog-wrap{
+  margin:10px 0 10px;
+  flex-shrink:0;
+}
+
+.cc-bottom{
+  margin-top:auto;
+  padding-top:8px;
+  flex-shrink:0;
+  gap:10px;
+}
+
+.cc-enroll-btn{
+  position:relative;
+  z-index:3;
+  flex-shrink:0;
+}
+
+.modules-list{
+  padding-bottom:calc(100px + var(--safe-bottom));
+}
+
+.exam-block{
+  margin-bottom:calc(110px + var(--safe-bottom));
+}
+
+
+/* ── SCREEN STACKING FIX ── */
+.screen{
+  z-index:1;
+}
+.screen.active{
+  z-index:2;
+}
+#screen-detail.active{
+  z-index:5;
+}
+.screen.exit{
+  z-index:1;
+  pointer-events:none;
+}
+
+
+/* ===== INTERACTIVE COURSE CONTENT: WHAT COMPUTERS ACTUALLY DO ===== */
+.lesson-lab{
+  margin:0 16px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.lesson-card{
+  background:linear-gradient(135deg,rgba(0,232,122,.08),rgba(255,255,255,.02));
+  border:1px solid rgba(0,232,122,.18);
+  border-radius:18px;
+  padding:15px;
+}
+.lesson-kicker{
+  font-size:9px;
+  color:var(--g);
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.lesson-title{
+  font-size:15px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+.lesson-copy{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.65;
+}
+.lesson-code{
+  margin-top:10px;
+  background:rgba(0,0,0,.32);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  color:var(--ink);
+  overflow-x:auto;
+}
+.lesson-action{
+  width:100%;
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(0,232,122,.3);
+  background:rgba(0,232,122,.12);
+  color:var(--g);
+  font-weight:700;
+  font-size:12px;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer;
+}
+.sim-output{
+  margin-top:10px;
+  min-height:72px;
+  background:rgba(0,0,0,.28);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  color:var(--g);
+  line-height:1.7;
+  white-space:pre-line;
+}
+.binary-row{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.binary-input{
+  flex:1;
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.25);
+  color:var(--ink);
+  border-radius:12px;
+  padding:10px;
+  font-size:13px;
+  outline:none;
+}
+.binary-result{
+  margin-top:10px;
+  padding:10px;
+  border-radius:12px;
+  background:rgba(0,232,122,.08);
+  border:1px solid rgba(0,232,122,.18);
+  color:var(--g);
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+}
+.memory-bars{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:10px;
+}
+.mem-label{
+  display:flex;
+  justify-content:space-between;
+  font-size:10px;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+.mem-track{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.07);
+  overflow:hidden;
+}
+.mem-fill{
+  height:100%;
+  width:18%;
+  background:linear-gradient(90deg,var(--g3),var(--g));
+  border-radius:999px;
+  transition:width .35s ease;
+}
+.timeline{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.timeline-step{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px;
+  border-radius:12px;
+  background:rgba(0,0,0,.22);
+  border:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+}
+.timeline-step.active{
+  border-color:rgba(0,232,122,.45);
+  color:var(--ink);
+  background:rgba(0,232,122,.08);
+}
+.tdot{
+  width:24px;height:24px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,232,122,.1);
+  color:var(--g);
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  flex-shrink:0;
+}
+.match-grid{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:10px;
+}
+.match-row{
+  display:grid;
+  grid-template-columns:72px 1fr;
+  gap:8px;
+  align-items:center;
+}
+.match-chip{
+  background:rgba(0,232,122,.1);
+  border:1px solid rgba(0,232,122,.2);
+  color:var(--g);
+  padding:9px;
+  border-radius:12px;
+  font-weight:700;
+  font-size:12px;
+  text-align:center;
+}
+.match-select{
+  width:100%;
+  background:rgba(0,0,0,.25);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:12px;
+  padding:9px;
+  font-size:12px;
+}
+.challenge-result{
+  margin-top:10px;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+</style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <span class="statusbar-time" id="statusTime">09:41</span>
+  <div class="statusbar-icons">
+    <span class="sb-icon">▲▲▲</span>
+    <span class="sb-icon">WiFi</span>
+    <span class="sb-icon">⬛</span>
+  </div>
+</div>
+
+<!-- SCREENS -->
+<div class="screens">
+
+  <!-- ── HOME ── -->
+  <div class="screen active" id="screen-home">
+    <div class="topbar">
+      <div class="topbar-logo"><div class="logo-hex">⬡</div>Centauri</div>
+      <div class="topbar-right">
+        <div class="streak-chip">🔥 <span id="homeStreak">0</span>d</div>
+        <div class="xp-chip">⚡ <span id="homeXP">0</span></div>
+      </div>
+    </div>
+    <div class="scroll">
+      <div class="home-hero">
+        <div class="hero-eyebrow">Welcome back</div>
+        <div class="hero-name">@Learner</div>
+        <div class="hero-sub">Keep your streak alive today.</div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="hstat-num">6</div><div class="hstat-label">Tracks</div></div>
+          <div class="hstat"><div class="hstat-num" id="homeMods">0</div><div class="hstat-label">Done</div></div>
+          <div class="hstat"><div class="hstat-num">£0</div><div class="hstat-label">Cost</div></div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div class="section-title">Continue</div>
+        <button class="section-link" onclick="goTo('courses')" style="border:none;background:none;cursor:pointer;">See all →</button>
+      </div>
+      <div id="continueArea">
+        <div style="margin:0 16px 16px;padding:16px;background:var(--bg2);border:1px solid var(--line);border-radius:16px;text-align:center;">
+          <div style="font-size:24px;margin-bottom:8px;">🚀</div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px;">Start your first track</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Six skills. Zero cost.</div>
+          <button onclick="goTo('courses')" style="padding:8px 20px;border-radius:10px;background:var(--g);color:#000;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Browse courses</button>
+        </div>
+      </div>
+
+      <div class="section-head"><div class="section-title">Your stats</div></div>
+      <div class="quick-stats">
+        <div class="qs-card"><div class="qs-label">Total XP</div><div class="qs-val" id="homeXPBig">0</div></div>
+        <div class="qs-card"><div class="qs-label">Streak</div><div class="qs-val amber" id="homeStreakBig">0</div></div>
+        <div class="qs-card"><div class="qs-label">Enrolled</div><div class="qs-val" id="homeEnrolled">0</div></div>
+        <div class="qs-card"><div class="qs-label">Modules</div><div class="qs-val" id="homeModsBig">0</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COURSES ── -->
+  <div class="screen" id="screen-courses">
+    <div class="topbar">
+      <div class="topbar-logo"><div class="logo-hex">⬡</div>Courses</div>
+      <div class="topbar-right">
+        <div class="xp-chip">⚡ <span id="coursesXP">0</span></div>
+      </div>
+    </div>
+    <div class="filter-scroll" id="filterScroll">
+      <button class="ftag active" onclick="setFilter(this,'all')">All</button>
+      <button class="ftag" onclick="setFilter(this,'beginner')">Beginner</button>
+      <button class="ftag" onclick="setFilter(this,'intermediate')">Intermediate</button>
+      <button class="ftag" onclick="setFilter(this,'enrolled')">Enrolled</button>
+      <button class="ftag" onclick="setFilter(this,'coding')">💻 Coding</button>
+      <button class="ftag" onclick="setFilter(this,'design')">🎨 Design</button>
+      <button class="ftag" onclick="setFilter(this,'mkt')">📣 Marketing</button>
+      <button class="ftag" onclick="setFilter(this,'video')">🎬 Video</button>
+      <button class="ftag" onclick="setFilter(this,'ai')">✨ AI</button>
+      <button class="ftag" onclick="setFilter(this,'web')">🌐 Web Dev</button>
+    </div>
+    <div class="scroll">
+      <div class="course-list" id="courseList"></div>
+    </div>
+  </div>
+
+  <!-- ── COURSE DETAIL ── -->
+  <div class="screen" id="screen-detail">
+    <div class="topbar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div style="flex:1;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.03em;" id="detailTopTitle"></div>
+      <div style="width:32px;"></div>
+    </div>
+    <div class="tabs-row">
+      <button class="tab active" onclick="switchDetailTab('modules')">Syllabus</button>
+      <button class="tab" onclick="switchDetailTab('overview')">Overview</button>
+      <button class="tab" onclick="switchDetailTab('quiz')">Quiz</button>
+    </div>
+    <div class="scroll" id="detailScroll">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <!-- ── PROGRESS ── -->
+  <div class="screen" id="screen-progress">
+    <div class="topbar">
+      <div class="topbar-logo"><div class="logo-hex">⬡</div>Progress</div>
+      <div class="topbar-right">
+        <div class="streak-chip">🔥 <span id="progStreak">0</span>d</div>
+      </div>
+    </div>
+    <div class="scroll">
+      <div class="progress-wrap" id="progressWrap"></div>
+    </div>
+  </div>
+
+</div><!-- /screens -->
+
+<!-- BOTTOM NAV -->
+<div class="bottomnav">
+  <button class="bnav-item active" data-screen="home" onclick="goTo('home')">
+    <span class="bnav-icon">⌂</span>
+    <span class="bnav-label">Home</span>
+  </button>
+  <button class="bnav-item" data-screen="courses" onclick="goTo('courses')">
+    <span class="bnav-icon">◈</span>
+    <span class="bnav-label">Courses</span>
+  </button>
+  <button class="bnav-item" data-screen="progress" onclick="goTo('progress')">
+    <span class="bnav-icon">◉</span>
+    <span class="bnav-label">Progress</span>
+  </button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-g">⚡</span><span id="toastMsg"></span></div>
+
+<script>
+// ══════════ DATA ══════════
+const COURSES=[
+  {id:'coding',title:'Coding Fundamentals',tag:'From zero to functional',icon:'💻',level:'beginner',time:'8w · 4h/wk',totalHrs:'32 hrs',lead:'Kofi Asante',
+  overview:'Zero experience required. We start at "what is a variable" and end with you shipping a real web application. Python and JavaScript — the two most hireable languages. No maths prerequisites. Code that runs is the only metric.',
+  modules:[
+    {t:'What Computers Actually Do',d:'Binary, memory, CPU cycles explained without jargon.',hrs:'4h',outcomes:['Explain the fetch-decode-execute cycle','Understand binary and hex','Identify RAM vs storage','Map how a browser request works']},
+    {t:'Variables, Types & Control Flow',d:'Data types, conditionals, loops — the grammar of every language.',hrs:'4h',outcomes:['Declare variables in Python and JS','Write if/else and switch logic','Build for and while loops','Avoid type coercion bugs']},
+    {t:'Functions & Scope',d:'Reusable, testable code. Closures, hoisting, why globals kill codebases.',hrs:'4h',outcomes:['Write pure functions','Understand lexical scope','Use arrow functions','Refactor procedural code']},
+    {t:'Data Structures — Arrays & Objects',d:'Map, filter, reduce, spread, destructuring.',hrs:'4h',outcomes:['Traverse and transform arrays','Work with nested objects','Use destructuring','Choose between array and object']},
+    {t:'APIs & Async JavaScript',d:'Fetch data from the internet. Promises, async/await.',hrs:'4h',outcomes:['Call a REST API','Write async/await flows','Handle rejections','Render API data to DOM']},
+    {t:'Git, GitHub & Collaboration',d:'Version control. Commit, branch, merge, PR.',hrs:'4h',outcomes:['Init repos and commit','Branch and merge','Open pull requests','Write a useful README']},
+    {t:'Testing — Why and How',d:'Unit tests, assertions, red-green-refactor.',hrs:'4h',outcomes:['Write unit tests','Practice TDD','Interpret test output','Refactor safely']},
+    {t:'Capstone — Ship a Real App',d:'Build, test and deploy. The internet proves itself.',hrs:'4h',outcomes:['Design from a spec','Implement with tests','Deploy to live URL','Present in mentor review']}
+  ],exam:'Build a working CRUD application in JavaScript, deploy to a live URL, and present your code in a 30-minute mentor review.'},
+  {id:'design',title:'Design Foundations',tag:'Make things beautiful and true',icon:'🎨',level:'beginner',time:'5w · 3h/wk',totalHrs:'15 hrs',lead:'Yemi Adeyemi',
+  overview:'Not Photoshop tutorials. Visual thinking — the principles behind a trained eye. Typography, colour systems, grid theory, and component design in Figma (free tier). Good design is invisible.',
+  modules:[
+    {t:'Visual Hierarchy & Composition',d:'Why your eye moves. Scale, contrast, weight.',hrs:'3h',outcomes:['Apply scale contrast','Use rule of thirds','Identify hierarchy failures','Redesign a cluttered layout']},
+    {t:'Type Pairing & Line-Length',d:'Fonts that work together, scale ratios, the 45–75 char rule.',hrs:'3h',outcomes:['Pair display and body fonts','Apply modular scale','Set line-height and tracking','Audit a real site']},
+    {t:'Colour Systems & Contrast',d:'HSL, OKLCH, semantic tokens, WCAG contrast.',hrs:'3h',outcomes:['Build a 5-step palette','Check WCAG AA ratios','Define semantic tokens','Apply dark/light theme']},
+    {t:'Grids, Spacing & Alignment',d:'8pt grids, fluid layouts, visual rhythm.',hrs:'3h',outcomes:['Construct 8pt spacing system','Lay out on 12-col grid','Use Figma auto-layout','Spot alignment errors']},
+    {t:'Case Study — Rebuild a Real UI',d:'Tear down a live product, redesign it, present before/after.',hrs:'3h',outcomes:['Audit for design failures','Produce annotated wireframes','Apply all principles','Present to mentor']}
+  ],exam:'Polished case study (Figma file + 5 slides) redesigning a real product. Mentor critique covers hierarchy, type, colour and rationale.'},
+  {id:'mkt',title:'Marketing & Growth',tag:'Make demand, not noise',icon:'📣',level:'intermediate',time:'6w · 3h/wk',totalHrs:'18 hrs',lead:'Priya Devarajan',
+  overview:'Skip the guru content. Learn the actual funnel: positioning, channel-market fit, content loops, lifecycle email, analytics dashboards. Real anonymised campaign data from partner startups.',
+  modules:[
+    {t:'Positioning — Who It\'s For',d:'The single message test. Statements that survive customers.',hrs:'3h',outcomes:['Write a positioning statement','Identify your anti-customer','Stress-test messaging','Differentiate vs competitors']},
+    {t:'Channels — Paid, Owned, Earned',d:'Map every channel, ruthlessly cut to two.',hrs:'3h',outcomes:['Audit channel-market fit','Calculate CAC vs LTV','Plan a paid social test','Understand organic loops']},
+    {t:'Content Engines & Repurposing',d:'One pillar piece → ten atomic posts.',hrs:'3h',outcomes:['Build a pillar-to-atomic map','Write a repurposing system','Produce pillar content','Schedule 4-week plan']},
+    {t:'Lifecycle Email & Activation',d:'Onboarding sequences, retention triggers, churn metrics.',hrs:'3h',outcomes:['Map 5-email onboarding','Identify churn triggers','Write re-engagement email','A/B test subject lines']},
+    {t:'Measuring — North-Star Metrics',d:'Read a dashboard like a CFO.',hrs:'3h',outcomes:['Define a north-star metric','Build a tracking dashboard','Distinguish correlation','Present a weekly brief']},
+    {t:'Building a 90-Day Growth Plan',d:'Bets, budgets, and review checkpoints.',hrs:'3h',outcomes:['Structure 90-day roadmap','Budget experiments','Set OKRs for growth team','Defend the plan']}
+  ],exam:'Written 90-day growth plan for a partner startup, defended live in a 30-min mentor Q&A.'},
+  {id:'video',title:'Video Editing for Creators',tag:'Cut like a pro',icon:'🎬',level:'beginner',time:'6w · 4h/wk',totalHrs:'24 hrs',lead:'Marcus Bell',
+  overview:'Shoot, cut, colour and export short-form video that retains viewers. CapCut + DaVinci Resolve walkthroughs. Final piece: a 60-second portfolio reel for TikTok, Reels, Shorts.',
+  modules:[
+    {t:'Story — The 3-Beat Structure',d:'Hook, hold, payoff. Why most edits fail in 3 seconds.',hrs:'4h',outcomes:['Script a 3-beat hook','Analyse retention curves','Write your hook in 2 seconds','Find where attention drops']},
+    {t:'Shooting for the Cut',d:'B-roll discipline, rule-of-thirds, headroom.',hrs:'4h',outcomes:['Plan a 5-shot B-roll','Frame with rule of thirds','Adjust headroom','Shoot coverage efficiently']},
+    {t:'Cutting on Motion & Sound',d:'Match-cuts, J-cuts, L-cuts.',hrs:'4h',outcomes:['Execute J-cut and L-cut','Cut on motion and beat','Build audio soundscape','Remove dead air']},
+    {t:'Colour Grading — LUTs vs Manual',d:'Wheels, curves, scopes.',hrs:'4h',outcomes:['Read a waveform','Apply and adjust LUT','Match shots','Create a signature look']},
+    {t:'Sound, Mix & Voiceover',d:'Loudness standards, music ducking, VO on cheap gear.',hrs:'4h',outcomes:['Mix to -14 LUFS','Record clean VO on phone','Duck background music','Remove ambient noise']},
+    {t:'Export & Platform Delivery',d:'9:16, 1:1, 16:9. Codecs and bitrates.',hrs:'4h',outcomes:['Export 9:16 and 16:9','Choose the right codec','Hit platform specs','Deliver a finished reel']}
+  ],exam:'60-second portfolio reel in 9:16, 1:1 and 16:9. Reviewed frame-by-frame by an A24 editor.'},
+  {id:'ai',title:'AI Literacy & Prompting',tag:'Use the machine, do not fear it',icon:'✨',level:'intermediate',time:'6w · 3h/wk',totalHrs:'18 hrs',lead:'Dr. Adeola Quinn',
+  overview:'What large language models actually are, where they fail, and how to build reliable workflows. Prompt design, retrieval, evaluation and AI ethics in real workplaces.',
+  modules:[
+    {t:'How an LLM Predicts Text',d:'Tokens, probabilities, context windows — no PhD needed.',hrs:'3h',outcomes:['Explain tokenisation','Understand temperature','Identify context limits','Predict hallucination causes']},
+    {t:'Prompt Patterns That Survive Edge Cases',d:'Role, context, examples, constraints.',hrs:'3h',outcomes:['Write zero-shot and few-shot prompts','Apply chain-of-thought','Constrain output format','Stress-test prompts']},
+    {t:'Retrieval, Tools & Grounding',d:'RAG basics: embeddings, vector search.',hrs:'3h',outcomes:['Explain embeddings','Set up a vector store','Build a RAG pipeline','Measure retrieval accuracy']},
+    {t:'Evaluating Outputs & Hallucinations',d:'Build a tiny eval harness. Measure accuracy, not vibes.',hrs:'3h',outcomes:['Define an eval rubric','Build an eval dataset','Run evals and interpret','Catch hallucinations']},
+    {t:'Ethics, Bias & Safety',d:'Real-world failure modes, consent, attribution.',hrs:'3h',outcomes:['Identify bias in outputs','Apply NIST AI RMF','Write an AI use policy','Argue when not to use AI']},
+    {t:'Building Reliable AI Workflows',d:'Error handling, fallbacks, logging.',hrs:'3h',outcomes:['Diagram an AI pipeline','Add error handling','Log model calls','Present to non-technical stakeholder']}
+  ],exam:'Build and document a small RAG-backed AI workflow. Submit code, eval results, and a 1-page reflection.'},
+  {id:'web',title:'Web Development',tag:'Ship to the open web',icon:'🌐',level:'intermediate',time:'8w · 5h/wk',totalHrs:'40 hrs',lead:'Sora Adebayo',
+  overview:'HTML semantics to a deployed full-stack app. Responsive CSS, JavaScript, React, APIs, auth, and deployment. Capstone: ship a personal site on the real internet under your own subdomain.',
+  modules:[
+    {t:'Semantic HTML & Structure',d:'Real elements, accessibility tree, landmarks.',hrs:'6h',outcomes:['Write valid semantic HTML5','Build correct heading hierarchy','Use ARIA roles','Pass axe accessibility scan']},
+    {t:'CSS — Box Model, Flexbox & Grid',d:'Modern responsive layout.',hrs:'7h',outcomes:['Explain the box model','Build responsive Grid layout','Centre with Flexbox','Write mobile-first queries']},
+    {t:'JavaScript — DOM, Events & Fetch',d:'Manipulate the page, handle clicks, call APIs.',hrs:'7h',outcomes:['Select and mutate DOM','Handle events','Fetch JSON from API','Render data dynamically']},
+    {t:'React Components & State',d:'Components, props, useState, useEffect.',hrs:'7h',outcomes:['Create functional components','Pass and validate props','Manage state','Fetch data in useEffect']},
+    {t:'APIs, JSON & Auth Basics',d:'REST, async/await, error handling, how login works.',hrs:'7h',outcomes:['Design a REST API','Store and verify JWTs','Handle API errors','Implement login flow']},
+    {t:'Deployment & Custom Domains',d:'GitHub, Vercel, DNS, HTTPS.',hrs:'6h',outcomes:['Deploy to Vercel','Configure custom domain','Set up HTTPS','Run Lighthouse audit >90']}
+  ],exam:'Deploy a full-stack personal site to a custom domain with auth and a working API. Live URL is the deliverable.'},
+];
+
+const QUIZZES={
+  coding:[
+    {q:'Which is a pure function?',opts:['function add(a,b){ total+=a+b; }','function add(a,b){ return a+b; }','function add(){ return Math.random(); }','function add(a){ a.push(1); }'],ans:1,exp:'A pure function always returns the same output for the same inputs and has no side effects.'},
+    {q:'What does async/await do?',opts:['Runs code in parallel threads','Blocks the main thread until done','Makes async code read like sync code','Speeds up API calls'],ans:2,exp:'async/await is syntactic sugar over Promises — readable async code, without blocking the thread.'}
+  ],
+  design:[
+    {q:'WCAG AA minimum contrast ratio for normal text:',opts:['2.5:1','3:1','4.5:1','7:1'],ans:2,exp:'WCAG AA requires 4.5:1 for normal text and 3:1 for large text (18pt or 14pt bold).'},
+    {q:'The 8pt grid system means:',opts:['All elements are 8px tall','All spacing values are multiples of 8','Font sizes must be 8pt','Borders are 8px wide'],ans:1,exp:'Every spacing value (margin, padding, gap) is a multiple of 8, creating consistent visual rhythm.'}
+  ],
+  mkt:[
+    {q:'What is a north-star metric?',opts:['The most tracked vanity metric','A KPI that captures your product\'s core value','Monthly revenue target','Number of followers'],ans:1,exp:'A north-star metric captures the core value your product delivers — it predicts long-term success better than revenue.'},
+    {q:'CAC stands for:',opts:['Content Acquisition Cost','Customer Acquisition Cost','Channel Attribution Cost','Conversion and Churn'],ans:1,exp:'Customer Acquisition Cost — total spend to acquire one new customer.'}
+  ],
+  video:[
+    {q:'What is a J-cut?',opts:['Audio from next scene starts before video transitions','Video cuts before audio ends','Cut synced to a beat','Jump cut between same-position shots'],ans:0,exp:'In a J-cut, audio from the next scene leads the video — creating a seamless transition.'},
+    {q:'Ideal loudness for streaming platforms:',opts:['-23 LUFS','-14 LUFS','-6 LUFS','0 LUFS'],ans:1,exp:'Most platforms normalise to -14 LUFS. Mastering here prevents post-upload quality loss.'}
+  ],
+  ai:[
+    {q:'What is tokenisation in an LLM?',opts:['Splitting text into subword units','Generating images from text','Training on new data','Converting embeddings to text'],ans:0,exp:'Tokenisation splits text into subword pieces (tokens) the model processes numerically.'},
+    {q:'RAG stands for:',opts:['Retrieval Augmented Generation','Real-time AI Gateway','Reasoning and Generation','Recursive Answer Generation'],ans:0,exp:'RAG grounds model outputs in retrieved external facts, reducing hallucinations.'}
+  ],
+  web:[
+    {q:'Best HTML element for site navigation:',opts:['<div id="nav">','<section>','<nav>','<header>'],ans:2,exp:'<nav> is the semantic landmark for navigation — announced by screen readers.'},
+    {q:'In CSS Grid, "fr" stands for:',opts:['frequency','fraction','flex-row','full-relative'],ans:1,exp:'"fr" is a fractional unit — 1fr means one share of available space.'}
+  ]
+};
+
+// ══════════ STATE ══════════
+const S={xp:0,streak:0,enrolled:{},quiz:{},filter:'all',currentCourse:null,detailTab:'modules',prevScreen:null};
+
+// ══════════ NAVIGATION ══════════
+let histStack=['home'];
+function goTo(screen){
+  if(screen===currentScreen()) return;
+  const cur=document.getElementById('screen-'+currentScreen());
+  cur.classList.add('exit');
+  setTimeout(()=>cur.classList.remove('exit'),350);
+  const next=document.getElementById('screen-'+screen);
+  next.classList.add('active');
+  setTimeout(()=>{ cur.classList.remove('active'); },10);
+  histStack.push(screen);
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.toggle('active',b.dataset.screen===screen));
+  if(screen==='courses') renderCourses();
+  if(screen==='progress') renderProgress();
+  if(screen==='home') renderHome();
+}
+function goBack(){
+  if(histStack.length<=1) return;
+  histStack.pop();
+  const prev=histStack[histStack.length-1];
+  const cur=document.getElementById('screen-detail');
+  cur.classList.remove('active');
+  cur.classList.remove('exit');
+
+  const prevEl=document.getElementById('screen-'+prev);
+  prevEl.classList.add('active');
+  prevEl.classList.remove('exit');
+
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.toggle('active',b.dataset.screen===prev));
+  if(prev==='courses') renderCourses();
+  if(prev==='home') renderHome();
+  if(prev==='progress') renderProgress();
+}
+function currentScreen(){ return histStack[histStack.length-1]; }
+
+function openDetail(id){
+  S.currentCourse=id; S.detailTab='modules';
+  const c=COURSES.find(x=>x.id===id);
+  document.getElementById('detailTopTitle').textContent=c.title;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+
+  const scr=document.getElementById('screen-detail');
+  const cur=document.getElementById('screen-'+currentScreen());
+
+  // Keep only the detail screen visible after opening.
+  // This prevents the course list/cards from sitting underneath and visually overlapping.
+  cur.classList.add('exit');
+  scr.classList.add('active');
+
+  setTimeout(()=>{
+    cur.classList.remove('active');
+    cur.classList.remove('exit');
+  },320);
+
+  histStack.push('detail');
+  document.getElementById('detailScroll').scrollTop=0;
+  renderDetailTab();
+}
+
+// ══════════ FILTER ══════════
+function setFilter(btn, f){
+  document.querySelectorAll('.ftag').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  S.filter=f; renderCourses();
+}
+
+// ══════════ RENDER COURSES ══════════
+function renderCourses(){
+  document.getElementById('coursesXP').textContent=S.xp;
+  let list=COURSES;
+  const f=S.filter;
+  if(f==='enrolled') list=list.filter(c=>S.enrolled[c.id]);
+  else if(f==='beginner') list=list.filter(c=>c.level==='beginner');
+  else if(f==='intermediate') list=list.filter(c=>c.level==='intermediate');
+  else if(['coding','design','mkt','video','ai','web'].includes(f)) list=list.filter(c=>c.id===f);
+  document.getElementById('courseList').innerHTML=list.map(c=>{
+    const enr=S.enrolled[c.id]; const prog=enr?(enr.progress||0):0;
+    return `<div class="course-card" onclick="openDetail('${c.id}')">
+      <div class="cc-row1">
+        <div class="cc-ico">${c.icon}</div>
+        <div class="cc-badge-wrap">
+          <div class="level-badge level-${c.level}">${c.level}</div>
+          <div class="time-badge">${c.time}</div>
+        </div>
+      </div>
+      <div class="cc-title-main">${c.title}</div>
+      <div class="cc-tagline">${c.tag}</div>
+      <div class="cc-overview">${c.overview}</div>
+      ${enr?`<div class="cc-prog-wrap"><div class="cc-prog-row"><span>${enr.completedMods.length}/${c.modules.length} modules</span><span>${prog}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${prog}%"></div></div></div>`:''}
+      <div class="cc-bottom">
+        <div class="cc-mods">${c.modules.length} modules · ${c.totalHrs}</div>
+        <button class="cc-enroll-btn ${enr?'enrolled':'enroll'}" onclick="event.stopPropagation();enroll('${c.id}',this)">${enr?'✓ Enrolled':'+ Enrol'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function enroll(id,btn){
+  if(!S.enrolled[id]){
+    S.enrolled[id]={progress:0,completedMods:[]};
+    S.xp+=50; showToast('Enrolled! +50 XP 🚀'); xpPop(50);
+    if(btn){ btn.className='cc-enroll-btn enrolled'; btn.textContent='✓ Enrolled'; }
+    syncUI();
+  }
+}
+
+// ══════════ DETAIL TABS ══════════
+function switchDetailTab(tab){
+  S.detailTab=tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['modules','overview','quiz'][i]===tab));
+  document.getElementById('detailScroll').scrollTop=0;
+  renderDetailTab();
+}
+
+function renderDetailTab(){
+  const id=S.currentCourse; const c=COURSES.find(x=>x.id===id);
+  const enr=S.enrolled[id]||{completedMods:[]};
+  const scroll=document.getElementById('detailScroll');
+  if(S.detailTab==='overview'){
+    scroll.innerHTML=`
+      <div class="detail-hero">
+        <div class="detail-icon-row">
+          <div class="detail-icon">${c.icon}</div>
+          <div class="detail-badges">
+            <div class="level-badge level-${c.level}">${c.level}</div>
+            <div class="time-badge" style="margin-top:4px;">${c.time} · ${c.totalHrs}</div>
+          </div>
+        </div>
+        <div class="detail-title">${c.title}</div>
+        <div class="detail-tag">${c.tag}</div>
+        <div class="detail-overview">${c.overview}</div>
+        <div class="detail-meta">
+          <div class="dmeta"><div class="dmeta-val">${c.modules.length}</div><div class="dmeta-label">Modules</div></div>
+          <div class="dmeta"><div class="dmeta-val">${c.totalHrs}</div><div class="dmeta-label">Total</div></div>
+          <div class="dmeta"><div class="dmeta-val">${c.level==='beginner'?'★☆☆':c.level==='intermediate'?'★★☆':'★★★'}</div><div class="dmeta-label">Level</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Module leader: <b style="color:var(--ink);font-weight:500;">${c.lead}</b> · Course leader: <b style="color:var(--ink);font-weight:500;">Hamza Rahimi</b></div>
+        <button class="enroll-main ${S.enrolled[id]?'done':'cta'}" onclick="enroll('${id}',null);renderDetailTab()">
+          ${S.enrolled[id]?'✓ You\'re enrolled':'+ Enrol free — £0 cost'}
+        </button>
+      </div>
+      <div style="padding:0 16px 16px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Final exam</div>
+        <p style="font-size:12px;color:var(--muted);line-height:1.6;">${c.exam}</p>
+      </div>`;
+  } else if(S.detailTab==='quiz'){
+    renderQuiz(id);
+  } else {
+    // MODULES
+    const done=enr.completedMods;
+    scroll.innerHTML=`
+      <div class="modules-list">
+        ${c.modules.map((m,i)=>`
+          <div class="mod-item ${done.includes(i)?'completed':''}" id="moditem-${id}-${i}">
+            <div class="mod-head" onclick="toggleMod('${id}',${i})">
+              <div class="mod-num ${done.includes(i)?'done':''}">${done.includes(i)?'✓':String(i+1).padStart(2,'0')}</div>
+              <div class="mod-info">
+                <div class="mod-title">${m.t}</div>
+              </div>
+              <div class="mod-hrs">${m.hrs}</div>
+            </div>
+            <div class="mod-expand">
+              <div class="mod-desc">${m.d}</div>
+              <ul class="outcomes">${m.outcomes.map(o=>`<li><span class="check">✓</span>${o}</li>`).join('')}</ul>
+              ${id==='coding' && i===0 ? codingModuleOneLab() : ''}
+              <button class="btn-complete ${done.includes(i)?'done':''}" onclick="completeMod('${id}',${i})">
+                ${done.includes(i)?'✓ Completed · +100 XP':'▶ Mark complete · +100 XP'}
+              </button>
+            </div>
+          </div>`).join('')}
+        <div class="exam-block">
+          <div class="exam-eyebrow">🏆 Final exam · 2 hrs</div>
+          <div class="exam-title">${c.title} — Final Exam</div>
+          <div class="exam-desc">${c.exam}</div>
+          <ul class="exam-reqs">
+            <li><span class="a-check">◆</span>Demonstrate fluency across all ${c.modules.length} modules</li>
+            <li><span class="a-check">◆</span>Submit a working deliverable — not slides</li>
+            <li><span class="a-check">◆</span>Defend your decisions in a live mentor review</li>
+            <li><span class="a-check">◆</span>Score 70%+ on rubric to earn certification</li>
+          </ul>
+          <div class="xp-reward"><span class="xp-big">+500 XP</span><span class="xp-note">+ Centauri Verified certificate & shareable CV link</span></div>
+        </div>
+      </div>`;
+  }
+}
+
+function toggleMod(cid, idx){
+  const el=document.getElementById(`moditem-${cid}-${idx}`);
+  const was=el.classList.contains('open');
+  document.querySelectorAll('.mod-item').forEach(m=>m.classList.remove('open'));
+  if(!was) el.classList.add('open');
+}
+
+function completeMod(cid, idx){
+  if(!S.enrolled[cid]){ enroll(cid,null); }
+  const enr=S.enrolled[cid];
+  if(!enr.completedMods.includes(idx)){
+    enr.completedMods.push(idx);
+    const total=COURSES.find(c=>c.id===cid).modules.length;
+    enr.progress=Math.round((enr.completedMods.length/total)*100);
+    S.xp+=100; S.streak=Math.max(1,S.streak+1);
+    showToast('Module done! +100 XP ⚡'); xpPop(100);
+  }
+  syncUI(); renderDetailTab();
+}
+
+// ══════════ QUIZ ══════════
+function renderQuiz(id){
+  const scroll=document.getElementById('detailScroll');
+  const qs=QUIZZES[id];
+  if(!S.quiz[id]) S.quiz[id]={qIdx:0,score:0,done:false};
+  const qi=S.quiz[id];
+  if(qi.done||qi.qIdx>=qs.length){
+    const pct=Math.round((qi.score/qs.length)*100);
+    scroll.innerHTML=`<div class="quiz-done">
+      <div class="quiz-done-icon">${pct>=50?'🎉':'📚'}</div>
+      <div class="quiz-done-title">${pct>=50?'Nice work!':'Keep studying!'}</div>
+      <div class="quiz-done-sub">Score: ${qi.score}/${qs.length} (${pct}%)</div>
+      <button class="btn-retry" onclick="resetQuiz('${id}')">Try again</button>
+    </div>`; return;
+  }
+  const q=qs[qi.qIdx];
+  scroll.innerHTML=`<div class="quiz-wrap">
+    <div class="quiz-header">⚡ Quiz · Q${qi.qIdx+1}/${qs.length}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz('${id}',${i})">${o}</button>`).join('')}</div>
+    <div id="qfeedback"></div>
+  </div>`;
+}
+
+function answerQuiz(id, chosen){
+  const qs=QUIZZES[id]; const qi=S.quiz[id]; const q=qs[qi.qIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  const right=chosen===q.ans;
+  opts[chosen].classList.add(right?'correct':'wrong');
+  if(!right) opts[q.ans].classList.add('correct');
+  if(right){ qi.score++; S.xp+=20; xpPop(20); syncUI(); }
+  document.getElementById('qfeedback').innerHTML=`
+    <div class="quiz-feedback ${right?'pass':'fail'}">${right?'✓ Correct! ':'✗ Not quite. '}${q.exp}</div>
+    <button class="btn-next" onclick="nextQ('${id}')">${qi.qIdx+1<qs.length?'Next →':'See results →'}</button>`;
+}
+function nextQ(id){ const qi=S.quiz[id]; qi.qIdx++; if(qi.qIdx>=QUIZZES[id].length) qi.done=true; renderQuiz(id); }
+function resetQuiz(id){ S.quiz[id]={qIdx:0,score:0,done:false}; renderQuiz(id); }
+
+// ══════════ HOME ══════════
+function renderHome(){
+  const mods=Object.values(S.enrolled).reduce((s,e)=>s+(e.completedMods||[]).length,0);
+  document.getElementById('homeXP').textContent=S.xp;
+  document.getElementById('homeStreak').textContent=S.streak;
+  document.getElementById('homeMods').textContent=mods;
+  document.getElementById('homeXPBig').textContent=S.xp;
+  document.getElementById('homeStreakBig').textContent=S.streak;
+  document.getElementById('homeEnrolled').textContent=Object.keys(S.enrolled).length;
+  document.getElementById('homeModsBig').textContent=mods;
+  const entries=Object.entries(S.enrolled);
+  if(entries.length){
+    document.getElementById('continueArea').innerHTML=entries.map(([id,enr])=>{
+      const c=COURSES.find(x=>x.id===id);
+      return `<div class="continue-card" onclick="openDetail('${id}')">
+        <div class="cc-icon">${c.icon}</div>
+        <div class="cc-info">
+          <div class="cc-label">Continue</div>
+          <div class="cc-title">${c.title}</div>
+          <div class="cc-prog">${enr.completedMods.length}/${c.modules.length} modules · ${enr.progress||0}%</div>
+          <div class="prog-bar" style="margin-top:6px;"><div class="prog-fill" style="width:${enr.progress||0}%"></div></div>
+        </div>
+        <div class="cc-arrow">›</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ══════════ PROGRESS ══════════
+function renderProgress(){
+  document.getElementById('progStreak').textContent=S.streak;
+  const entries=Object.entries(S.enrolled);
+  const wrap=document.getElementById('progressWrap');
+  if(!entries.length){
+    wrap.innerHTML=`<div class="empty-prog">
+      <div class="empty-icon">🎯</div>
+      <div class="empty-title">No tracks yet</div>
+      <div class="empty-sub">Enrol in a course and your progress will live here.</div>
+      <button class="btn-goto" onclick="goTo('courses')">Browse courses</button>
+    </div>`; return;
+  }
+  const mods=entries.reduce((s,[,e])=>s+(e.completedMods||[]).length,0);
+  wrap.innerHTML=`
+    <div class="quick-stats" style="margin-bottom:16px;">
+      <div class="qs-card"><div class="qs-label">Total XP</div><div class="qs-val">${S.xp}</div></div>
+      <div class="qs-card"><div class="qs-label">Modules done</div><div class="qs-val">${mods}</div></div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Enrolled tracks</div>
+    ${entries.map(([id,enr])=>{
+      const c=COURSES.find(x=>x.id===id); const prog=enr.progress||0;
+      return `<div class="prog-course-card" onclick="openDetail('${id}')">
+        <div class="pcc-row">
+          <div class="pcc-icon">${c.icon}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="pcc-title">${c.title}</div>
+            <div class="pcc-sub">${enr.completedMods.length}/${c.modules.length} modules · ${c.totalHrs}</div>
+          </div>
+          <div class="pcc-pct">${prog}%</div>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${prog}%"></div></div>
+      </div>`;
+    }).join('')}`;
+}
+
+// ══════════ SYNC ══════════
+function syncUI(){
+  document.getElementById('homeXP').textContent=S.xp;
+  document.getElementById('homeStreak').textContent=S.streak;
+  document.getElementById('coursesXP').textContent=S.xp;
+}
+
+// ══════════ TOAST ══════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function xpPop(n){
+  const p=document.createElement('div');
+  p.className='xp-pop'; p.textContent='+'+n+' XP';
+  p.style.cssText='right:20px;bottom:90px;';
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),1500);
+}
+
+
+// ══════════ INTERACTIVE LESSON LAB ══════════
+function codingModuleOneLab(){
+  return `
+    <div class="lesson-lab">
+      <div class="lesson-card">
+        <div class="lesson-kicker">Mini lesson</div>
+        <div class="lesson-title">Computers are fast instruction-followers</div>
+        <div class="lesson-copy">
+          A computer is not “thinking” like a person. It repeatedly takes input, follows instructions, processes data, stores what it needs, and produces output. Every app is built from this loop.
+        </div>
+        <div class="lesson-code">Input → Process → Store → Output</div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-kicker">Interactive 01</div>
+        <div class="lesson-title">You are the processor</div>
+        <div class="lesson-copy">Tap run to see how a CPU handles a tiny instruction like <b>2 + 2</b>.</div>
+        <div class="lesson-code">instruction = 2 + 2</div>
+        <button class="lesson-action" onclick="runCpuSimulation()">Run CPU simulation</button>
+        <div class="sim-output" id="cpuSimOutput">Waiting for instruction...</div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-kicker">Interactive 02</div>
+        <div class="lesson-title">Binary translator</div>
+        <div class="lesson-copy">Computers store everything using 1s and 0s. Type a number from 0 to 255 and convert it into 8-bit binary.</div>
+        <div class="binary-row">
+          <input id="binaryInput" class="binary-input" type="number" min="0" max="255" value="5" aria-label="Type a number from 0 to 255">
+          <button class="lesson-action" style="width:auto;margin-top:0;" onclick="convertBinary()">Convert</button>
+        </div>
+        <div class="binary-result" id="binaryResult">5 → 00000101</div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-kicker">Interactive 03</div>
+        <div class="lesson-title">RAM vs storage</div>
+        <div class="lesson-copy">
+          RAM is temporary working memory. Storage is long-term memory. Open tabs use RAM. Saved files live in storage.
+        </div>
+        <div class="memory-bars">
+          <div>
+            <div class="mem-label"><span>RAM usage</span><span id="ramLabel">18%</span></div>
+            <div class="mem-track"><div class="mem-fill" id="ramFill"></div></div>
+          </div>
+          <div>
+            <div class="mem-label"><span>Storage saved</span><span id="storageLabel">22%</span></div>
+            <div class="mem-track"><div class="mem-fill" id="storageFill" style="width:22%;"></div></div>
+          </div>
+        </div>
+        <button class="lesson-action" onclick="openTabsSim()">Open 12 tabs</button>
+        <button class="lesson-action" onclick="saveFileSim()">Save project file</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-kicker">Interactive 04</div>
+        <div class="lesson-title">What happens when you open a website?</div>
+        <div class="lesson-copy">Tap through the journey from typing a website name to seeing the page appear.</div>
+        <div class="timeline" id="webTimeline">
+          <div class="timeline-step active"><span class="tdot">1</span>Browser sends a request</div>
+          <div class="timeline-step"><span class="tdot">2</span>DNS finds the correct server</div>
+          <div class="timeline-step"><span class="tdot">3</span>Server sends files back</div>
+          <div class="timeline-step"><span class="tdot">4</span>Browser reads HTML, CSS and JavaScript</div>
+          <div class="timeline-step"><span class="tdot">5</span>The page appears on screen</div>
+        </div>
+        <button class="lesson-action" onclick="nextWebStep()">Next step</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-kicker">Mini challenge</div>
+        <div class="lesson-title">Match the component to its job</div>
+        <div class="lesson-copy">Choose the correct role for each computer component.</div>
+        <div class="match-grid">
+          ${matchRow('CPU','cpu')}
+          ${matchRow('RAM','ram')}
+          ${matchRow('SSD','ssd')}
+          ${matchRow('GPU','gpu')}
+        </div>
+        <button class="lesson-action" onclick="checkComponentMatch()">Check answers</button>
+        <div class="challenge-result" id="matchResult">Complete the matches to earn the confidence boost.</div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-kicker">Reflection</div>
+        <div class="lesson-title">Real-world checkpoint</div>
+        <div class="lesson-copy">
+          Why does your laptop slow down when you have too many apps open? Answer: because those apps compete for RAM and CPU time. Developers who understand the machine can build faster, more reliable apps.
+        </div>
+      </div>
+    </div>`;
+}
+
+function matchRow(label,id){
+  return `<div class="match-row">
+    <div class="match-chip">${label}</div>
+    <select class="match-select" id="match-${id}">
+      <option value="">Choose role...</option>
+      <option value="process">Processes instructions</option>
+      <option value="temp">Temporary working memory</option>
+      <option value="long">Long-term file storage</option>
+      <option value="graphics">Graphics and visual processing</option>
+    </select>
+  </div>`;
+}
+
+function runCpuSimulation(){
+  const out=document.getElementById('cpuSimOutput');
+  if(!out) return;
+  const steps=['Fetching instruction...','Decoding: add two numbers...','Processing: 2 + 2...','Storing result in memory...','Output: 4'];
+  out.textContent='';
+  steps.forEach((s,i)=>setTimeout(()=>{ out.textContent += (i?'\n':'') + s; }, i*450));
+}
+
+function convertBinary(){
+  const input=document.getElementById('binaryInput');
+  const result=document.getElementById('binaryResult');
+  if(!input||!result) return;
+  let n=parseInt(input.value,10);
+  if(isNaN(n)) n=0;
+  n=Math.max(0,Math.min(255,n));
+  input.value=n;
+  result.textContent = n + ' → ' + n.toString(2).padStart(8,'0');
+}
+
+function openTabsSim(){
+  const fill=document.getElementById('ramFill');
+  const label=document.getElementById('ramLabel');
+  if(!fill||!label) return;
+  fill.style.width='86%';
+  label.textContent='86% — system slowing';
+  showToast('RAM usage increased');
+}
+
+function saveFileSim(){
+  const fill=document.getElementById('storageFill');
+  const label=document.getElementById('storageLabel');
+  if(!fill||!label) return;
+  fill.style.width='38%';
+  label.textContent='38% — file saved';
+  showToast('Saved to storage');
+}
+
+let webStep=0;
+function nextWebStep(){
+  const steps=document.querySelectorAll('#webTimeline .timeline-step');
+  if(!steps.length) return;
+  webStep=(webStep+1)%steps.length;
+  steps.forEach((el,i)=>el.classList.toggle('active',i<=webStep));
+}
+
+function checkComponentMatch(){
+  const answers={cpu:'process',ram:'temp',ssd:'long',gpu:'graphics'};
+  let score=0;
+  Object.keys(answers).forEach(k=>{
+    const el=document.getElementById('match-'+k);
+    if(el && el.value===answers[k]) score++;
+  });
+  const result=document.getElementById('matchResult');
+  if(!result) return;
+  if(score===4){
+    result.innerHTML='Perfect. CPU, RAM, SSD and GPU all matched correctly. +25 XP confidence boost.';
+    result.style.color='var(--g)';
+    S.xp += 25;
+    syncUI();
+    xpPop(25);
+  }else{
+    result.innerHTML=`${score}/4 correct. Hint: CPU thinks, RAM works short-term, SSD stores long-term, GPU handles visuals.`;
+    result.style.color='var(--amber)';
+  }
+}
+
+// ══════════ STATUS TIME ══════════
+function tick(){
+  const now=new Date();
+  document.getElementById('statusTime').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+}
+tick(); setInterval(tick,10000);
+
+// ══════════ BOOT ══════════
+renderCourses();
+renderHome();
+</script>
+</body>
+</html>
